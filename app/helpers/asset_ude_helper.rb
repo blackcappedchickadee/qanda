@@ -1,0 +1,2 @@
+module AssetUdeHelper
+end

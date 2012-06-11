@@ -1,0 +1,19 @@
+== qanda
+
+A simple question and answer web application.
+
+Uses the excellent Surveyor gem (v0.22.0) from Northwestern University Biomedical Informatics Center https://github.com/NUBIC/surveyor.
+
+Also employs the use of additional gems such as:
+* paperclip
+* savon
+* delayed_job_active_record and daemons
+
+This application leverages calls to an external resource - in this case, a Liferay Portal Server and it's companion Document Library - to store associated attachments for a given surveyor "instance" (response_set), as a more permanent means of backing up Paperclip attachments and the completed Surveyor "instance" in PDF form.
+
+Code that is long running (say, beyond 2 seconds) utilizes delayed_job to "put" automatically-generated PDFs to the Document Library (via a web service call) without the user having to wait for the file to be sent to the external Document Library -- a much improved user experience. Once a PDF is placed in the external Document Library, an email notification is sent.
+
+To start the background process that will start watching the queue:
+
+RAILS_ENV=production script/delayed_job start
+

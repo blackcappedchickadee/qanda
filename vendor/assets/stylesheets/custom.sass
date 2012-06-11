@@ -1,0 +1,148 @@
+/* Add custom styles here. They will be
+ * loaded after the surveyor stylesheets */
+
+$font-family:Arial,Helvetica,Verdana,sans-serif
+$font-size: 1.0em
+$font-size-textboxes: 0.8em 
+$background_color:#FFFFFF
+$min_surveyor_height:900px
+$max_surveyor_width:900px
+$surveyor_flash_background_color:#EFEFEF
+$surveyor_color:#FFFFFF 
+$surveyor_text_color:#333333
+$textbox-width:400px
+$surveyor_dependent_color:#FFFFDF
+$surveyor_menus_inactive_color:#EFEFEF
+$surveyor_menus_active_color:#00269B
+$surveyor_menus_border_color:#ccc
+$surveyor_menus_active_font_color:#FFFFFF
+$surveyor_next_section_background_color:#84CEA3
+$iframe_width:600px
+$iframe_height:200px
+$iframe_height_addtional_attachments:350px
+
+body
+  :background-color $background_color
+
+.grantee_name
+  :width 100%
+.project_name
+  :margin-left 20px
+  :padding 10px
+  :display inline
+.project_name_links
+  :display inline
+
+#survey-breadcrumbs-top
+  :font-family $font-family
+  :margin 10px
+  :font-size $font-size
+
+#surveyor
+  :background-color $surveyor_color
+  :min-height $min_surveyor_height
+  :max-width $max_surveyor_width
+  fieldset, legend
+    :border-width 0
+    :border-style none
+  input[type="text"]
+    :font-family $font-family
+    :font-size $font-size-textboxes
+  textarea
+    :font-family $font-family
+    :font-size $font-size-textboxes
+  fieldset input[type="text"]
+    :width $textbox-width
+  .surveyor_flash
+    :background-color $surveyor_flash_background_color
+  .surveyor_menu
+    ul
+      :background-color $background_color
+      :border 1px solid $surveyor_menus_border_color
+      :border-bottom-width 0
+      :list-style none
+      :margin-left 10px
+      li
+        :background-color $surveyor_menus_inactive_color
+      li.active, li.active input[type="submit"]
+        :background-color $surveyor_menus_active_color
+        :color $surveyor_menus_active_font_color
+  .next_section
+    :margin-top 5px
+    :margin-bottom 10px
+    :float left
+  .next_section input[type="submit"]
+    :background-color $surveyor_next_section_background_color
+  fieldset.q_dependent legend
+    :background-color #FFF
+  fieldset.q_dependent
+    :background-color #FFF
+  fieldset.g_dependent
+    :background-color #FFF
+  iframe
+    :width $iframe_width
+    :height $iframe_height
+  #additional_doc_upload
+    :width $iframe_width
+    :height $iframe_height_addtional_attachments
+  .ui-widget
+    :font-family $font-family
+    :font-size $font-size
+  .c_q1 input[type="text"]
+    :width 585px
+    :margin-bottom 10px
+  .c_q1 textarea
+    :width 585px
+    :margin-bottom 10px 
+  .c_q2 textarea
+    :width 585px
+    :margin-bottom 10px   
+  .c_q3 textarea
+    :width 585px
+    :margin-bottom 10px
+  .c_q4 textarea
+    :width 585px
+    :margin-bottom 10px   
+  .c_q5 textarea
+    :width 585px
+    :margin-bottom 10px
+  .c_q8 input[type="text"]
+    :width 60px
+  .c_q9 input[type="text"]
+    :width 60px    
+  .c_q13 input[type="text"]
+    :width 60px
+  .c_q15 input[type="text"]
+    :width 60px
+  .c_q18 input[type="text"]
+    :width 60px
+  .c_q21 input[type="text"]
+    :width 60px
+  .c_q24 input[type="text"]
+    :width 90px
+    :margin-right 30px
+  .c_q27 input[type="text"]
+    :width 90px
+    :margin-right 30px
+  .c_q30 input[type="text"]
+    :width 90px
+    :margin-right 30px
+  .c_q33 input[type="text"]
+    :width 90px
+    :margin-right 30px    
+  .c_q36 input[type="text"]
+    :width 90px
+    :margin-right 30px
+  .c_q39 input[type="text"]
+    :width 90px
+    :margin-right 30px   
+  .c_q41 input[type="text"]
+    :width 225px     
+  .c_q43 input[type="text"]
+    :width 90px
+    :margin-right 30px  
+  .c_q45 input[type="text"]
+    :width 225px  
+  .c_q47 input[type="text"]
+    :width 90px
+    :margin-right 30px

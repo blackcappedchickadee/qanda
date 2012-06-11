@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  renewals_id: 1
+  asset_name: MyString
+
+two:
+  renewals_id: 1
+  asset_name: MyString

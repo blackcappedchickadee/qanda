@@ -1,0 +1,33 @@
+<%= form_for @mcoc_renewal, :url => { :action => 'upload' }, :html => { :multipart => true, :name => 'mcoc_addnl_assets' }, :remote => true do |f| %>
+     <p>If you have any relevant and supporting documentation, please attach by browsing to the file, then click 'Attach Supporting Documentation'.</p>
+     <%= f.fields_for :mcoc_assets do |attachment| %>
+        
+           <% if attachment.object.new_record? %>
+                 <%= attachment.file_field :supporting_doc %><br/>
+           <% else %>
+				<div id="existing_addtional_asset" class="field_additional_asset">
+					<%= link_to attachment.object.supporting_doc_file_name, additional_asset_show_path(attachment.object), :target => "_blank" %>
+					<%= check_box_tag "mcoc_asset_id", attachment.object.id, false, :class => "mcoc_asset_id", :id => "mcoc_asset_#{attachment.object.id}" %>
+					<%= f.label "Delete" %>
+				</div>
+
+           <% end %>
+
+       <% end %>
+	<% if @mcoc_renewal.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mcoc_renewal.errors.count, "error") %> prohibited this post from being saved:</h2>
+      <ul>
+      <% @mcoc_renewal.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+   <% end %>
+   <div id="attach_support_doc">
+	 <div class="actions">
+	   <%= f.submit 'Attach Supporting Documentation', :disable_with => 'Uploading ...' %>
+	 </div>
+   </div>
+
+<% end %>

@@ -1,0 +1,41 @@
+#surveyor
+  - unless (types = flash.keys.select{|k| [:notice, :error, :warning].include?(k)}).blank?
+    .surveyor_flash
+      = flash_messages(types)
+      .close
+  .survey_title= '2012 Monitoring and Evaluation Questionnaire'
+  %br
+  #survey_list
+    %ul
+      - unless @list_of_instanced_surveys.empty?
+      - @first_time = true
+        - @list_of_instanced_surveys.each do |survey|
+          %li
+            = form_tag(edit_my_survey_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code)) do 
+              = hidden_field_tag :surveyor_javascript_enabled, false
+            
+              %div#survey_list
+                %div.grantee_name
+                  - if @first_time
+                    - @working_grantee_name = survey.grantee_name
+                    - @first_time = false
+                    = @working_grantee_name
+                  - else
+                    - if @working_grantee_name == survey.grantee_name
+                    - else
+                      = @working_grantee_name
+                      
+                %div.project_name
+                  = link_to survey.project_name, edit_my_survey_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code) 
+                %div.project_name_links
+                  = link_to 'PDF', generate_pdf_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code)
+              - @working_grantee_name = survey.grantee_name
+              
+      - else
+        %li
+          No surveys
+
+:javascript
+  $(document).ready(function() {
+    $("input#surveyor_javascript_enabled").val(true);
+  });

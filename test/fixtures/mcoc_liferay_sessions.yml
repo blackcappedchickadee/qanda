@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  mcoc_user_id: 
+  is_active: false
+
+two:
+  mcoc_user_id: 
+  is_active: false

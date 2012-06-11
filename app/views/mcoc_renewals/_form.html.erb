@@ -1,0 +1,32 @@
+<%= form_for @mcoc_renewals do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :grantee_name %><br />
+    <%= f.text_field :grantee_name %>
+  </p>
+  <p>
+    <%= f.label :project_name %><br />
+    <%= f.text_field :project_name %>
+  </p>
+  <p>
+    <%= f.label :component %><br />
+    <%= f.text_field :component %>
+  </p>
+  <p>
+    <%= f.label :attachment_ude_file_name %><br />
+    <%= f.text_field :attachment_ude_file_name %>
+  </p>
+  <p>
+    <%= f.label :attachment_ude_content_type %><br />
+    <%= f.text_field :attachment_ude_content_type %>
+  </p>
+  <p>
+    <%= f.label :attachment_ude_file_size %><br />
+    <%= f.number_field :attachment_ude_file_size %>
+  </p>
+  <p>
+    <%= f.label :attachment_ude_updated_at %><br />
+    <%= f.datetime_select :attachment_ude_updated_at %>
+  </p>
+  <p><%= f.submit %></p>
+<% end %>

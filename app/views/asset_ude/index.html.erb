@@ -1,0 +1,6 @@
+<% @ude_asset = McocRenewalsUdeAsset.new() %>
+<%= form_for @ude_asset, :url => { :controller => 'asset_ude', :action => 'new' }, :html => { :multipart => true } do |f| %>
+	<%= f.label "UDE Report:" %>
+	<%= f.file_field :ude %>
+	<%= f.submit "Upload UDE Report" %> 
+<% end %>

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  mcoc_user_id: 1
+  mcoc_renewals_id: 1
+
+two:
+  mcoc_user_id: 1
+  mcoc_renewals_id: 1

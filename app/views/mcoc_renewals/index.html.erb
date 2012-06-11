@@ -1,0 +1,27 @@
+<% title "Mcoc Renewals" %>
+
+<table>
+  <tr>
+    <th>Grantee Name</th>
+    <th>Project Name</th>
+    <th>Component</th>
+    <th>Attachment Ude File Name</th>
+    <th>Attachment Ude Content Type</th>
+    <th>Attachment Ude File Size</th>
+    <th>Attachment Ude Updated At</th>
+  </tr>
+  <% for mcoc_renewals in @mcoc_renewals %>
+    <tr>
+      <td><%= mcoc_renewals.grantee_name %></td>
+      <td><%= mcoc_renewals.project_name %></td>
+      <td><%= mcoc_renewals.component %></td>
+      <td><%= mcoc_renewals.attachment_ude_file_name %></td>
+      <td><%= mcoc_renewals.attachment_ude_content_type %></td>
+      <td><%= mcoc_renewals.attachment_ude_file_size %></td>
+      <td><%= mcoc_renewals.attachment_ude_updated_at %></td>
+      <td><%= link_to "Edit", edit_mcoc_renewal_path(mcoc_renewals) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p><%= link_to "New Mcoc Renewals", new_mcoc_renewal_path %></p>

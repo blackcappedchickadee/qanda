@@ -1,0 +1,35 @@
+<%= form_for @mcoc_renewal, :html => { :multipart => true, :name => 'mcoc_renewal' }, :remote => true do |f| %>
+	<% if @mcoc_renewal.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mcoc_renewal.errors.count, "error") %> prohibited this post from being saved:</h2>
+      <ul>
+      <% @mcoc_renewal.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <% if @mcoc_renewal.attachment_ude.exists? %>
+	<div id="ude_current_report" class="field">
+		<%= link_to "View UDE Completeness Report", ude_report_show_path(f), :target => "_blank" %>
+		<%= check_box_tag "clear_attachment_ude"   %>
+		<%= f.label "Delete" %>
+    </div>
+  <% else %>
+  <% end %>
+  <div id="ude_upload_section">
+	 <div id="ude_upload_text">
+	   <p>Instructions: Browse to your UDE Completeness Report, then click 'Attach UDE Completeness Report'. 
+	    <% if @mcoc_renewal.attachment_ude.exists? %> 
+	      Attaching a new report will overwrite the existing report.
+		<% end %>
+	 </p>
+	</div>
+	 <div class="field">
+	   <%= f.file_field :attachment_ude %>
+	 </div>
+	 <div class="actions">
+	   <%= f.submit 'Attach UDE Completeness Report', :disable_with => 'Uploading ...' %>
+	 </div>
+  </div>
+<% end %>
