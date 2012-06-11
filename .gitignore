@@ -15,7 +15,6 @@
 /log/*
 /tmp/*
 
-
 # OS Generated
 .DS_Store*
 ehthumbs.db
