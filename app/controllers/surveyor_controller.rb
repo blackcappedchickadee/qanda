@@ -82,11 +82,52 @@ module SurveyorControllerCustomMethods
         @transitory_surveys = TransitoryInstancedSurveys.new(@survey.access_code, 
                       @response_set_for_user.access_code, 
                       @mcoc_renewals.grantee_name, 
-                      @mcoc_renewals.project_name)           
+                      @mcoc_renewals.project_name, nil, nil)           
         @list_of_instanced_surveys << @transitory_surveys
         
       end
   end
+  
+  #custom action for showing a Report of Unfinished Instanced Surveys
+  def list_instanced_questionnaire_status
+      @report_list = []
+      @mcoc_renewals = McocRenewals.find(:all, :order => 'grantee_name ASC, project_name ASC')
+      @mcoc_renewals.each do |renewals|
+        @tmp_user_renewals = McocUserRenewals.where(:mcoc_renewals_id => renewals.id)
+        @grantee_name = renewals.grantee_name
+        @project_name = renewals.project_name
+        if @tmp_user_renewals.first.nil?
+          puts "nil user renewals found for #{renewals.id}"
+          @response_set_access_code = "notinstanced"
+          @completed_flag = "No"
+          @completed_date = ""
+          @survey_access_code = "notinstanced"
+        else
+          puts "user renewals WERE found for #{renewals.id}"
+          @response_set = ResponseSet.where(:id => @tmp_user_renewals.first.response_set_id)
+          @response_set_access_code = @response_set.first.access_code
+          @survey = Survey.find_by_id(@response_set.first.survey_id)
+          @completed_date = @response_set.first.completed_at
+          if @completed_date.blank?
+            @completed_flag = "No"
+          else  
+            @completed_flag = "Yes"
+          end
+          @survey_access_code = @survey.access_code
+          puts "completed date - #{@completed_date}, completed_flag - #{@completed_flag}"
+        end
+        
+        #populate the model regardless of whether or not we found details 
+        @transitory_report_list = TransitoryInstancedSurveys.new(@survey_access_code, 
+                      @response_set_access_code, 
+                      @grantee_name, 
+                      @project_name, @completed_flag, @completed_date)           
+        @report_list << @transitory_report_list
+        
+      end
+    
+  end
+  
   
   def render_context
     #since we may have mustaches in place: {{recipient_name}}

@@ -78,6 +78,7 @@ Qanda::Application.routes.draw do
     match "/autosignin", :controller=>"my_sessions", :action=>"autosignin"
     
     match "/surveys/list_current", :to => "surveyor#list_current", :as => "list_surveys", :via => :get
+    match "/surveys/questionnaire_status", :to => "surveyor#list_instanced_questionnaire_status", :as => "questionnaire_status", :via => :get
     
     match "/surveys/:survey_code/:response_set_code.pdf", :to => "surveyor#export", :as => "generate_pdf", :via => :get
     
