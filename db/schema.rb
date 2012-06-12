@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120612031530) do
+ActiveRecord::Schema.define(:version => 20120612040715) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -75,6 +75,13 @@ ActiveRecord::Schema.define(:version => 20120612031530) do
     t.string   "response_other"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+  end
+
+  create_table "finished_survey_email_lists", :force => true do |t|
+    t.string   "name"
+    t.string   "email_address"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "finished_surveys", :force => true do |t|
