@@ -9,9 +9,11 @@ Qanda::Application.initialize!
 Qanda::Application.config.liferayserveruser = ENV['LIFERAY_SERVER_USER']
 Qanda::Application.config.liferayserverpass = ENV['LIFERAY_SERVER_USER_PASS']
 
-Qanda::Application.config.liferay2012monitoringfolderid = '16031'
+Qanda::Application.config.liferay2012monitoringfolderid = '17483'
 Qanda::Application.config.liferaycompanyid = '10132'
 Qanda::Application.config.liferaymcocgroupid = '10702'
+Qanda::Application.config.liferaymcocmonitoringcmterole = '17479'
+Qanda::Application.config.liferaymcocmonitoringcmteroleactionids = ['ACCESS', 'VIEW']
 Qanda::Application.config.liferayserverprotocol = 'http://'
 Qanda::Application.config.liferayserverurl = '127.0.0.1:8090'
 Qanda::Application.config.liferayaxissecure = '/tunnel-web/secure/axis/'
