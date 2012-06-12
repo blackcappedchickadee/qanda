@@ -28,7 +28,7 @@ class LiferayDocument
       if response.success?
         #Nokogiri object is returned when calling response.doc
         @doc_name = response.doc.css("name").inner_text
-        #puts "success ------------- #{response.to_json}"
+        puts "success ------------- #{response.to_json}"
         return @doc_name
       end
     rescue Savon::Error => error
