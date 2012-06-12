@@ -1,0 +1,49 @@
+#surveyor
+  - unless (types = flash.keys.select{|k| [:notice, :error, :warning].include?(k)}).blank?
+    .surveyor_flash
+      = flash_messages(types)
+      .close
+  .survey_title= '2012 Monitoring and Evaluation Questionnaire - Status Report'
+  %br
+  #survey_list
+    %ul
+      - unless @report_list.empty?
+      - @first_time = true
+        - @report_list.each do |report|
+          %li
+            = form_tag(edit_my_survey_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code)) do 
+              = hidden_field_tag :surveyor_javascript_enabled, false
+              %div#survey_list_details
+                - if @first_time
+                  - @working_grantee_name = report.grantee_name
+                  - @first_time = false
+                  %div.grantee_name 
+                    = @working_grantee_name
+                - else
+                  - if @working_grantee_name == report.grantee_name
+                  - else
+                    %div.grantee_name 
+                      = report.grantee_name
+                      
+                %div.project_name
+                  - if report.survey_access_code == "notinstanced"
+                    #{report.project_name} (not yet instanced)
+                  - else
+                    = link_to report.project_name, edit_my_survey_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code) 
+                %div.project_name_links
+                  - if report.survey_access_code != "notinstanced"
+                    = link_to 'PDF', generate_pdf_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code)
+                  - if report.completed_flag == "No"
+                    Completed? #{report.completed_flag} 
+                  - else
+                    Completed? #{report.completed_flag} - #{report.completed_date}
+              - @working_grantee_name = report.grantee_name
+              
+      - else
+        %li
+          No Questionnaire Status to Show.
+
+:javascript
+  $(document).ready(function() {
+    $("input#surveyor_javascript_enabled").val(true);
+  });
