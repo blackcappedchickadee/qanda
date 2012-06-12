@@ -1,6 +1,9 @@
 
 namespace :qanda do
   #this task is a very simple one that instances 9 survey sessions for ext user id 10404
+  #nb: in order for this to work, we must have an active session and the mcoc_user_renewals table
+  #must be seeded with the internal user_id (which itself needs to be seeded via mcoc_users beforehand)
+  #example seed for each mcoc_renewal - insert into mcoc_user_renewals (user_id, mcoc_renewals_id) values (1, 4);
   task :init_10404 => :environment do
     survey_access_code = "2012-monitoring-and-evaluation"
     puts "Instancing survey #{survey_access_code}..."
@@ -32,6 +35,9 @@ namespace :qanda do
   end
   
   #this task is a very simple one that instances 9 survey sessions for ext user id 10404
+  #nb: in order for this to work, we must have an active session and the mcoc_user_renewals table
+  #must be seeded with the internal user_id (which itself needs to be seeded via mcoc_users beforehand)
+  #example seed for each mcoc_renewal - insert into mcoc_user_renewals (user_id, mcoc_renewals_id) values (1, 4);
   task :init_10404_a => :environment do
     survey_access_code = "2012-monitoring-and-evaluation"
     puts "Instancing survey #{survey_access_code}..."
