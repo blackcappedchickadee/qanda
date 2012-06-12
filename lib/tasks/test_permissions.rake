@@ -9,7 +9,7 @@ namespace :qanda do
     name = Rails.configuration.liferaywsdldlfoldername
     prim_key = '16031'  #DLFolder.folderId
     role_id = '17479'
-    action_ids = ['ACCESS', 'VIEW']
+    action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionids
     retval = liferay_ws_permission.add_for_mcoc_user(group_id, company_id, name, prim_key, role_id, action_ids)
     
     puts "finished, with status of #{retval}..."
@@ -39,7 +39,7 @@ namespace :qanda do
     
     #now, test applying permissions to a specific file in the doclib folder to the same group/roleid
     name = Rails.configuration.liferaywsdldlfileentryname
-    action_ids = ['ADD_DISCUSSION', 'UPDATE_DISCUSSION', 'VIEW']
+    action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionidsfile
     prim_key = '17448' #DLFileEntry.fileEntryId - NOT doc_name...
     retval = liferay_ws_permission.add_for_mcoc_user(group_id, company_id, name, prim_key, role_id, action_ids)
     puts "finished, with status of #{retval}..."

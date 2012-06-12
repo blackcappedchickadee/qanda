@@ -30,7 +30,19 @@ class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :re
         liferay_ws.update(mcoc_group_id, mcoc_folder_id, doc_name, pdf_file_name, description, pdf_file_as_base_64)
       else
         #we didn't find an existing DocLib entry, so we'll create a new one via an "add" call:
-        liferay_ws.add(mcoc_group_id, mcoc_folder_id, pdf_file_name, description, pdf_file_as_base_64)
+        added_result = liferay_ws.add(mcoc_group_id, mcoc_folder_id, pdf_file_name, description, pdf_file_as_base_64)
+        
+        #update the given mcoc_renewal record with the uuid that we just generated due to the addition of the document in the doclib.
+        added_doc_name = added_result[:doc_name]
+        added_primary_key = added_result[:primary_key]
+        #call the webservice that applies specific permissions on the file (primary_ley) just added to the document library:
+        liferay_ws_permission = LiferayPermission.new
+        company_id = Rails.configuration.liferaycompanyid
+        role_id = Rails.configuration.liferaymcocmonitoringcmterole
+        name = Rails.configuration.liferaywsdldlfileentryname
+        action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionidsfile
+        liferay_ws_permission.add_for_mcoc_user(mcoc_group_id, company_id, name, added_primary_key, role_id, action_ids)
+        
       end
 
       url_stem = Rails.configuration.doclibrootstem 

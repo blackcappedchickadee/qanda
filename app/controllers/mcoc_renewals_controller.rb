@@ -56,7 +56,7 @@ class McocRenewalsController < ApplicationController
         @company_id = Rails.configuration.liferaycompanyid
         @role_id = Rails.configuration.liferaymcocmonitoringcmterole
         @name = Rails.configuration.liferaywsdldlfileentryname
-        @action_ids = ['ADD_DISCUSSION', 'UPDATE_DISCUSSION', 'VIEW']
+        @action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionidsfile
         @liferay_ws_permission.add_for_mcoc_user(@mcoc_group_id, @company_id, @name, @added_primary_key, @role_id, @action_ids)
         #and lastly, update the mcoc_renewal contoller with the doc_name we got back from the ws "add" call above...
         @mcoc_renewal.update_attributes(:doc_name => @added_doc_name)
