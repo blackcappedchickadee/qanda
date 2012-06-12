@@ -27,11 +27,11 @@ namespace :qanda do
     liferay_grantee_folder_id = 0
     liferay_project_folder_id = 0
     
-    McocRenewals.find(:all, :order => 'grantee_name ASC, project_name DESC') do |renewals|
-      
+    @renewals_list = McocRenewals.find(:all, :order => 'grantee_name ASC, project_name ASC') 
+    @renewals_list.each do |renewals|
+    
       puts "Processing: mcoc_renewals. #{renewals.grantee_name} - Project name: #{renewals.project_name}..."
-      
-      if first_time
+        if first_time
         puts "First time..."
         #Create the Grantee Folder
         grantee_name = renewals.grantee_name.tr(',.#@/!','') #sanitize grantee name, as Liferay will reject special chars when creating a new DocLib folder.
@@ -143,7 +143,7 @@ namespace :qanda do
                     :supporting_doc_folder_id => liferay_supporting_doc_folder_id)
         end
       end
-      
+
       work_grantee_name = renewals.grantee_name
       first_time = false
       
