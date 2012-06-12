@@ -4,7 +4,7 @@ class McocRenewals < ActiveRecord::Base
   
   attr_accessible :grantee_name, :project_name, :component, :attachment_ude, :mcoc_assets_attributes, 
                   :grantee_folder_id, :project_folder_id,
-                  :hud_report_folder_id, :questionnaire_folder_id,:supporting_doc_folder_id, :doc_name
+                  :hud_report_folder_id, :questionnaire_folder_id,:supporting_doc_folder_id, :doc_name, :questionnaire_doc_name
   
   accepts_nested_attributes_for :mcoc_assets, :allow_destroy => true
   

@@ -125,7 +125,13 @@ module SurveyorControllerCustomMethods
       @tmp_project_name = session[:project_name]
       
       @mcoc_renewal = McocRenewals.find(@tmp_mcoc_renewal_id)
-      @tmp_doc_name = @mcoc_renewal.doc_name
+      @tmp_doc_name = @mcoc_renewal.questionnaire_doc_name
+      if @tmp_doc_name.blank? 
+        @questionnaire_doc_name = 0
+      else
+        @questionnaire_doc_name = @tmp_doc_name
+      end
+      puts "======= doc_name of completed survey pdf is -- #{@questionnaire_doc_name}"
       @response_set = ResponseSet.find_by_access_code(@tmp_response_set_code, :include => {:responses => [:question, :answer]})
       
       if @response_set
@@ -136,7 +142,7 @@ module SurveyorControllerCustomMethods
         #transmission of the pdf to the external DocLib (via the add WS operation) is being
         #handled by a delayed job, that way the user doesn't need to "wait" for this process to complete
         #since it runs on a separate thread.
-        delayed_job = CreateAndSendPdfJob.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, html, @tmp_grantee_name, @tmp_project_name, @tmp_doc_name)
+        delayed_job = CreateAndSendPdfJob.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, html, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
         delayed_job.create_and_put_pdf
         
       end

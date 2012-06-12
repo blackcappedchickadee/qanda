@@ -24,7 +24,9 @@ class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :re
       liferay_ws = LiferayDocument.new
       #So we have the most up to date questionnaire pushed to the DocLib) we will first see if we
       #already have a DocLib entry:
+      
       liferay_ws_result = liferay_ws.get(mcoc_group_id, mcoc_folder_id, doc_name)
+      
       if liferay_ws_result == "found"
         #we need to update, as opposed to add
         liferay_ws.update(mcoc_group_id, mcoc_folder_id, doc_name, pdf_file_name, description, pdf_file_as_base_64)
@@ -32,12 +34,14 @@ class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :re
         #we didn't find an existing DocLib entry, so we'll create a new one via an "add" call:
         added_result = liferay_ws.add(mcoc_group_id, mcoc_folder_id, pdf_file_name, description, pdf_file_as_base_64)
         
-        #update the given mcoc_renewal record with the uuid that we just generated due to the addition of the document in the doclib.
-        added_doc_name = added_result[:doc_name]
-        added_primary_key = added_result[:primary_key]
+        #update the given mcoc_renewal record with the doc_name that we just generated due to the addition of the document in the doclib.
+        questionnaire_doc_name = added_result[:doc_name]
+        @mcoc_renewal.update_column(:questionnaire_doc_name, questionnaire_doc_name)
+        
         #call the webservice that applies specific permissions on the file (primary_ley) just added to the document library:
         liferay_ws_permission = LiferayPermission.new
         company_id = Rails.configuration.liferaycompanyid
+        added_primary_key = added_result[:primary_key]
         role_id = Rails.configuration.liferaymcocmonitoringcmterole
         name = Rails.configuration.liferaywsdldlfileentryname
         action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionidsfile

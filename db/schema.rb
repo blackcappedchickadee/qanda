@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120610215919) do
+ActiveRecord::Schema.define(:version => 20120612031530) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(:version => 20120610215919) do
     t.integer  "grantee_folder_id"
     t.integer  "project_folder_id"
     t.string   "doc_name"
+    t.integer  "questionnaire_doc_name"
   end
 
   create_table "mcoc_renewals_supporting_assets", :force => true do |t|

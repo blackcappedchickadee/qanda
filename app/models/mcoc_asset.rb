@@ -26,12 +26,24 @@ class McocAsset < ActiveRecord::Base
       liferay_ws = LiferayDocument.new
       
       #puts "mcoc_group_id}, #{supporting_doc_folder_id}, #{tmp_filename}, #{uploaded_file_desc} "
-
-      added_doc_name = liferay_ws.add(mcoc_group_id, supporting_doc_folder_id, tmp_filename, uploaded_file_desc, base64_uploaded_file)
-      puts "after adding to LR doclib = #{added_doc_name}"
       
-      if (added_doc_name=="notadded")
+      added_result = liferay_ws.add(mcoc_group_id, supporting_doc_folder_id, tmp_filename, uploaded_file_desc, base64_uploaded_file)
+      
+      if (added_result=="notadded")
       else
+         #apply permissions to the monitoring group role for additional assets that were added...
+         added_doc_name = added_result[:doc_name]
+         added_primary_key = added_result[:primary_key]
+         
+         liferay_ws_permission = LiferayPermission.new
+         company_id = Rails.configuration.liferaycompanyid
+         role_id = Rails.configuration.liferaymcocmonitoringcmterole
+         name = Rails.configuration.liferaywsdldlfileentryname
+         action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionidsfile
+         liferay_ws_permission.add_for_mcoc_user(mcoc_group_id, company_id, name, added_primary_key, role_id, action_ids)
+        
+        
+         #save the corresponding mcoc_asset row with the just-obtained doc_name above...
          self.update_column(:doc_name, added_doc_name)
       end
       
