@@ -47,8 +47,18 @@ class McocRenewalsController < ApplicationController
       @base64_uploaded_file = Base64.encode64(@tmp)
       
       if @doc_name.blank?
-        @added_doc_name = @liferay_ws.add(@mcoc_group_id, @hud_report_folder_id, @uploaded_file_name, @uploaded_file_desc, @base64_uploaded_file)
+        @added_result = @liferay_ws.add(@mcoc_group_id, @hud_report_folder_id, @uploaded_file_name, @uploaded_file_desc, @base64_uploaded_file)
         #update the given mcoc_renewal record with the uuid that we just generated due to the addition of the document in the doclib.
+        @added_doc_name = @added_result[:doc_name]
+        @added_primary_key = @added_result[:primary_key]
+        #call the webservice that applies specific permissions on the file (primary_ley) just added to the document library:
+        @liferay_ws_permission = LiferayPermission.new
+        @company_id = Rails.configuration.liferaycompanyid
+        @role_id = Rails.configuration.liferaymcocmonitoringcmterole
+        @name = Rails.configuration.liferaywsdldlfileentryname
+        @action_ids = ['ADD_DISCUSSION', 'UPDATE_DISCUSSION', 'VIEW']
+        @liferay_ws_permission.add_for_mcoc_user(@mcoc_group_id, @company_id, @name, @added_primary_key, @role_id, @action_ids)
+        #and lastly, update the mcoc_renewal contoller with the doc_name we got back from the ws "add" call above...
         @mcoc_renewal.update_attributes(:doc_name => @added_doc_name)
       else
         #since we most likely have an existing file already uploaded, we need to update the existing document.

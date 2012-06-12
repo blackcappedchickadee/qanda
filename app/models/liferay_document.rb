@@ -27,9 +27,11 @@ class LiferayDocument
  
       if response.success?
         #Nokogiri object is returned when calling response.doc
-        @doc_name = response.doc.css("name").inner_text
-        puts "success ------------- #{response.to_json}"
-        return @doc_name
+        @doc_name = response.doc.css("name").inner_text #we need the doc name so we can update the mcoc_renewals model table for future, possible updates.
+        #puts "success ------------- #{response.to_json}"
+        @primary_key = response.doc.css("#id5").inner_text #we need primary key for applying file permissions
+        @retval = {:doc_name => @doc_name, :primary_key => @primary_key }
+        return @retval
       end
     rescue Savon::Error => error
       Rails.logger.warn.to_s
