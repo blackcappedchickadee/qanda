@@ -9,7 +9,7 @@
 <body>
   <div id="survey-breadcrumbs-top">
    <ul>
-    <% if request.fullpath == '/surveys/list_current' %>
+    <% if request.fullpath == '/surveys/list_current' || request.fullpath == '/surveys/questionnaire_status' %>
     <%else%>
      <li><%= link_to 'Back to List', list_surveys_path %> - <%=session[:project_name]%></li>
     <%end %>
