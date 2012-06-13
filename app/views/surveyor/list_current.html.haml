@@ -29,7 +29,7 @@
                 %div.project_name
                   = link_to survey.project_name, edit_my_survey_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code) 
                 %div.project_name_links
-                  = link_to 'PDF', generate_pdf_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code)
+                  = link_to '(View as PDF)', generate_pdf_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code)
               - @working_grantee_name = survey.grantee_name
               
       - else
