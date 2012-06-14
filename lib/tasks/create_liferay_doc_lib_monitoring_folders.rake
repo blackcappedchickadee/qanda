@@ -5,8 +5,8 @@ namespace :qanda do
   
   task :create_liferay_folders => :environment do
     #4 folders that will be created for each Project in each Grantee
+    folder_data_quality_report = "Data Quality Report" #UDE Report goes in here
     folder_apr_from_hud = "APR Report from HUD"
-    folder_data_quality_report = "Data Quality Report"
     folder_monitoring_questionnaire = "Monitoring Questionnaire"
     folder_supporting_documentation = "Supporting Documentation"
     
@@ -51,23 +51,31 @@ namespace :qanda do
         #since we're going to "attach" the APR/UDE completeness Report from HUD, and the Supporting Documentation (inspection reports, etc.), and 
         #auto-attach the Monitoring Questionnaire (PDF) itself - we need to update the corresponding models once we've created the individual 
         #DocLib folders for each.
-        liferay_hud_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_apr_from_hud, "")
+        liferay_ude_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_data_quality_report, "")
         #apply permissions for the mcoc monitoring committee role
-        LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_hud_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
-        LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_data_quality_report, "") #we're not concerned with fetching the id for this case
+        LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_ude_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+        
+        liferay_apr_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_apr_from_hud, "") 
+        #apply permissions for the mcoc monitoring committee role
+        LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_apr_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+       
         liferay_monitoring_pdf_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_monitoring_questionnaire, "")
         #apply permissions for the mcoc monitoring committee role
         LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_monitoring_pdf_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+        
         liferay_supporting_doc_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_supporting_documentation, "")
         #apply permissions for the mcoc monitoring committee role
         LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_supporting_doc_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+       
         #in the mcoc_renewals model:
-        #update the mcoc_renewals.hud_report_folder_id with the liferay_hud_report_folder_id,
+        #update the mcoc_renewals.hud_report_folder_id with the liferay_ude_report_folder_id,
+        #and the mcoc_renewals.apr_report_folder_id with the liferay_apr_report_folder_id, 
         #and the mcoc_renewals.questionnaire_folder_id with the liferay_monitoring_pdf_folder_id, 
         #and the mcoc_renewals.supporting_doc_folder_id with the liferay_supporting_doc_folder_id
         renewals.update_attributes(:grantee_folder_id => liferay_grantee_folder_id, 
                   :project_folder_id => liferay_project_folder_id,
-                  :hud_report_folder_id => liferay_hud_report_folder_id, 
+                  :hud_report_folder_id => liferay_ude_report_folder_id, 
+                  :apr_report_folder_id => liferay_apr_report_folder_id,
                   :questionnaire_folder_id => liferay_monitoring_pdf_folder_id, 
                   :supporting_doc_folder_id => liferay_supporting_doc_folder_id)
         work_grantee_name = renewals.grantee_name
@@ -92,22 +100,31 @@ namespace :qanda do
           #since we're going to "attach" the APR/UDE completeness Report from HUD, and the Supporting Documentation (inspection reports, etc.), and 
           #auto-attach the Monitoring Questionnaire (PDF) itself - we need to update the corresponding models once we've created the individual 
           #DocLib folders for each.
-          liferay_hud_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_apr_from_hud, "")
+          
+          liferay_ude_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_data_quality_report, "")
           #apply permissions for the mcoc monitoring committee role
-          LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_hud_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
-          LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_data_quality_report, "") #we're not concerned with fetching the id for this case
+          LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_ude_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+
+          liferay_apr_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_apr_from_hud, "") 
+          #apply permissions for the mcoc monitoring committee role
+          LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_apr_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+
           liferay_monitoring_pdf_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_monitoring_questionnaire, "")
           #apply permissions for the mcoc monitoring committee role
           LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_monitoring_pdf_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+
           liferay_supporting_doc_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_supporting_documentation, "")
           #apply permissions for the mcoc monitoring committee role
           LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_supporting_doc_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
-          #update the mcoc_renewals.hud_report_folder_id with the liferay_hud_report_folder_id,
+          
+          #update the mcoc_renewals.hud_report_folder_id with the liferay_ude_report_folder_id,
+          #and the mcoc_renewals.apr_report_folder_id with the liferay_apr_report_folder_id, 
           #and the mcoc_renewals.questionnaire_folder_id with the liferay_monitoring_pdf_folder_id, 
           #and the mcoc_renewals.supporting_doc_folder_id with the liferay_supporting_doc_folder_id
           renewals.update_attributes(:grantee_folder_id => liferay_grantee_folder_id, 
                     :project_folder_id => liferay_project_folder_id,
-                    :hud_report_folder_id => liferay_hud_report_folder_id, 
+                    :hud_report_folder_id => liferay_ude_report_folder_id, 
+                    :apr_report_folder_id => liferay_apr_report_folder_id,
                     :questionnaire_folder_id => liferay_monitoring_pdf_folder_id, 
                     :supporting_doc_folder_id => liferay_supporting_doc_folder_id)
         else
@@ -123,22 +140,31 @@ namespace :qanda do
           #since we're going to "attach" the APR/UDE completeness Report from HUD, and the Supporting Documentation (inspection reports, etc.), and 
           #auto-attach the Monitoring Questionnaire (PDF) itself - we need to update the corresponding models once we've created the individual 
           #DocLib folders for each.
-          liferay_hud_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_apr_from_hud, "")
+          
+          liferay_ude_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_data_quality_report, "")
           #apply permissions for the mcoc monitoring committee role
-          LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_hud_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
-          LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_data_quality_report, "") #we're not concerned with fetching the id for this case
+          LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_ude_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+
+          liferay_apr_report_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_apr_from_hud, "") 
+          #apply permissions for the mcoc monitoring committee role
+          LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_apr_report_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+
           liferay_monitoring_pdf_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_monitoring_questionnaire, "")
           #apply permissions for the mcoc monitoring committee role
           LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_monitoring_pdf_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
+
           liferay_supporting_doc_folder_id = LiferayFolder.new.add(group_id, liferay_project_folder_id, folder_supporting_documentation, "")
           #apply permissions for the mcoc monitoring committee role
           LiferayPermission.new.add_for_mcoc_user(group_id, company_id, lr_folder_class_name, liferay_supporting_doc_folder_id, lr_mcoc_mon_cmte_roleid, lr_mcoc_mon_cmte_role_actionids)
-          #update the mcoc_renewals.hud_report_folder_id with the liferay_hud_report_folder_id,
+          
+          #update the mcoc_renewals.hud_report_folder_id with the liferay_ude_report_folder_id,
+          #and the mcoc_renewals.apr_report_folder_id with the liferay_apr_report_folder_id, 
           #and the mcoc_renewals.questionnaire_folder_id with the liferay_monitoring_pdf_folder_id, 
           #and the mcoc_renewals.supporting_doc_folder_id with the liferay_supporting_doc_folder_id
           renewals.update_attributes(:grantee_folder_id => liferay_grantee_folder_id, 
                     :project_folder_id => liferay_project_folder_id,
-                    :hud_report_folder_id => liferay_hud_report_folder_id, 
+                    :hud_report_folder_id => liferay_ude_report_folder_id, 
+                    :apr_report_folder_id => liferay_apr_report_folder_id,
                     :questionnaire_folder_id => liferay_monitoring_pdf_folder_id, 
                     :supporting_doc_folder_id => liferay_supporting_doc_folder_id)
         end

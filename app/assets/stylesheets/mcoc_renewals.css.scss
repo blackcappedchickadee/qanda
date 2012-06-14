@@ -27,3 +27,18 @@ body {
     padding: 5px;
 }
 
+#apr_upload_section {
+    margin: 10px 0;
+    border: 1px solid #FFF;
+    width: 420px;
+    font-size: 0.8em;
+    
+}
+#apr_upload_section input[type="submit"] {
+    background-color: #CCCCFF;
+    border: 1px solid #000;
+    cursor: pointer;
+    font-size: 0.7em;
+    padding: 5px;
+}
+

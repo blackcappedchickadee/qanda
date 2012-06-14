@@ -91,6 +91,10 @@ Qanda::Application.routes.draw do
     
     match "/surveys/:survey_code/:response_set_code/attachments/ude_report/show", :to => "mcoc_renewals#showudereport", :as => "ude_report_show", :via => :get
     
+    match "/surveys/:survey_code/:response_set_code/attachments/apr_report", :to => "mcoc_renewals#listaprreport", :as => "apr_report"
+    
+    match "/surveys/:survey_code/:response_set_code/attachments/apr_report/show", :to => "mcoc_renewals#showaprreport", :as => "apr_report_show", :via => :get
+    
     match "/surveys/:survey_code/:response_set_code/attachments/additional_doc", :to => "mcoc_assets#listadditionalassets", :as => "additional_doc"
     
     match "/surveys/:survey_code/:response_set_code/attachments/additional_doc/upload", :to => "mcoc_assets#upload", :as => "additional_doc_upload"

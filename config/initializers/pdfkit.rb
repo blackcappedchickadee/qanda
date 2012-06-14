@@ -5,6 +5,7 @@ PDFKit.configure do |config|
   #   :print_media_type => true
   # }
   config.default_options = {
+      :media         => 'all',
       :page_size     => 'Letter',
       :margin_top    => '0.5in',
       :margin_right  => '0.5in',

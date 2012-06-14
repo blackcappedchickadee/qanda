@@ -9,7 +9,7 @@ Qanda::Application.initialize!
 Qanda::Application.config.liferayserveruser = ENV['LIFERAY_SERVER_USER']
 Qanda::Application.config.liferayserverpass = ENV['LIFERAY_SERVER_USER_PASS']
 
-Qanda::Application.config.liferay2012monitoringfolderid = '18064'
+Qanda::Application.config.liferay2012monitoringfolderid = '18618'
 Qanda::Application.config.liferaycompanyid = '10132'
 Qanda::Application.config.liferaymcocgroupid = '10702'
 Qanda::Application.config.liferaymcocmonitoringcmterole = '17479'

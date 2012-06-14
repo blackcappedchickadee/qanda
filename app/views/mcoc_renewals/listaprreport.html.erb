@@ -9,26 +9,26 @@
       </ul>
     </div>
   <% end %>
-  <% if @mcoc_renewal.attachment_ude.exists? %>
-	<div id="ude_current_report" class="field">
-		<%= link_to "View UDE Completeness Report", ude_report_show_path(f), :target => "_blank" %>
-		<%= check_box_tag "clear_attachment_ude"   %>
+  <% if @mcoc_renewal.attachment_apr.exists? %>
+	<div id="apr_current_report" class="field">
+		<%= link_to "View APR Report", apr_report_show_path(f), :target => "_blank" %>
+		<%= check_box_tag "clear_attachment_apr"   %>
 		<%= f.label "Delete" %>
     </div>
   <% else %>
   <% end %>
-  <div id="ude_upload_section">
-	 <div id="ude_upload_text">
-	   <p>Instructions: Browse to your UDE Completeness Report, select the file, then click 'Upload'. 
-	    <% if @mcoc_renewal.attachment_ude.exists? %> 
+  <div id="apr_upload_section">
+	 <div id="apr_upload_text">
+	   <p>Instructions: Browse to your APR Report, select the file, then click 'Upload'. 
+	    <% if @mcoc_renewal.attachment_apr.exists? %> 
 	      Uploading a new report will overwrite the existing report.
 		<% end %>
 	 </p>
 	</div>
 	 <div class="field">
-	   <%= f.file_field :attachment_ude %>
+	   <%= f.file_field :attachment_apr %>
 	 </div>
-	<%= f.hidden_field "report_type", :value => "ude_report"%>
+	 <%= f.hidden_field "report_type", :value => "apr_report" %>
 	 <div class="actions">
 	   <%= f.submit 'Upload', :disable_with => 'Uploading ...' %>
 	 </div>

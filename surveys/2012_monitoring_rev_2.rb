@@ -87,7 +87,10 @@ survey "2012 Monitoring and Evaluation" do
   section "HUD Continuum Goals" do
       label "The next few questions are based on Continuum Coals set by HUD and subject to change once the 2012 NOFA is released.
            Please use the figures reported in your <u>most recent</u> Annual Progress Report (APR) submitted to HUD and 
-           <b>return an electronic copy of that APR</b> with your Monitoring response."
+           <b>attach an electronic copy of the APR below</b>.
+           <br/><br/>
+           <iframe id='apr_upload' name='apr_upload' src='attachments/apr_report'></iframe>
+           <br/>"
            
       q_13 "What was your Average Daily Bed Utilization reported in your most recent APR?", :custom_class => 'c_q13'
       a_13 "|%", :string
