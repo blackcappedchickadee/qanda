@@ -137,8 +137,8 @@ survey "2012 Monitoring and Evaluation" do
   section "Physical Plant" do
       label "Please indicate if any of the agencies below conduct site visits for this program. If so, please
             list the date of last inspection and status of that inspection. If there are any unresolved 
-            findings or other issues, please explain briefly how they were or will be resolved and attach
-            relevant documentation."
+            findings or other issues, please explain briefly how they were or will be resolved and upload
+            relevant documentation (at the bottom of this page)."
 
       group "Fire Marshall", :display_type => :inline do  
         q_23 "Site visit?", :custom_class => 'c_q23', :pick => :one, :display_type => :inline
@@ -232,7 +232,9 @@ survey "2012 Monitoring and Evaluation" do
         a_48_n "Fail"
       end
     
-      q_49 "Physical plant narrative (if necessary)", :custom_class => 'c_q49'
+      q_49 "Physical plant narrative (if necessary). If there are any unresolved 
+      findings or other issues, please explain briefly how they were or will be resolved and upload
+      relevant documentation.", :custom_class => 'c_q49'
       a_49 :text
       
       label "<iframe id='additional_doc_upload' name='additional_doc_upload' src='attachments/additional_doc'></iframe>"
@@ -241,31 +243,55 @@ survey "2012 Monitoring and Evaluation" do
   
   section "Finish" do
       label "Please provide the following information to complete the Monitoring and Evaluation questionnaire:"
-      label "<i>All information submitted is true and accurate to the best of my knowledge.</i>"
+      label "<i>All information submitted is true and accurate to the best of my knowledge.</i><br/>"
       
-      group "Prepared by:", :custom_class => 'c_q50', :display_type => :inline do  
-        q_50 "First Name", :display_type => :inline
-        a_50 :string
+      label "<b>Prepared By</b>", :custom_class => 'c_q50' 
+      
+      q_50 "First Name", :display_type => :inline
+      a_50 :string
 
-        q_51 "Last Name", :custom_class => 'c_q51', :display_type => :inline
-        a_51 :string
+      q_51 "Last Name", :custom_class => 'c_q51'
+      a_51 :string
+      
+      q_52 "Title", :custom_class => 'c_q52'
+      a_52 :string
+
+      label "</br>(If different from agency/program contact information):"
+      q_53 "Email Address", :custom_class => 'c_q53'
+      a_53 :string
+
+      q_54 "Phone number", :custom_class => 'c_q54'
+      a_54 :string
+ 
         
-        q_52 "Title", :custom_class => 'c_q52', :display_type => :inline
-        a_52 :string
-  
-        label "</br>(If different from agency/program contact information):"
-        q_53 "Email address", :custom_class => 'c_q53', :display_type => :inline
-        a_53 :string
-
-        q_54 "Phone number", :custom_class => 'c_q54', :display_type => :inline
-        a_54 :string
-      end
-    
-      label "[ELECTRONIC_SIGNATURE]? Legal ramifications? Do we offer a one-page downloadable PDF that is still
-      filled out to act as legal signatures on file?"
+      label "<b>Executive Director Information</b>", :custom_class => 'c_q55'
       
-      label "After review, the Monitoring Committee will contact you if they have any questions or require more information.<br/><br/>
-         Thank you, and feel free to contact {{recipient_email_address}} with any additional questions."
+      q_55 "Executive Director First Name"
+      a_55 :string
+
+      q_56 "Executive Director Last Name", :custom_class => 'c_q56'
+      a_56 :string 
+      
+      q_57 "Executive Director Email Address", :custom_class => 'c_q57'
+      a_57 :string
+ 
+      
+      label "<br/><b>Electronic Signature</b><br/>"
+   
+      q_58 "By checking this box:<br/>", :pick => :any
+      a_58 "I hereby indicate the information contained in this questionnaire is true and 
+            correct to the best of my knowledge.", :custom_class => 'c_q58'
+            
+      label "<br/>"
+    
+      q_59 "By typing my name in the following space, I certify that I am authorized to submit this questionnaire. I further
+            certify that this questionnaire is submitted with full knowledge and consent of my agency's Executive Director or other 
+            governing body.<br/><br/>", :custom_class => 'c_q59'
+      a_59 :string
+      
+      label "<br/>After review, the Monitoring Committee will review your completed questionnaire. The Monitoring Committee may 
+             contact you if they have any questions or require more information.<br/><br/>
+             Thank you, and feel free to contact {{recipient_email_address}} with any additional questions."
 
   end
   

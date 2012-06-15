@@ -1,5 +1,5 @@
 <%= form_for @mcoc_renewal, :url => { :action => 'upload' }, :html => { :multipart => true, :name => 'mcoc_addnl_assets' }, :remote => true do |f| %>
-     <p>If you have any relevant and supporting documentation, please attach by browsing to the file, then click 'Attach Supporting Documentation'.</p>
+     <p>If you have any relevant and supporting documentation, please attach by browsing to the file, then click 'Upload'.</p>
      <%= f.fields_for :mcoc_assets do |attachment| %>
         
            <% if attachment.object.new_record? %>
@@ -26,7 +26,7 @@
    <% end %>
    <div id="attach_support_doc">
 	 <div class="actions">
-	   <%= f.submit 'Attach Supporting Documentation', :disable_with => 'Uploading ...' %>
+	   <%= f.submit 'Upload', :disable_with => 'Uploading ...' %>
 	 </div>
    </div>
 
