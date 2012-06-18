@@ -1,5 +1,122 @@
 class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :response_html, :grantee_name, :project_name, :doc_name )
   
+  require "prawn"
+  
+  def test_pdf
+    Prawn::Document.generate("zzzzzz-hello.pdf") do
+      #text "Hello World!"
+      #first section - Agency Information
+      font_size 16
+      text "2012 Monitoring and Evaluation", :style => :bold 
+      move_down 10
+      font_size 14
+      text "Agency Information", :style => :bold 
+      font_size 10
+      move_down 10
+      text "Instructions:", :style => :bold 
+      text "Please complete this form if your agency intends to apply for Renewal McKinney Vento Funding through the Maine Continuum of Care in 2012. If you do not intend to apply for renewal funding, please let us know. All forms and appropriate attachments must be received electronically by Scott Tibbitts no later than July 15, 2012. Please direct all questions to: stibbitts@mainehousing.org. A separate form must be completed for EACH program/project seeking renewal."
+      move_down 10
+      text "Agency Name", :style => :bold 
+      text ":agency_name"
+      move_down 5
+      text "Program Name", :style => :bold 
+      text ":program_name"
+      move_down 5
+      text "Project Address(es)", :style => :bold 
+      text ":project_addresses"
+      move_down 5
+      text "Contact Person", :style => :bold 
+      text ":contact_person"
+      move_down 5
+      text "Phone Number", :style => :bold 
+      text ":contact_phone_number"
+      move_down 5
+      text "E-mail Address", :style => :bold 
+      text ":contact_email_address"
+      
+      
+      start_new_page
+      font_size 14
+      text "Program Information", :style => :bold 
+      font_size 10
+      move_down 10
+      text "Please answer the following questions in regard to the program during the Operating Year covered by your most recently submitted HUD APR:"
+      move_down 10
+      text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
+      text ":program_summary"
+      move_down 5
+      text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
+      text ":program_self_suff"
+      move_down 5
+      text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
+      text ":program_verify"
+      move_down 5
+      text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
+      text ":program_percentage"
+      
+      start_new_page
+      font_size 14
+      text "HMIS Participation", :style => :bold 
+      font_size 10
+      move_down 10
+      text "Is your project participating in the Maine HMIS (Homeless Management Information System)?"
+      text ":hmis_participation"
+      move_down 10
+      text ":hmis_ude_completeness_report_attached"
+      move_down 10 
+      text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
+      text ":hmis_ude_grade"
+      move_down 10
+      text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
+      text ":hmis_dkr_grade"
+      
+      start_new_page
+      font_size 14
+      text "Families or Youth", :style => :bold 
+      font_size 10
+      move_down 10
+      text "Does your project work with Families or Youth?"
+      text ":fam_participation"
+      move_down 10
+      text "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?"
+      text ":fam_policy_in_place"
+      move_down 10
+      text "Since you have indicated 'No or Not Applicable' to the prior question, please explain."
+      text ":fam_no_policy"
+      
+      start_new_page
+      font_size 14
+      text "HUD Continuum Goals", :style => :bold 
+      font_size 10
+      move_down 10
+      
+      start_new_page
+      font_size 14
+      text "Physical Plant", :style => :bold 
+      font_size 10
+      move_down 10
+      
+      start_new_page
+      font_size 14
+      text "Finish", :style => :bold 
+      font_size 10
+      move_down 10
+      
+      
+      
+      pgnum_string = "Page <page> of <total>  :grantee_name - :project_name" 
+      
+      options = { :at => [bounds.right - 700, 0],
+                    :width => 700,
+                    :align => :right,
+                    :size => 9,
+                    :start_count_at => 1,
+                    :color => "999999" }
+      number_pages pgnum_string, options
+      
+      
+    end
+  end
 
   def create_and_put_pdf
 

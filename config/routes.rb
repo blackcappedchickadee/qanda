@@ -81,6 +81,8 @@ Qanda::Application.routes.draw do
     match "/surveys/questionnaire_status", :to => "surveyor#list_instanced_questionnaire_status", :as => "questionnaire_status", :via => :get
     
     match "/surveys/:survey_code/:response_set_code.pdf", :to => "surveyor#export", :as => "generate_pdf", :via => :get
+    match "/surveys/:survey_code/get_pdf/:response_set_code", :to => "surveyor#generate_pdf", :as => "get_info", :via => :get
+    match "/surveys/:survey_code/get_pdf/:response_set_code.pdf", :to => "surveyor#generate_pdf", :as => "get_pdf", :via => :get
     
     match "/asset_ude/:renewals_id", :to => "asset_ude#index", :as => "asset_ude", :via => :get
     match "/asset_ude/:renewals_id/new", :to => "asset_ude#new", :as =>"asset_ude_new", :via => :post

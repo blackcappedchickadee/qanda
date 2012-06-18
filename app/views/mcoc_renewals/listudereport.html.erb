@@ -30,7 +30,13 @@
 	 </div>
 	<%= f.hidden_field "report_type", :value => "ude_report"%>
 	 <div class="actions">
+	   <%= submit_tag "Upload", :type => 'button', :id => 'ude_attach_report' %>
 	   <%= f.submit 'Upload', :disable_with => 'Uploading ...' %>
 	 </div>
   </div>
 <% end %>
+
+<div id="loading_ude" style="display:none;">
+	<img src="/assets/ajax-loader.gif" alt="Loading...">
+</div>
+

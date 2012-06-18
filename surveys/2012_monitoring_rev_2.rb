@@ -15,7 +15,7 @@ survey "2012 Monitoring and Evaluation" do
       # :data_export_identifier # data export
       # :common_namespace       # maping to a common vocab
       # :common_identifier      # maping to a common vocab
-      q_1 "Agency Information", :custom_class => 'c_q1', :reference_identifier => "agency_info", :data_export_identifier => "agency_info", :common_namespace => "Agency Information", :common_identifier => "Agency Information"
+      q_1 "Agency Information", :custom_class => 'c_q1', :reference_identifier => "ref_agency_info", :data_export_identifier => "data_agency_info", :common_namespace => "Agency Information", :common_identifier => "Agency Information"
       a_1 "Agency Name", :string
       a_1 "Program Name", :string
       a_1 "Project Address(es)", :text
@@ -28,9 +28,12 @@ survey "2012 Monitoring and Evaluation" do
       label "<b>Please answer the following questions in regard to the program during the Operating Year 
       covered by your most recently submitted HUD APR:</b><br/>"
       q_2 "Please provide a brief program summary. Include information about the type of program, population  
-      served, and the specific services or operations for which the McKinney-Vento funding was used", :custom_class => 'c_q2', :reference_identifier => "program_info", :data_export_identifier => "program_info", :common_namespace => "Program Information", :common_identifier => "Program Information"
+      served, and the specific services or operations for which the McKinney-Vento funding was used", :custom_class => 'c_q2', :reference_identifier => "ref_program_info", :data_export_identifier => "data_program_info", :common_namespace => "Program Information", :common_identifier => "Program Information"
       a_2 :text
-      q_3 "Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)", :custom_class => 'c_q3', :reference_identifier => "self_suff", :data_export_identifier => "self_suff", :common_namespace => "Self Sufficiency", :common_identifier => "Self Sufficiency"
+      q_3 "Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their 
+         ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)", :custom_class => 'c_q3', 
+         :reference_identifier => "ref_self_suff", :data_export_identifier => "self_suff", :common_namespace => "Self Sufficiency", 
+         :common_identifier => "Self Sufficiency"
       a_3 :text
       q_4 "Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process.", :custom_class => 'c_q4', :reference_identifier => "program_verif_proc", :data_export_identifier => "program_verif_proc", :common_namespace => "Program Verification Process", :common_identifier => "Program Verification Process"
       a_4 :text
@@ -85,7 +88,7 @@ survey "2012 Monitoring and Evaluation" do
   end #section Families or Youth
   
   section "HUD Continuum Goals" do
-      label "The next few questions are based on Continuum Coals set by HUD and subject to change once the 2012 NOFA is released.
+      label "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released.
            Please use the figures reported in your <u>most recent</u> Annual Progress Report (APR) submitted to HUD and 
            <b>attach an electronic copy of the APR below</b>.
            <br/><br/>

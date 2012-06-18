@@ -74,4 +74,9 @@ gem 'delayed_job_active_record'
 #to run enqueued jobs
 gem 'daemons'
 
+#using prawn for an alternative layout for generated PDFs of completed questionnaires (questions as well as answers)
+#(as opposed to using webkit based PDF renderers such as pdfkit)
+gem 'prawn'
+
+
 
