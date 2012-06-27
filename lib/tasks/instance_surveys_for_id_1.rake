@@ -9,7 +9,7 @@ namespace :qanda do
     puts "Instancing survey #{survey_access_code}..."
   
     ext_user_id = 10404
-    user_renewals = [21,22,23,24,25,26,27,28,29]
+    user_renewals = [23,24,25,26,27,28,29,30,31,32]
     user_session = McocExtappSessions.where(:external_user_id => ext_user_id, :is_active => true)
     puts "located user_session = #{user_session.first.external_user_id}"
     survey = Survey.find_by_access_code(survey_access_code)

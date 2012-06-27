@@ -25,12 +25,14 @@ module SurveyorControllerCustomMethods
     @response_set = ResponseSet.find_by_access_code(@response_set_code)
     @response_set_id = @response_set.id
     @mcoc_user_renewals = McocUserRenewals.where(:response_set_id => @response_set_id)
-    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewals_id
-    session[:mcoc_renewals_id] = @mcoc_renewals_id
-    @mcoc_renewal = McocRenewals.find_by_id(@mcoc_renewals_id)
-    session[:project_name] = @mcoc_renewal.project_name
-    session[:grantee_name] = @mcoc_renewal.grantee_name
-    session[:response_set_code] = @response_set_code
+    if (@mcoc_user_renewals.first != nil)
+      @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewals_id
+      session[:mcoc_renewals_id] = @mcoc_renewals_id
+      @mcoc_renewal = McocRenewals.find_by_id(@mcoc_renewals_id)
+      session[:project_name] = @mcoc_renewal.project_name
+      session[:grantee_name] = @mcoc_renewal.grantee_name
+      session[:response_set_code] = @response_set_code
+    end
   end
   def update
           saved = false

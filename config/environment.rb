@@ -9,10 +9,10 @@ Qanda::Application.initialize!
 Qanda::Application.config.liferayserveruser = ENV['LIFERAY_SERVER_USER']
 Qanda::Application.config.liferayserverpass = ENV['LIFERAY_SERVER_USER_PASS']
 
-Qanda::Application.config.liferay2012monitoringfolderid = '18618'
+Qanda::Application.config.liferay2012monitoringfolderid = '13902'
 Qanda::Application.config.liferaycompanyid = '10132'
 Qanda::Application.config.liferaymcocgroupid = '10702'
-Qanda::Application.config.liferaymcocmonitoringcmterole = '17479'
+Qanda::Application.config.liferaymcocmonitoringcmterole = '13903' # '17479'
 Qanda::Application.config.liferaymcocmonitoringcmteroleactionids = ['ACCESS', 'VIEW']
 Qanda::Application.config.liferaymcocmonitoringcmteroleactionidsfile = ['ADD_DISCUSSION', 'UPDATE_DISCUSSION', 'VIEW']
 Qanda::Application.config.liferayserverprotocol = 'http://'
