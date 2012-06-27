@@ -32,6 +32,10 @@ module SurveyorControllerCustomMethods
       session[:project_name] = @mcoc_renewal.project_name
       session[:grantee_name] = @mcoc_renewal.grantee_name
       session[:response_set_code] = @response_set_code
+      
+      prepopulate_program_name
+      
+      
     end
   end
   def update
@@ -170,12 +174,16 @@ module SurveyorControllerCustomMethods
   
   
   def render_context
+    
     #since we may have mustaches in place: {{recipient_name}}
     @mcoc_constants_1 = McocConstants.where(:mcoc_constant_name => 'recipient_name')
     @mcoc_constants_2 = McocConstants.where(:mcoc_constant_name => 'deadline_date')
     @mcoc_constants_3 = McocConstants.where(:mcoc_constant_name => 'recipient_email_address')
     
     MustacheContext.new(@mcoc_constants_3.first.mcoc_constant_value, @mcoc_constants_1.first.mcoc_constant_value, @mcoc_constants_2.first.mcoc_constant_value )
+  
+    
+  
   end
   
   
@@ -199,6 +207,68 @@ module SurveyorControllerCustomMethods
   end
   
   private
+  
+    def prepopulate_program_name
+      puts "In prepopulate_program_name... start"
+      @tmp_response_set_code = session[:response_set_code]
+      #puts "@tmp_response_set_code = #{@tmp_response_set_code}..."
+      @response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+      if @response_set
+        @survey = @response_set.survey
+        @tmp_survey_id = @survey.id
+        @tmp_response_set_id = @response_set.id
+        #puts "@tmp_survey_id = #{@tmp_survey_id}"
+        @agency_info_export_identifier = 'agency_information'
+        #only do this if we are in the relevant (agency information) section...
+        @current_survey_section = params[:section]
+        puts "current survey section --->#{@current_survey_section}<----"
+        @survey_section_agency_info = SurveySection.find_by_survey_id_and_data_export_identifier(@tmp_survey_id, @agency_info_export_identifier)
+        if @survey_section_agency_info 
+          #only enter into the core logic if we're dealing with the relevant survey section
+          
+          
+          
+          if (@current_survey_section.to_s == @survey_section_agency_info.id.to_s) || (@current_survey_section.nil?)
+            @tmp_survey_section_agency_info_id = @survey_section_agency_info.id
+            #puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
+            @question_data_export_identifier = 'data_agency_info'
+            @question = Question.find_by_survey_section_id_and_data_export_identifier(@tmp_survey_section_agency_info_id, @question_data_export_identifier)
+            if @question
+              @tmp_question_id = @question.id
+              #puts "@tmp_question_id = #{@tmp_question_id}"
+              @answer_data_export_identifier = 'program_name'
+              @answer = Answer.find_by_question_id_and_data_export_identifier(@tmp_question_id, @answer_data_export_identifier)
+              @tmp_answer_id = @answer.id
+              #puts "@tmp_answer_id = #{@tmp_answer_id}"
+              
+              @response_for_program_name = Response.find_by_question_id_and_answer_id(@tmp_question_id, @tmp_answer_id)
+              if @response_for_program_name
+                puts "response found for program name, do we have a text value?"
+                if @response_for_program_name.string_value != nil
+                  puts "... found existing value #{@response_for_program_name.string_value} for program name"
+                else
+                  puts "program name is not nil but there was a nil string_value "
+                end
+              else
+                @tmp_project_name = session[:project_name]
+                puts "program name is nil -- this is where we will create a response with #{session[:project_name]} as the project name..."
+                # @finished_survey = FinishedSurvey.create({:url => full_doclib_url, :grantee_name => grantee_name, :project_name => project_name})
+                @response_for_program_name = Response.create({:response_set_id => @tmp_response_set_id, :question_id => @tmp_question_id, 
+                          :answer_id => @tmp_answer_id, :string_value => @tmp_project_name})
+                puts "completed the save..."
+                
+                
+              end
+            end
+          end
+        end
+        
+      end
+      
+      puts "In prepopulate_program_name... end"
+    end
+  
+  
     def put_completed_survey_pdf_to_doclib
       @tmp_mcoc_renewal_id = session[:mcoc_renewals_id]
       @tmp_response_set_code = session[:response_set_code]
