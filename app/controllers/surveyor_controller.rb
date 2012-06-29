@@ -73,19 +73,25 @@ module SurveyorControllerCustomMethods
   end
   def generate_pdf
     puts "in generate_pdf..."
-    @tmp_mcoc_renewal_id = session[:mcoc_renewals_id]
+ 
     @tmp_response_set_code = session[:response_set_code]
-    @tmp_grantee_name = session[:grantee_name]
-    @tmp_project_name = session[:project_name]
+    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+    @tmp_response_set_id = @tmp_response_set.id
+    @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
+    @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
     
     @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
+    @tmp_grantee_name = @mcoc_renewal.grantee_name
+    @tmp_project_name = @mcoc_renewal.project_name
+    
+    
     @tmp_doc_name = @mcoc_renewal.questionnaire_doc_name
     if @tmp_doc_name.blank? 
       @questionnaire_doc_name = 0
     else
       @questionnaire_doc_name = @tmp_doc_name
     end
-    puts "======= doc_name of completed survey pdf is -- #{@questionnaire_doc_name}"
+    #puts "======= doc_name of completed survey pdf is -- #{@questionnaire_doc_name}"
     
 
     @tmp_pdf_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code, :include => {:responses => [:question, :answer]})
@@ -93,13 +99,14 @@ module SurveyorControllerCustomMethods
     
     #iterate through responses
     @tmp_pdf_response_set_responses.each do |response|
-      puts "answer_id = #{response.answer_id}, question_id = #{response.question_id}"
+      #puts "answer_id = #{response.answer_id}, question_id = #{response.question_id}, response_id = #{response.id}"
       @question = response.question
-      puts "question info = #{@question.survey_section_id} - #{@question.text} "
+      #puts "question info = #{@question.survey_section_id} - #{@question.text} "
     end
-    @test_pdf = CreateAndSendPdfJob.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, "html", @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
-    
-    @test_pdf.test_pdf
+    #puts "tmp_pdf_response_set_responses.json = #{@tmp_pdf_response_set_responses.to_json}" 
+    @test_pdf = CreateAndSendPdfJob.new
+    #puts "before calling test_pdf..."
+    @test_pdf.test_pdf(@tmp_mcoc_renewal_id, @tmp_response_set_code, "html", @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
     
     #puts @tmp_pdf_response_set_responses.to_json
     #@tmp_hash_obj = @tmp_pdf_response_set_responses.to_json

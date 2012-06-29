@@ -1,8 +1,28 @@
-class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :response_html, :grantee_name, :project_name, :doc_name )
+class CreateAndSendPdfJob
   
   require "prawn"
   
-  def test_pdf
+  def test_pdf(mcoc_renewal_id, response_set_code, response_html, grantee_name, project_name, doc_name)
+    @grantee_name = grantee_name
+    @project_name = project_name
+    response_set = ResponseSet.find_by_access_code(response_set_code)
+    response_set_id = response_set.id
+    survey_id = response_set.survey_id
+    survey_section_agency_information = SurveySection.find_by_data_export_identifier_and_survey_id("agency_information", survey_id)
+    survey_section_program_information = SurveySection.find_by_data_export_identifier_and_survey_id("program_information", survey_id)
+    survey_section_hmis_information = SurveySection.find_by_data_export_identifier_and_survey_id("hmis_participation", survey_id)
+    survey_section_families_youth = SurveySection.find_by_data_export_identifier_and_survey_id("families_youth", survey_id)
+    survey_section_hud_continuum_goals = SurveySection.find_by_data_export_identifier_and_survey_id("hud_continuum_goals", survey_id)
+    survey_section_physical_plant = SurveySection.find_by_data_export_identifier_and_survey_id("physical_plant", survey_id)
+    survey_section_finish = SurveySection.find_by_data_export_identifier_and_survey_id("finish", survey_id)
+ 
+    agency_name = get_agency_information_response("agency_name", response_set_id, survey_section_agency_information)
+    program_name = get_agency_information_response("program_name", response_set_id, survey_section_agency_information)
+    project_address = get_agency_information_response("project_address", response_set_id, survey_section_agency_information)
+    contact_person = get_agency_information_response("contact_person", response_set_id, survey_section_agency_information)
+    phone_number = get_agency_information_response("phone_number", response_set_id, survey_section_agency_information)
+    e_mail_address = get_agency_information_response("e_mail_address", response_set_id, survey_section_agency_information)
+  
     Prawn::Document.generate("zzzzzz-hello.pdf") do
       #text "Hello World!"
       #first section - Agency Information
@@ -17,22 +37,22 @@ class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :re
       text "Please complete this form if your agency intends to apply for Renewal McKinney Vento Funding through the Maine Continuum of Care in 2012. If you do not intend to apply for renewal funding, please let us know. All forms and appropriate attachments must be received electronically by Scott Tibbitts no later than July 15, 2012. Please direct all questions to: stibbitts@mainehousing.org. A separate form must be completed for EACH program/project seeking renewal."
       move_down 10
       text "Agency Name", :style => :bold 
-      text ":agency_name"
+      text "#{agency_name}"
       move_down 5
       text "Program Name", :style => :bold 
-      text ":program_name"
+      text "#{program_name}"
       move_down 5
       text "Project Address(es)", :style => :bold 
-      text ":project_addresses"
+      text "#{project_address}"
       move_down 5
       text "Contact Person", :style => :bold 
-      text ":contact_person"
+      text "#{contact_person}"
       move_down 5
       text "Phone Number", :style => :bold 
-      text ":contact_phone_number"
+      text "#{phone_number}"
       move_down 5
       text "E-mail Address", :style => :bold 
-      text ":contact_email_address"
+      text "#{e_mail_address}"
       
       
       start_new_page
@@ -104,7 +124,7 @@ class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :re
       
       
       
-      pgnum_string = "Page <page> of <total>  :grantee_name - :project_name" 
+      pgnum_string = "Page <page> of <total>  #{grantee_name} - #{project_name}" 
       
       options = { :at => [bounds.right - 700, 0],
                     :width => 700,
@@ -180,6 +200,33 @@ class CreateAndSendPdfJob < Struct.new(:mcoc_renewal_id, :response_set_code, :re
   end
   handle_asynchronously :create_and_put_pdf, :queue => 'completedsurveys'
   
+  private
   
+  def get_response_with_only_one_value(data_export_identifier, response_set_id)
+    tmp_question = Question.find_by_data_export_identifier(data_export_identifier)
+    tmp_question_id = tmp_question.id
+    tmp_answer = Answer.find_by_question_id
+    tmp_answer_response_class = tmp_answer.response_class
+    
+  end
+  
+  #this will be called when we want to get multiple answers with one question - such as question 1 - agency information
+  def get_agency_information_response(data_export_identifier, response_set_id, survey_section_id)
+    tmp_question = Question.find_by_data_export_identifier_and_survey_section_id("data_agency_info", survey_section_id)
+    tmp_question_id = tmp_question.id
+    tmp_answer = Answer.find_by_question_id_and_data_export_identifier(tmp_question_id, data_export_identifier)
+    tmp_answer_response_class = tmp_answer.response_class
+    tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.id, response_set_id)
+    @retval = ""
+    case tmp_answer_response_class
+      when "string"
+        @retval = tmp_response.string_value
+      when "text"
+        @retval = tmp_response.text_value
+      when "answer" #todo!
+    end
+    return @retval
+    
+  end
   
 end
