@@ -16,13 +16,20 @@ class CreateAndSendPdfJob
     survey_section_physical_plant = SurveySection.find_by_data_export_identifier_and_survey_id("physical_plant", survey_id)
     survey_section_finish = SurveySection.find_by_data_export_identifier_and_survey_id("finish", survey_id)
  
+    #page 1 values 
     agency_name = get_agency_information_response("agency_name", response_set_id, survey_section_agency_information)
     program_name = get_agency_information_response("program_name", response_set_id, survey_section_agency_information)
     project_address = get_agency_information_response("project_address", response_set_id, survey_section_agency_information)
     contact_person = get_agency_information_response("contact_person", response_set_id, survey_section_agency_information)
     phone_number = get_agency_information_response("phone_number", response_set_id, survey_section_agency_information)
     e_mail_address = get_agency_information_response("e_mail_address", response_set_id, survey_section_agency_information)
-  
+    
+    #page 2 values
+    data_program_info = get_response_with_only_one_value("data_program_info", response_set_id, survey_section_program_information)
+    self_suff = get_response_with_only_one_value("self_suff", response_set_id, survey_section_program_information)
+    program_verif_proc = get_response_with_only_one_value("program_verif_proc", response_set_id, survey_section_program_information)
+    program_renewal_budget_pct = get_response_with_only_one_value("program_renewal_budget_pct", response_set_id, survey_section_program_information)
+
     Prawn::Document.generate("zzzzzz-hello.pdf") do
       #text "Hello World!"
       #first section - Agency Information
@@ -63,16 +70,19 @@ class CreateAndSendPdfJob
       text "Please answer the following questions in regard to the program during the Operating Year covered by your most recently submitted HUD APR:"
       move_down 10
       text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
-      text ":program_summary"
       move_down 5
+      text "#{data_program_info}"
+      move_down 10
       text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
-      text ":program_self_suff"
       move_down 5
+      text "#{self_suff}"
+      move_down 10
       text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
-      text ":program_verify"
       move_down 5
+      text "#{program_verif_proc}"
+      move_down 10
       text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
-      text ":program_percentage"
+      text "#{program_renewal_budget_pct}"
       
       start_new_page
       font_size 14
@@ -202,11 +212,22 @@ class CreateAndSendPdfJob
   
   private
   
-  def get_response_with_only_one_value(data_export_identifier, response_set_id)
-    tmp_question = Question.find_by_data_export_identifier(data_export_identifier)
+  def get_response_with_only_one_value(data_export_identifier, response_set_id, survey_section_id)
+    tmp_question = Question.find_by_data_export_identifier_and_survey_section_id(data_export_identifier, survey_section_id)
     tmp_question_id = tmp_question.id
-    tmp_answer = Answer.find_by_question_id
+    puts "testing tmp_question_id = #{tmp_question_id}"
+    tmp_answer = Answer.find_by_question_id(tmp_question_id)
     tmp_answer_response_class = tmp_answer.response_class
+    tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.id, response_set_id)
+    @retval = ""
+    case tmp_answer_response_class
+      when "string"
+        @retval = tmp_response.string_value
+      when "text"
+        @retval = tmp_response.text_value
+      when "answer" #todo!
+    end
+    return @retval
     
   end
   
