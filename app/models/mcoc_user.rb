@@ -1,4 +1,4 @@
-class McocUsers < ActiveRecord::Base
+class McocUser < ActiveRecord::Base
   
    attr_accessible :id, :external_user_id
   

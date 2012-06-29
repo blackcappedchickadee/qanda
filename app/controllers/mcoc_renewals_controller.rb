@@ -2,15 +2,15 @@ class McocRenewalsController < ApplicationController
   before_filter :authenticate_user! #authenticate for users before any methods is called
 
   def index
-    @mcoc_renewals = McocRenewals.all
+    @mcoc_renewals = McocRenewal.all
   end
 
   def new
-    @mcoc_renewals = McocRenewals.new
+    @mcoc_renewals = McocRenewal.new
   end
 
   def create
-    @mcoc_renewals = McocRenewals.new(params[:mcoc_renewals])
+    @mcoc_renewals = McocRenewal.new(params[:mcoc_renewals])
     if @mcoc_renewals.save
       redirect_to mcoc_renewals_url, :notice => "Successfully created mcoc renewals."
     else
@@ -19,11 +19,11 @@ class McocRenewalsController < ApplicationController
   end
 
   def edit
-    @mcoc_renewals = McocRenewals.find(params[:id])
+    @mcoc_renewals = McocRenewal.find(params[:id])
   end
 
   def update
-    @mcoc_renewal = McocRenewals.find(params[:id])
+    @mcoc_renewal = McocRenewal.find(params[:id])
     
     @mcoc_group_id = Rails.configuration.liferaymcocgroupid
     @hud_report_folder_id = @mcoc_renewal.hud_report_folder_id
@@ -52,17 +52,17 @@ class McocRenewalsController < ApplicationController
          session[:return_to] = nil
       else
       
-        @tmp_report_type = params[:mcoc_renewals][:report_type]
+        @tmp_report_type = params[:mcoc_renewal][:report_type]
         
         if @tmp_report_type == "ude_report"
-          @uploaded_file = params[:mcoc_renewals][:attachment_ude].tempfile
-          @uploaded_file_name_extension = params[:mcoc_renewals][:attachment_ude].original_filename.split('.').last
+          @uploaded_file = params[:mcoc_renewal][:attachment_ude].tempfile
+          @uploaded_file_name_extension = params[:mcoc_renewal][:attachment_ude].original_filename.split('.').last
           @uploaded_file_name = "UDE Completeness Report - #{session[:project_name]}.#{@uploaded_file_name_extension}"
           @external_doclib_folder_id = @hud_report_folder_id
           @external_doc_name = @doc_name
         else
-          @uploaded_file = params[:mcoc_renewals][:attachment_apr].tempfile
-          @uploaded_file_name_extension = params[:mcoc_renewals][:attachment_apr].original_filename.split('.').last
+          @uploaded_file = params[:mcoc_renewal][:attachment_apr].tempfile
+          @uploaded_file_name_extension = params[:mcoc_renewal][:attachment_apr].original_filename.split('.').last
           @uploaded_file_name = "APR Report - #{session[:project_name]}.#{@uploaded_file_name_extension}"
           @external_doclib_folder_id = @apr_report_folder_id
           @external_doc_name = @apr_report_doc_name
@@ -102,7 +102,7 @@ class McocRenewalsController < ApplicationController
           end
         end
       
-        if @mcoc_renewal.update_attributes(params[:mcoc_renewals])
+        if @mcoc_renewal.update_attributes(params[:mcoc_renewal])
           redirect_to(session[:return_to] || default)
           session[:return_to] = nil
         end
@@ -116,9 +116,9 @@ class McocRenewalsController < ApplicationController
     @response_set_code = params[:response_set_code]
     @response_set = ResponseSet.find_by_access_code(@response_set_code)
     @response_set_id = @response_set.id
-    @mcoc_user_renewals = McocUserRenewals.where(:response_set_id => @response_set_id)
-    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewals_id
-    @mcoc_renewal = McocRenewals.find_by_id(@mcoc_renewals_id)
+    @mcoc_user_renewals = McocUserRenewal.where(:response_set_id => @response_set_id)
+    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewal_id
+    @mcoc_renewal = McocRenewal.find_by_id(@mcoc_renewals_id)
     session[:mcoc_renewals_id] = @mcoc_renewal.id
     session[:return_to] = request.fullpath
     respond_to do |format|
@@ -131,9 +131,9 @@ class McocRenewalsController < ApplicationController
     @response_set_code = params[:response_set_code]
     @response_set = ResponseSet.find_by_access_code(@response_set_code)
     @response_set_id = @response_set.id
-    @mcoc_user_renewals = McocUserRenewals.where(:response_set_id => @response_set_id)
-    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewals_id
-    @mcoc_renewal = McocRenewals.find_by_id(@mcoc_renewals_id)
+    @mcoc_user_renewals = McocUserRenewal.where(:response_set_id => @response_set_id)
+    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewal_id
+    @mcoc_renewal = McocRenewal.find_by_id(@mcoc_renewals_id)
     session[:mcoc_renewals_id] = @mcoc_renewal.id
     session[:return_to] = request.fullpath
     respond_to do |format|
@@ -145,12 +145,12 @@ class McocRenewalsController < ApplicationController
   
   def showudereport
     @tmp_mcoc_renewal_id = session[:mcoc_renewals_id]
-    @mcoc_renewal = McocRenewals.find(@tmp_mcoc_renewal_id)
+    @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
     send_file @mcoc_renewal.attachment_ude.path, :type => @mcoc_renewal.attachment_ude_content_type, :disposition => 'inline' 
   end
   def showaprreport
     @tmp_mcoc_renewal_id = session[:mcoc_renewals_id]
-    @mcoc_renewal = McocRenewals.find(@tmp_mcoc_renewal_id)
+    @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
     send_file @mcoc_renewal.attachment_apr.path, :type => @mcoc_renewal.attachment_apr_content_type, :disposition => 'inline' 
   end
 

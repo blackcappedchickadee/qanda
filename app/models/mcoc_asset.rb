@@ -7,8 +7,8 @@ class McocAsset < ActiveRecord::Base
   after_save :send_to_doclib
   
   has_attached_file :supporting_doc,
-                :url => "/additional_documentation/:mcoc_grantee_name/:mcoc_project_name/:basename.:extension",    
-                :path => ":rails_root/2012_Renewals_Assets/additional_documentation/:mcoc_grantee_name/:mcoc_project_name/:basename.:extension"
+                :url => "/additional_documentation/:id/:basename.:extension",    
+                :path => ":rails_root/2012_Renewals_Assets/additional_documentation/:id/:basename.:extension"
   
 
       

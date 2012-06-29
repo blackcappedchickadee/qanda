@@ -1,5 +1,6 @@
 <%= form_for @mcoc_renewal, :url => { :action => 'upload' }, :html => { :multipart => true, :name => 'mcoc_addnl_assets' }, :remote => true do |f| %>
      <p>If you have any relevant and supporting documentation, please attach by browsing to the file, then click 'Upload'.</p>
+
      <%= f.fields_for :mcoc_assets do |attachment| %>
         
            <% if attachment.object.new_record? %>

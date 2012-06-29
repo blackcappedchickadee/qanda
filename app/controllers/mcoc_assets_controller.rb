@@ -5,11 +5,9 @@ class McocAssetsController < ApplicationController
     @response_set_code = params[:response_set_code]
     @response_set = ResponseSet.find_by_access_code(@response_set_code)
     @response_set_id = @response_set.id
-    @mcoc_user_renewals = McocUserRenewals.where(:response_set_id => @response_set_id)
-    puts @mcoc_user_renewals.to_json
-    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewals_id
-    #puts "mcoc_renewals_id = #{@mcoc_renewals_id}"
-    @mcoc_renewal = McocRenewals.find_by_id(@mcoc_renewals_id)
+    @mcoc_user_renewals = McocUserRenewal.where(:response_set_id => @response_set_id)
+    @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewal_id
+    @mcoc_renewal = McocRenewal.find_by_id(@mcoc_renewals_id)
     session[:mcoc_renewals_id] = @mcoc_renewal.id
     session[:return_to] = request.fullpath
     
@@ -24,14 +22,13 @@ class McocAssetsController < ApplicationController
   def show
     @tmp_mcoc_asset_id = params[:mcoc_asset_id]
     @mcoc_asset = McocAsset.find(@tmp_mcoc_asset_id)
-    puts @mcoc_asset.to_json
     send_file @mcoc_asset.supporting_doc.path, :type => @mcoc_asset.supporting_doc_content_type, :disposition => 'inline'  
   end
   
   def upload
     @handle_delete_additional_attachment = params[:handle_delete_additional_attachment]
     @mcoc_renewal_id = session[:mcoc_renewals_id]
-    @mcoc_renewal = McocRenewals.find(@mcoc_renewal_id)
+    @mcoc_renewal = McocRenewal.find(@mcoc_renewal_id)
     @supporting_doc_folder_id = @mcoc_renewal.supporting_doc_folder_id
     session[:supporting_doc_folder_id] = @supporting_doc_folder_id
     if @handle_delete_additional_attachment == "Y"
@@ -46,7 +43,7 @@ class McocAssetsController < ApplicationController
         end
       end
     else
-      if (@mcoc_renewal.update_attributes(params[:mcoc_renewals]))
+      if (@mcoc_renewal.update_attributes(params[:mcoc_renewal]))
         redirect_to(session[:return_to] || default)
         session[:return_to] = nil
       end

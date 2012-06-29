@@ -24,11 +24,11 @@ module SurveyorControllerCustomMethods
     @response_set_code = params[:response_set_code]
     @response_set = ResponseSet.find_by_access_code(@response_set_code)
     @response_set_id = @response_set.id
-    @mcoc_user_renewals = McocUserRenewals.where(:response_set_id => @response_set_id)
+    @mcoc_user_renewals = McocUserRenewal.where(:response_set_id => @response_set_id)
     if (@mcoc_user_renewals.first != nil)
-      @mcoc_renewals_id = @mcoc_user_renewals.first.mcoc_renewals_id
+      @mcoc_renewal_id = @mcoc_user_renewals.first.mcoc_renewal_id
       session[:mcoc_renewals_id] = @mcoc_renewals_id
-      @mcoc_renewal = McocRenewals.find_by_id(@mcoc_renewals_id)
+      @mcoc_renewal = McocRenewal.find_by_id(@mcoc_renewal_id)
       session[:project_name] = @mcoc_renewal.project_name
       session[:grantee_name] = @mcoc_renewal.grantee_name
       session[:response_set_code] = @response_set_code
@@ -78,7 +78,7 @@ module SurveyorControllerCustomMethods
     @tmp_grantee_name = session[:grantee_name]
     @tmp_project_name = session[:project_name]
     
-    @mcoc_renewal = McocRenewals.find(@tmp_mcoc_renewal_id)
+    @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
     @tmp_doc_name = @mcoc_renewal.questionnaire_doc_name
     if @tmp_doc_name.blank? 
       @questionnaire_doc_name = 0
@@ -117,16 +117,25 @@ module SurveyorControllerCustomMethods
       #refer to lib/tasks/instance_surveys_for_id+"N".rake
       @list_of_instanced_surveys = []
       puts "Current user = #{current_user.id}"
-      @instanced_surveys = McocUserRenewals.where(:user_id => current_user.id)
-      @instanced_surveys.each do |survey|
-        @mcoc_renewals = McocRenewals.find_by_id(survey.mcoc_renewals_id)
-        @response_set_for_user = ResponseSet.find_by_id(survey.response_set_id)
+      
+      @user_renewals_instanced_surveys = McocRenewal.joins(:mcoc_user_renewals).where(:mcoc_user_renewals => {:user_id => current_user.id}).order('grantee_name ASC, project_name ASC')
+      
+      #puts "test_sql = #{@test_sql}"
+      
+      #@instanced_surveys = McocRenewal.where(:user_id => current_user.id).joins(:mcoc_renewals).order('grantee_name ASC, project_name ASC')
+      @user_renewals_instanced_surveys.each do |user_renewals|
+        puts "testing #{user_renewals.id}"
+        @mcoc_renewals = McocUserRenewal.find_by_mcoc_renewal_id(user_renewals.id)
+        
+        
+        
+        @response_set_for_user = ResponseSet.find_by_id(@mcoc_renewals.response_set_id)
         @survey = Survey.find_by_id(@response_set_for_user.survey_id)
         #stuff into the array
-        @transitory_surveys = TransitoryInstancedSurveys.new(@survey.access_code, 
+        @transitory_surveys = TransitoryInstancedSurvey.new(@survey.access_code, 
                       @response_set_for_user.access_code, 
-                      @mcoc_renewals.grantee_name, 
-                      @mcoc_renewals.project_name, nil, nil)           
+                      user_renewals.grantee_name, 
+                      user_renewals.project_name, nil, nil)           
         @list_of_instanced_surveys << @transitory_surveys
         
       end
@@ -135,9 +144,9 @@ module SurveyorControllerCustomMethods
   #custom action for showing a Report of Unfinished Instanced Surveys
   def list_instanced_questionnaire_status
       @report_list = []
-      @mcoc_renewals = McocRenewals.find(:all, :order => 'grantee_name ASC, project_name ASC')
+      @mcoc_renewals = McocRenewal.find(:all, :order => 'grantee_name ASC, project_name ASC')
       @mcoc_renewals.each do |renewals|
-        @tmp_user_renewals = McocUserRenewals.where(:mcoc_renewals_id => renewals.id)
+        @tmp_user_renewals = McocUserRenewal.where(:mcoc_renewals_id => renewals.id)
         @grantee_name = renewals.grantee_name
         @project_name = renewals.project_name
         if @tmp_user_renewals.first.nil?
@@ -162,7 +171,7 @@ module SurveyorControllerCustomMethods
         end
         
         #populate the model regardless of whether or not we found details 
-        @transitory_report_list = TransitoryInstancedSurveys.new(@survey_access_code, 
+        @transitory_report_list = TransitoryInstancedSurvey.new(@survey_access_code, 
                       @response_set_access_code, 
                       @grantee_name, 
                       @project_name, @completed_flag, @completed_date)           
@@ -211,13 +220,13 @@ module SurveyorControllerCustomMethods
     def prepopulate_program_name
       puts "In prepopulate_program_name... start"
       @tmp_response_set_code = session[:response_set_code]
-      #puts "@tmp_response_set_code = #{@tmp_response_set_code}..."
+      puts "@tmp_response_set_code = #{@tmp_response_set_code}..."
       @response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
       if @response_set
         @survey = @response_set.survey
         @tmp_survey_id = @survey.id
         @tmp_response_set_id = @response_set.id
-        #puts "@tmp_survey_id = #{@tmp_survey_id}"
+        puts "@tmp_survey_id = #{@tmp_survey_id}"
         @agency_info_export_identifier = 'agency_information'
         #only do this if we are in the relevant (agency information) section...
         @current_survey_section = params[:section]
@@ -230,16 +239,16 @@ module SurveyorControllerCustomMethods
           
           if (@current_survey_section.to_s == @survey_section_agency_info.id.to_s) || (@current_survey_section.nil?)
             @tmp_survey_section_agency_info_id = @survey_section_agency_info.id
-            #puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
+            puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
             @question_data_export_identifier = 'data_agency_info'
             @question = Question.find_by_survey_section_id_and_data_export_identifier(@tmp_survey_section_agency_info_id, @question_data_export_identifier)
             if @question
               @tmp_question_id = @question.id
-              #puts "@tmp_question_id = #{@tmp_question_id}"
+              puts "@tmp_question_id = #{@tmp_question_id}"
               @answer_data_export_identifier = 'program_name'
               @answer = Answer.find_by_question_id_and_data_export_identifier(@tmp_question_id, @answer_data_export_identifier)
               @tmp_answer_id = @answer.id
-              #puts "@tmp_answer_id = #{@tmp_answer_id}"
+              puts "@tmp_answer_id = #{@tmp_answer_id}"
               
               @response_for_program_name = Response.find_by_question_id_and_answer_id(@tmp_question_id, @tmp_answer_id)
               if @response_for_program_name
@@ -275,7 +284,7 @@ module SurveyorControllerCustomMethods
       @tmp_grantee_name = session[:grantee_name]
       @tmp_project_name = session[:project_name]
       
-      @mcoc_renewal = McocRenewals.find(@tmp_mcoc_renewal_id)
+      @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
       @tmp_doc_name = @mcoc_renewal.questionnaire_doc_name
       if @tmp_doc_name.blank? 
         @questionnaire_doc_name = 0

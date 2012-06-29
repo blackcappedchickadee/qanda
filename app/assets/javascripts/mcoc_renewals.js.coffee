@@ -1,7 +1,7 @@
 $ ->
   $('#clear_attachment_ude').click( ->
       form = this.form
-      alert('form = ' + form)
+      #alert('form = ' + form)
       $.post(
          $(form).attr('action')
          $(form).serialize()
