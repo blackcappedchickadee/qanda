@@ -235,7 +235,7 @@ module SurveyorControllerCustomMethods
         if @survey_section_agency_info 
           #only enter into the core logic if we're dealing with the relevant survey section
           
-          
+          puts "ready for testing..."
           
           if (@current_survey_section.to_s == @survey_section_agency_info.id.to_s) || (@current_survey_section.nil?)
             @tmp_survey_section_agency_info_id = @survey_section_agency_info.id
@@ -250,7 +250,7 @@ module SurveyorControllerCustomMethods
               @tmp_answer_id = @answer.id
               puts "@tmp_answer_id = #{@tmp_answer_id}"
               
-              @response_for_program_name = Response.find_by_question_id_and_answer_id(@tmp_question_id, @tmp_answer_id)
+              @response_for_program_name = Response.find_by_question_id_and_answer_id_and_response_set_id(@tmp_question_id, @tmp_answer_id, @tmp_response_set_id)
               if @response_for_program_name
                 puts "response found for program name, do we have a text value?"
                 if @response_for_program_name.string_value != nil
