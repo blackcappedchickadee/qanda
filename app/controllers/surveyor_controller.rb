@@ -116,12 +116,9 @@ module SurveyorControllerCustomMethods
       #the precondition (very important) is that these have been instanced/seeded prior
       #refer to lib/tasks/instance_surveys_for_id+"N".rake
       @list_of_instanced_surveys = []
-      puts "Current user = #{current_user.id}"
-      
+      #puts "Current user = #{current_user.id}"
       @user_renewals_instanced_surveys = McocRenewal.joins(:mcoc_user_renewals).where(:mcoc_user_renewals => {:user_id => current_user.id}).order('grantee_name ASC, project_name ASC')
-      
       #puts "test_sql = #{@test_sql}"
-      
       #@instanced_surveys = McocRenewal.where(:user_id => current_user.id).joins(:mcoc_renewals).order('grantee_name ASC, project_name ASC')
       @user_renewals_instanced_surveys.each do |user_renewals|
         puts "testing #{user_renewals.id}"
@@ -145,8 +142,10 @@ module SurveyorControllerCustomMethods
   def list_instanced_questionnaire_status
       @report_list = []
       @mcoc_renewals = McocRenewal.find(:all, :order => 'grantee_name ASC, project_name ASC')
+      #@mcoc_renewals = McocRenewal.joins(:mcoc_user_renewals).where(:mcoc_user_renewals => {:user_id => current_user.id}).order('grantee_name ASC, project_name ASC')
+      
       @mcoc_renewals.each do |renewals|
-        @tmp_user_renewals = McocUserRenewal.where(:mcoc_renewals_id => renewals.id)
+        @tmp_user_renewals = McocUserRenewal.where(:mcoc_renewal_id => renewals.id)
         @grantee_name = renewals.grantee_name
         @project_name = renewals.project_name
         if @tmp_user_renewals.first.nil?
