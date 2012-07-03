@@ -144,101 +144,157 @@ survey "2012 Monitoring and Evaluation" do
             relevant documentation (at the bottom of this page)."
 
       group "Fire Marshall", :display_type => :inline do  
-        q_23 "Site visit?", :custom_class => 'c_q23', :pick => :one, :display_type => :inline
+        q_23 "Site visit?", :custom_class => 'c_q23', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_fire_marshall'
           a_23_y "Yes"
           a_23_n "No"
-        q_24 "Date of last inspection", :custom_class => 'c_q24', :display_type => :inline
+        q_24 "Date of last inspection", :custom_class => 'c_q24', :display_type => :inline, :data_export_identifier => 'inspection_date_fire_marshall'
         a_24 :date
-        q_25 "Pass or Fail?", :custom_class => 'c_q25', :pick => :one, :display_type => :inline
-        a_25_y "Pass"
-        a_25_n "Fail"
+        q_25 "Pass or Fail?", :custom_class => 'c_q25', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_fail_fire_marshall'
+        a_25_y "Pass", :data_export_identifier => 'fire_marshall_pass'
+        a_25_n "Fail", :data_export_identifier => 'fire_marshall_fail'
+        a_25_x "Not Applicable", :data_export_identifier => 'fire_marshall_na'
+        
+        q_26 "Fire Marshall - Not Applicable Reason", :custom_class => 'c_q26txt'
+        a_26 :text, :data_export_identifier => 'fire_marshall_na_reason'
+        dependency :rule => "I"
+        condition_I :q_25, "==", :a_25_x
+
       end
       
       group "DHHS Licensing", :display_type => :inline do  
-        q_26 "Site visit?", :custom_class => 'c_q26', :pick => :one, :display_type => :inline
-          a_26_y "Yes"
-          a_26_n "No"
-        q_27 "Date of last inspection", :custom_class => 'c_q27', :display_type => :inline
-        a_27 :date
-        q_28 "Pass or Fail?", :custom_class => 'c_q28', :pick => :one, :display_type => :inline
-        a_28_y "Pass"
-        a_28_n "Fail"
+        q_27 "Site visit?", :custom_class => 'c_q27', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_dhhs'
+          a_27_y "Yes"
+          a_27_n "No"
+        q_28 "Date of last inspection", :custom_class => 'c_q28', :display_type => :inline, :data_export_identifier => 'inspection_date_dhhs'
+        a_28 :date
+        q_29 "Pass or Fail?", :custom_class => 'c_q29', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_fail_dhhs'
+        a_29_y "Pass", :data_export_identifier => 'dhhs_pass'
+        a_29_n "Fail", :data_export_identifier => 'dhhs_fail'
+        a_29_x "Not Applicable", :data_export_identifier => 'dhhs_na'
+        
+        q_30 "DHHS - Not Applicable Reason", :custom_class => 'c_q30txt'
+        a_30 :text, :data_export_identifier => 'dhhs_na_reason'
+        dependency :rule => "J"
+        condition_J :q_29, "==", :a_29_x
+        
       end
       
       group "MaineHousing", :display_type => :inline do  
-        q_29 "Site visit?", :custom_class => 'c_q29', :pick => :one, :display_type => :inline
-          a_29_y "Yes"
-          a_29_n "No"
-        q_30 "Date of last inspection", :custom_class => 'c_q30', :display_type => :inline
-        a_30 :date
-        q_31 "Pass or Fail?", :custom_class => 'c_q31', :pick => :one, :display_type => :inline
-        a_31_y "Pass"
-        a_31_n "Fail"
+        q_31 "Site visit?", :custom_class => 'c_q31', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_msha'
+          a_31_y "Yes"
+          a_31_n "No"
+        q_32 "Date of last inspection", :custom_class => 'c_q32', :display_type => :inline, :data_export_identifier => 'inspection_date_msha'
+        a_32 :date
+        q_33 "Pass or Fail?", :custom_class => 'c_q33', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_fail_msha'
+        a_33_y "Pass", :data_export_identifier => 'msha_pass'
+        a_33_n "Fail", :data_export_identifier => 'msha_fail'
+        a_33_x "Not Applicable", :data_export_identifier => 'msha_na'
+        
+        q_34 "DHHS - Not Applicable Reason", :custom_class => 'c_q34txt'
+        a_34 :text, :data_export_identifier => 'dhhs_na_reason'
+        dependency :rule => "J"
+        condition_J :q_33, "==", :a_33_x
+        
       end
       
       group "CARF", :display_type => :inline do  
-        q_32 "Site visit?", :custom_class => 'c_q32', :pick => :one, :display_type => :inline
+        q_35 "Site visit?", :custom_class => 'c_q35', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_carf'
           a_32_y "Yes"
           a_32_n "No"
-        q_33 "Date of last inspection", :custom_class => 'c_q33', :display_type => :inline
-        a_33 :date
-        q_34 "Pass or Fail?", :custom_class => 'c_q34', :pick => :one, :display_type => :inline
-        a_34_y "Pass"
-        a_34_n "Fail"
+        q_36 "Date of last inspection", :custom_class => 'c_q36', :display_type => :inline, :data_export_identifier => 'inspection_date_carf'
+        a_36 :date
+        q_37 "Pass or Fail?", :custom_class => 'c_q37', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_carf'
+        a_37_y "Pass", :data_export_identifier => 'carf_pass'
+        a_37_n "Fail", :data_export_identifier => 'carf_fail'
+        a_37_x "Not Applicable", :data_export_identifier => 'carf_na'
+        
+        q_38 "CARF - Not Applicable Reason", :custom_class => 'c_q38txt'
+        a_38 :text, :data_export_identifier => 'carf_na_reason'
+        dependency :rule => "K"
+        condition_K :q_37, "==", :a_37_x
+        
       end
       
       group "HUD", :display_type => :inline do  
-        q_35 "Site visit?", :custom_class => 'c_q35', :pick => :one, :display_type => :inline
-          a_35_y "Yes"
-          a_35_n "No"
-        q_36 "Date of last inspection", :custom_class => 'c_q36', :display_type => :inline
-        a_36 :date
-        q_37 "Pass or Fail?", :custom_class => 'c_q37', :pick => :one, :display_type => :inline
-        a_37_y "Pass"
-        a_37_n "Fail"
+        q_39 "Site visit?", :custom_class => 'c_q39', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_hud'
+          a_39_y "Yes"
+          a_39_n "No"
+        q_40 "Date of last inspection", :custom_class => 'c_q40', :display_type => :inline, :data_export_identifier => 'inspection_date_hud'
+        a_40 :date
+        q_41 "Pass or Fail?", :custom_class => 'c_q41', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_hud'
+        a_41_y "Pass", :data_export_identifier => 'hud_pass'
+        a_41_n "Fail", :data_export_identifier => 'hud_fail'
+        a_41_x "Not Applicable", :data_export_identifier => 'hud_na'
+        
+        q_42 "HUD - Not Applicable Reason", :custom_class => 'c_q42txt'
+        a_42 :text, :data_export_identifier => 'hud_na_reason'
+        dependency :rule => "L"
+        condition_L :q_41, "==", :a_41_x
+        
       end
       
       group "HQS", :display_type => :inline do  
-        q_38 "Site visit?", :custom_class => 'c_q38', :pick => :one, :display_type => :inline
-          a_38_y "Yes"
-          a_38_n "No"
-        q_39 "Date of last inspection", :custom_class => 'c_q39', :display_type => :inline
-        a_39 :date
-        q_40 "Pass or Fail?", :custom_class => 'c_q40', :pick => :one, :display_type => :inline
-        a_40_y "Pass"
-        a_40_n "Fail"
+        q_43 "Site visit?", :custom_class => 'c_q43', :pick => :one, :display_type => :inline,  :data_export_identifier => 'site_visit_hqs'
+          a_43_y "Yes"
+          a_43_n "No"
+        q_44 "Date of last inspection", :custom_class => 'c_q44', :display_type => :inline,  :data_export_identifier => 'inspection_date_hqs'
+        a_44 :date
+        q_45 "Pass or Fail?", :custom_class => 'c_q45', :pick => :one, :display_type => :inline,  :data_export_identifier => 'pass_or_fail_hqs'
+        a_45_y "Pass", :data_export_identifier => 'hqs_pass'
+        a_45_n "Fail", :data_export_identifier => 'hqs_fail'
+        a_45_x "Not Applicable", :data_export_identifier => 'hqs_na'
+        
+        q_46 "HQS - Not Applicable Reason", :custom_class => 'c_q46txt'
+        a_46 :text, :data_export_identifier => 'hqs_na_reason'
+        dependency :rule => "M"
+        condition_M :q_45, "==", :a_45_x
+        
       end
       
       group "Other agency", :display_type => :inline do  
-        q_41 "Name", :custom_class => 'c_q41', :display_type => :inline
-        a_41 :string
-        q_42 "Site visit?", :custom_class => 'c_q42', :pick => :one, :display_type => :inline
-          a_42_y "Yes"
-          a_42_n "No"
-        q_43 "Date of last inspection", :custom_class => 'c_q43', :display_type => :inline
-        a_43 :date
-        q_44 "Pass or Fail?", :custom_class => 'c_q44', :pick => :one, :display_type => :inline
-        a_44_y "Pass"
-        a_44_n "Fail"
+        q_47 "Name", :custom_class => 'c_q47', :display_type => :inline, :data_export_identifier => 'name_other1'
+        a_47 :string
+        q_48 "Site visit?", :custom_class => 'c_q48', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_other1'
+          a_48_y "Yes"
+          a_48_n "No"
+        q_49 "Date of last inspection", :custom_class => 'c_q49', :display_type => :inline, :data_export_identifier => 'inspection_date_other1'
+        a_49 :date
+        q_50 "Pass or Fail?", :custom_class => 'c_q50', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_other1'
+        a_50_y "Pass", :data_export_identifier => 'other1_pass'
+        a_50_n "Fail", :data_export_identifier => 'other1_fail'
+        a_50_x "Not Applicable", :data_export_identifier => 'other1_na'
+        
+        q_51 "Other - Not Applicable Reason", :custom_class => 'c_q51txt'
+        a_51 :text, :data_export_identifier => 'other1_na_reason'
+        dependency :rule => "N"
+        condition_N :q_50, "==", :a_50_x
+        
       end
       
       group "Other agency", :display_type => :inline do  
-        q_45 "Name", :custom_class => 'c_q45', :display_type => :inline
-        a_45 :string
-        q_46 "Site visit?", :custom_class => 'c_q46', :pick => :one, :display_type => :inline
-          a_46_y "Yes"
-          a_46_n "No"
-        q_47 "Date of last inspection", :custom_class => 'c_q47', :display_type => :inline
-        a_47 :date
-        q_48 "Pass or Fail?", :custom_class => 'c_q48', :pick => :one, :display_type => :inline
-        a_48_y "Pass"
-        a_48_n "Fail"
+        q_52 "Name", :custom_class => 'c_q52', :display_type => :inline, :data_export_identifier => 'name_other2'
+        a_52 :string
+        q_53 "Site visit?", :custom_class => 'c_q53', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_other2'
+          a_53_y "Yes"
+          a_53_n "No"
+        q_54 "Date of last inspection", :custom_class => 'c_q54', :display_type => :inline, :data_export_identifier => 'inspection_date_other2'
+        a_54 :date
+        q_55 "Pass or Fail?", :custom_class => 'c_q55', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_other2'
+        a_55_y "Pass", :data_export_identifier => 'other2_pass'
+        a_55_n "Fail", :data_export_identifier => 'other2_fail'
+        a_55_x "Not Applicable", :data_export_identifier => 'other2_na'
+
+        q_56 "Other - Not Applicable Reason", :custom_class => 'c_q56txt'
+        a_56 :text, :data_export_identifier => 'other2_na_reason'
+        dependency :rule => "N"
+        condition_N :q_55, "==", :a_55_x
+        
       end
     
-      q_49 "Physical plant narrative (if necessary). If there are any unresolved 
+      q_56 "Physical plant narrative (if necessary). If there are any unresolved 
       findings or other issues, please explain briefly how they were or will be resolved and upload
-      relevant documentation.", :custom_class => 'c_q49'
-      a_49 :text
+      relevant documentation.", :custom_class => 'c_q56'
+      a_56 :text
       
       label "<iframe id='additional_doc_upload' name='additional_doc_upload' src='attachments/additional_doc'></iframe>"
 
@@ -248,49 +304,49 @@ survey "2012 Monitoring and Evaluation" do
       label "Please provide the following information to complete the Monitoring and Evaluation questionnaire:"
       label "<i>All information submitted is true and accurate to the best of my knowledge.</i><br/>"
       
-      label "<b>Prepared By</b>", :custom_class => 'c_q50' 
+      label "<b>Prepared By</b>", :custom_class => 'c_q57' 
       
-      q_50 "First Name", :display_type => :inline
-      a_50 :string
+      q_57 "First Name", :display_type => :inline, :data_export_identifier => 'preparer_first_name'
+      a_57 :string
 
-      q_51 "Last Name", :custom_class => 'c_q51'
-      a_51 :string
+      q_58 "Last Name", :custom_class => 'c_q58', :data_export_identifier => 'preparer_last_name'
+      a_58 :string
       
-      q_52 "Title", :custom_class => 'c_q52'
-      a_52 :string
+      q_59 "Title", :custom_class => 'c_q59', :data_export_identifier => 'preparer_title'
+      a_59 :string
 
       label "</br>(If different from agency/program contact information):"
-      q_53 "Email Address", :custom_class => 'c_q53'
-      a_53 :string
+      q_60 "Email Address", :custom_class => 'c_q60', :data_export_identifier => 'preparer_email_address'
+      a_60 :string
 
-      q_54 "Phone number", :custom_class => 'c_q54'
-      a_54 :string
+      q_61 "Phone number", :custom_class => 'c_q61', :data_export_identifier => 'preparer_phone_number'
+      a_61 :string
  
         
-      label "<b>Executive Director Information</b>", :custom_class => 'c_q55'
+      label "<b>Executive Director Information</b>", :custom_class => 'c_q62'
       
-      q_55 "Executive Director First Name"
-      a_55 :string
+      q_62 "Executive Director First Name", :data_export_identifier => 'execdir_first_name'
+      a_62 :string
 
-      q_56 "Executive Director Last Name", :custom_class => 'c_q56'
-      a_56 :string 
+      q_63 "Executive Director Last Name", :custom_class => 'c_q63', :data_export_identifier => 'execdir_last_name'
+      a_63 :string 
       
-      q_57 "Executive Director Email Address", :custom_class => 'c_q57'
-      a_57 :string
+      q_64 "Executive Director Email Address", :custom_class => 'c_q64', :data_export_identifier => 'execdir_email_address'
+      a_64 :string
  
       
       label "<br/><b>Electronic Signature</b><br/>"
    
-      q_58 "By checking this box:<br/>", :pick => :any
-      a_58 "I hereby indicate the information contained in this questionnaire is true and 
-            correct to the best of my knowledge.", :custom_class => 'c_q58'
+      q_65 "By checking this box:<br/>", :pick => :any, :data_export_identifier => 'elect_sig_checkval'
+      a_65 "I hereby indicate the information contained in this questionnaire is true and 
+            correct to the best of my knowledge.", :custom_class => 'c_q65'
             
       label "<br/>"
     
-      q_59 "By typing my name in the following space, I certify that I am authorized to submit this questionnaire. I further
+      q_66 "By typing my name in the following space, I certify that I am authorized to submit this questionnaire. I further
             certify that this questionnaire is submitted with full knowledge and consent of my agency's Executive Director or other 
-            governing body.<br/><br/>", :custom_class => 'c_q59'
-      a_59 :string
+            governing body.<br/><br/>", :custom_class => 'c_q66', :data_export_identifier => 'elect_sig_name'
+      a_66 :string
       
       label "<br/>After review, the Monitoring Committee will review your completed questionnaire. The Monitoring Committee may 
              contact you if they have any questions or require more information.<br/><br/>
