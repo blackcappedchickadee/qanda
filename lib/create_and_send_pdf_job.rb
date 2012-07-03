@@ -47,7 +47,17 @@ class CreateAndSendPdfJob
     
     #page 5 values
     attachment_info_apr = get_attachment_info_apr(mcoc_renewal_id)
-    
+    reported_your_most_recent_apr = get_response_with_only_one_value("reported_your_most_recent_apr", response_set_id, survey_section_hud_continuum_goals)
+    if_below_85_please_explain = get_response_with_only_one_value("if_below_85_please_explain", response_set_id, survey_section_hud_continuum_goals)
+    employed_at_program_at_exit = get_response_with_only_one_value("employed_at_program_at_exit", response_set_id, survey_section_hud_continuum_goals)
+    less_than_20_please_explain = get_response_with_only_one_value("less_than_20_please_explain", response_set_id, survey_section_hud_continuum_goals)
+    project_involve_transitional_housing_projects = get_response_with_only_one_value("project_involve_transitional_housing_projects", response_set_id, survey_section_hud_continuum_goals)
+    moved_from_transitional_permanent_housing = get_response_with_only_one_value("moved_from_transitional_permanent_housing", response_set_id, survey_section_hud_continuum_goals)
+    if_below_65_please_explain = get_response_with_only_one_value("if_below_65_please_explain", response_set_id, survey_section_hud_continuum_goals)
+    involve_permanent_supportive_housing_projects = get_response_with_only_one_value("involve_permanent_supportive_housing_projects", response_set_id, survey_section_hud_continuum_goals)    
+    permanent_housing_over_6_months = get_response_with_only_one_value("permanent_housing_over_6_months", response_set_id, survey_section_hud_continuum_goals)    
+    if_below_77_please_explain = get_response_with_only_one_value("if_below_77_please_explain", response_set_id, survey_section_hud_continuum_goals)    
+
 
     myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
       
@@ -235,7 +245,7 @@ class CreateAndSendPdfJob
       text "HUD Continuum Goals", :style => :bold 
       font_size 10
       move_down 10
-      text "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released. Please use the figures reported in your most recent Annual Progress Report (APR) submitted to HUD and attach an electronic copy of the APR below."
+      text "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released. Please use the figures reported in your most recent Annual Progress Report (APR) submitted to HUD and <b>attach an electronic copy of the APR below</b>.", :inline_format => true
       move_down 5
       if attachment_info_apr.nil?
         text "#{not_provided_text}", :inline_format => true
@@ -243,6 +253,115 @@ class CreateAndSendPdfJob
         text "APR Report attached: #{attachment_info_apr}"
       end
       move_down 10
+      text "What was your Average Daily Bed Utilization reported in your most recent APR?"
+      move_down 5
+      var_reported_your_most_recent_apr = 0
+      if reported_your_most_recent_apr.nil?
+        text "#{not_provided_text}", :inline_format => true
+      else
+        var_reported_your_most_recent_apr = reported_your_most_recent_apr
+        text "#{var_reported_your_most_recent_apr}%"
+      end
+      move_down 10
+      if var_reported_your_most_recent_apr.to_f < 85 && if_below_85_please_explain.nil?
+        text "If below 85%, please explain:"
+        move_down 5
+        text "#{not_provided_text}", :inline_format => true
+      end
+      if !if_below_85_please_explain.nil? #render even if the value was > 85
+        text "If below 85%, please explain:"
+        move_down 5
+        text "#{if_below_85_please_explain}"
+      end
+      move_down 10
+      text "What percentage of your tenants were employed at program at exit?"
+      move_down 5
+      var_employed_at_program_at_exit = 0
+      if employed_at_program_at_exit.nil?
+        text "#{not_provided_text}", :inline_format => true
+      else
+        var_employed_at_program_at_exit = employed_at_program_at_exit
+        text "#{var_employed_at_program_at_exit}%"
+      end
+      move_down 10
+      if var_employed_at_program_at_exit.to_f < 85 && less_than_20_please_explain.nil?
+        text "If less than 20%, please explain:"
+        move_down 5
+        text "#{not_provided_text}", :inline_format => true
+      end
+      if !less_than_20_please_explain.nil? #render even if the value was < 85
+        text "If less than 20%, please explain:"
+        move_down 5
+        text "#{less_than_20_please_explain}"
+      end
+      move_down 10
+      text "Does your project involve <u>Transitional</u> Housing Projects?", :inline_format => true
+      move_down 5
+      var_project_involve_transitional_housing_projects = ""
+      if project_involve_transitional_housing_projects.nil?
+        text "#{not_provided_text}", :inline_format => true
+      else
+        var_project_involve_transitional_housing_projects = project_involve_transitional_housing_projects
+        text "#{var_project_involve_transitional_housing_projects}"
+      end
+      if var_project_involve_transitional_housing_projects == "Yes"
+        move_down 10
+        text "What percentage of tenants moved from transitional to permanent housing?"
+        move_down 5
+        var_moved_from_transitional_permanent_housing = 0
+        if moved_from_transitional_permanent_housing.nil?
+          text "#{not_provided_text}", :inline_format => true
+        else
+          var_moved_from_transitional_permanent_housing = moved_from_transitional_permanent_housing
+          text "#{var_moved_from_transitional_permanent_housing}%"
+        end
+        move_down 10
+        if var_moved_from_transitional_permanent_housing.to_f < 65 && if_below_65_please_explain.nil?
+          text "If less than 65%, please explain:"
+          move_down 5
+          text "#{not_provided_text}", :inline_format => true
+        end
+        if !if_below_65_please_explain.nil? #render even if the value was < 65
+          text "If below 65%, please explain:"
+          move_down 5
+          text "#{if_below_65_please_explain}"
+        end
+      end #transitional housing = yes block
+      move_down 10
+      text "Does your project involve <u>Permanent Supportive</u> Housing Projects?", :inline_format => true
+      move_down 5
+      var_involve_permanent_supportive_housing_projects = ""
+      if involve_permanent_supportive_housing_projects.nil?
+        text "#{not_provided_text}", :inline_format => true
+      else
+        var_involve_permanent_supportive_housing_projects = involve_permanent_supportive_housing_projects
+        text "#{var_involve_permanent_supportive_housing_projects}"
+      end
+    ##
+      if var_involve_permanent_supportive_housing_projects == "Yes"
+        move_down 10
+        text "WWhat percentage of tenants have been in permanent housing over 6 months?"
+        move_down 5
+        var_permanent_housing_over_6_months = 0
+        if permanent_housing_over_6_months.nil?
+          text "#{not_provided_text}", :inline_format => true
+        else
+          var_permanent_housing_over_6_months = permanent_housing_over_6_months
+          text "#{var_permanent_housing_over_6_months}%"
+        end
+        move_down 10
+        if var_permanent_housing_over_6_months.to_f < 77 && if_below_77_please_explain.nil?
+          text "If less than 77%, please explain:"
+          move_down 5
+          text "#{not_provided_text}", :inline_format => true
+        end
+        if !if_below_77_please_explain.nil? #render even if the value was < 77
+          text "If below 77%, please explain:"
+          move_down 5
+          text "#{if_below_77_please_explain}"
+        end
+      end #supportive housing = yes block      
+    ##  
       
       
       start_new_page
