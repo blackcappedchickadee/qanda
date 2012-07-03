@@ -4,6 +4,8 @@ class CreateAndSendPdfJob
   
   def test_pdf(mcoc_renewal_id, response_set_code, response_html, grantee_name, project_name, doc_name)
     
+    not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
+    
     @grantee_name = grantee_name
     @project_name = project_name
     response_set = ResponseSet.find_by_access_code(response_set_code)
@@ -38,6 +40,13 @@ class CreateAndSendPdfJob
     letter_grade_ude = get_response_with_only_one_value("letter_grade_ude", response_set_id, survey_section_hmis_information)
     letter_grade_dkr = get_response_with_only_one_value("letter_grade_dkr", response_set_id, survey_section_hmis_information)
     
+    #page 4 values
+    project_work_with_families_youth = get_response_with_only_one_value("project_work_with_families_youth", response_set_id, survey_section_families_youth)
+    and_form_process_document_this = get_response_with_only_one_value("and_form_process_document_this", response_set_id, survey_section_families_youth)
+    applicable_prior_question_please_explain = get_response_with_only_one_value("applicable_prior_question_please_explain", response_set_id, survey_section_families_youth)
+    
+    #page 5 values
+    
 
     myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
       
@@ -66,42 +75,42 @@ class CreateAndSendPdfJob
       move_down 10
       text "Agency Name", :style => :bold 
       if agency_name.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{agency_name}"
       end
       move_down 5
       text "Program Name", :style => :bold 
       if program_name.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{program_name}"
       end
       move_down 5
       text "Project Address(es)", :style => :bold 
       if project_address.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{project_address}"
       end
       move_down 5
       text "Contact Person", :style => :bold 
       if contact_person.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{contact_person}"
       end
       move_down 5
       text "Phone Number", :style => :bold 
       if phone_number.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{phone_number}"
       end
       move_down 5
       text "E-mail Address", :style => :bold 
       if e_mail_address.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{e_mail_address}"
       end 
@@ -116,7 +125,7 @@ class CreateAndSendPdfJob
       text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
       move_down 5
       if data_program_info.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{data_program_info}"
       end
@@ -124,7 +133,7 @@ class CreateAndSendPdfJob
       text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
       move_down 5
       if self_suff.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{self_suff}"
       end
@@ -132,14 +141,14 @@ class CreateAndSendPdfJob
       text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
       move_down 5
       if program_verif_proc.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{program_verif_proc}"
       end
       move_down 10
       text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
       if program_renewal_budget_pct.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         text "#{program_renewal_budget_pct}"
       end
@@ -155,7 +164,7 @@ class CreateAndSendPdfJob
       var_hmis_particp = ""
       puts " participating_maine_hmis = #{participating_maine_hmis}"
       if participating_maine_hmis.nil?
-        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+        text "#{not_provided_text}", :inline_format => true
       else
         var_hmis_particp = participating_maine_hmis
         text "#{var_hmis_particp}"
@@ -185,13 +194,36 @@ class CreateAndSendPdfJob
       font_size 10
       move_down 10
       text "Does your project work with Families or Youth?"
-      text ":fam_participation"
-      move_down 10
-      text "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?"
-      text ":fam_policy_in_place"
-      move_down 10
-      text "Since you have indicated 'No or Not Applicable' to the prior question, please explain."
-      text ":fam_no_policy"
+      var_project_work_with_families_youth = ""
+      move_down 5
+      if project_work_with_families_youth.nil?
+        text "#{not_provided_text}", :inline_format => true
+      else
+        var_project_work_with_families_youth = project_work_with_families_youth
+        text "#{var_project_work_with_families_youth}"
+      end
+      if var_project_work_with_families_youth == "Yes"
+        move_down 10
+        text "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?"
+        var_and_form_process_document_this = ""
+        move_down 5
+        if and_form_process_document_this.nil?
+          text "#{not_provided_text}", :inline_format => true
+        else
+          var_and_form_process_document_this = and_form_process_document_this
+          text "#{var_and_form_process_document_this}"
+        end
+        if var_and_form_process_document_this == "No or Not Applicable"
+          move_down 10
+          text "Since you have indicated 'No or Not Applicable' to the prior question, please explain."
+          move_down 5
+          if applicable_prior_question_please_explain.nil?
+            text "#{not_provided_text}", :inline_format => true
+          else
+            text "#{applicable_prior_question_please_explain}"
+          end
+        end
+      end
       
       start_new_page
       font_size 14
@@ -300,26 +332,19 @@ class CreateAndSendPdfJob
   def get_response_with_only_one_value(data_export_identifier, response_set_id, survey_section_id)
     tmp_question = Question.find_by_data_export_identifier_and_survey_section_id(data_export_identifier, survey_section_id)
     tmp_question_id = tmp_question.id
-    puts "testing tmp_question_id = #{tmp_question_id}"
     tmp_answer = Answer.find_all_by_question_id(tmp_question_id) #we may have multiple answer values (e.g. yes/no)
     multi_answer_short_text = ""
     tmp_answer_response_class = ""
     if tmp_answer.size > 1
-      puts "tmp_answer.size > 1 "
       tmp_answer.each do |answer_item|                      
         tmp_response_item = Response.find_by_answer_id_and_response_set_id(answer_item.id, response_set_id)
         if !tmp_response_item.nil?
           tmp_response = tmp_response_item
           tmp_answer_response_class = answer_item.response_class
           multi_answer_short_text = answer_item.short_text
-          puts " multi_answer_short_text -- #{multi_answer_short_text}"
-          puts " tmp_answer_response_class = #{tmp_answer_response_class}"
-          #multi_answer_item = answer_item
-          #puts "multi_answer_item -- #{multi_answer_item.id}"
         end
       end
     else
-      puts "tmp_answer.size = 1 "
       tmp_answer_response_class = tmp_answer.first.response_class
       tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.first.id, response_set_id)
     end
@@ -334,15 +359,11 @@ class CreateAndSendPdfJob
           when "text"
             @retval = tmp_response.text_value
           when "answer" #yes/no values
-            puts "in here == why?"
             @retval = tmp_answer.short_text
-            #@retval = multi_answer_item.short_text
-            #@retval = multi_answer_short_text
         end
         return @retval
       end
     else
-      puts "in here.....tmp_answer_response_class = #{tmp_answer_response_class}.?"
       case tmp_answer_response_class
         when "answer" #yes/no values 
           @retval = multi_answer_short_text
