@@ -46,6 +46,7 @@ class CreateAndSendPdfJob
     applicable_prior_question_please_explain = get_response_with_only_one_value("applicable_prior_question_please_explain", response_set_id, survey_section_families_youth)
     
     #page 5 values
+    attachment_info_apr = get_attachment_info_apr(mcoc_renewal_id)
     
 
     myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
@@ -179,7 +180,11 @@ class CreateAndSendPdfJob
         move_down 5
         text "Run the report for this facility (which is up for renewal this year) <b><u>and attach an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
         move_down 10
-        text "#{attachment_info_ude}"
+        if attachment_info_ude.nil?
+           text "#{not_provided_text}", :inline_format => true
+        else
+          text "UDE Data Completeness Report attached: #{attachment_info_ude}"
+        end
         move_down 10 
         text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
         text "#{letter_grade_ude}"
@@ -230,6 +235,15 @@ class CreateAndSendPdfJob
       text "HUD Continuum Goals", :style => :bold 
       font_size 10
       move_down 10
+      text "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released. Please use the figures reported in your most recent Annual Progress Report (APR) submitted to HUD and attach an electronic copy of the APR below."
+      move_down 5
+      if attachment_info_apr.nil?
+        text "#{not_provided_text}", :inline_format => true
+      else
+        text "APR Report attached: #{attachment_info_apr}"
+      end
+      move_down 10
+      
       
       start_new_page
       font_size 14
@@ -396,12 +410,22 @@ class CreateAndSendPdfJob
   
   def get_attachment_info_ude(mcoc_renewal_id)
     tmp_mcoc_renewal = McocRenewal.find(mcoc_renewal_id)
-    retval = ""
     if !tmp_mcoc_renewal.nil?
-      retval = "UDE Data Completeness Report attached: #{tmp_mcoc_renewal.attachment_ude_file_name} "
+      if !tmp_mcoc_renewal.attachment_ude_file_name.nil?
+        retval = "#{tmp_mcoc_renewal.attachment_ude_file_name}"
+      end
     end
     return retval
   end
   
+  def get_attachment_info_apr(mcoc_renewal_id)
+    tmp_mcoc_renewal = McocRenewal.find(mcoc_renewal_id)
+    if !tmp_mcoc_renewal.nil?
+      if !tmp_mcoc_renewal.attachment_apr_file_name.nil?
+        retval = "#{tmp_mcoc_renewal.attachment_apr_file_name}"
+      end
+    end
+    return retval
+  end
 
 end
