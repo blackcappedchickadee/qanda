@@ -74,7 +74,8 @@ module SurveyorControllerCustomMethods
   def generate_pdf
     puts "in generate_pdf..."
  
-    @tmp_response_set_code = session[:response_set_code]
+    @tmp_response_set_code = params[:response_set_code]
+    puts "  tmp_response_set_code = #{@tmp_response_set_code}"
     @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
     @tmp_response_set_id = @tmp_response_set.id
     @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)

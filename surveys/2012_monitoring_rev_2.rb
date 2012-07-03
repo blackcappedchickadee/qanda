@@ -55,12 +55,12 @@ survey "2012 Monitoring and Evaluation" do
             <iframe id='ude_upload' name='ude_upload' src='attachments/ude_report'></iframe>
             <br/>
             What is your <b>UDE Data Completeness letter grade</b> for this project?
-            ", :custom_class => 'c_q8'
+            ", :custom_class => 'c_q8', :data_export_identifier => 'letter_grade_ude'
       a_8 :string
       dependency :rule => "B"
       condition_B :q_6, "==", :a_y
       
-      q_9 "What is your <b>DKR letter grade</b> for this project?", :custom_class => 'c_q9'
+      q_9 "What is your <b>DKR letter grade</b> for this project?", :custom_class => 'c_q9', :data_export_identifier => 'letter_grade_dkr'
       a_9 :string
       dependency :rule => "Z"
       condition_Z :q_6, "==", :a_y

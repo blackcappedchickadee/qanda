@@ -3,11 +3,13 @@ class CreateAndSendPdfJob
   require "prawn"
   
   def test_pdf(mcoc_renewal_id, response_set_code, response_html, grantee_name, project_name, doc_name)
+    
     @grantee_name = grantee_name
     @project_name = project_name
     response_set = ResponseSet.find_by_access_code(response_set_code)
     response_set_id = response_set.id
     survey_id = response_set.survey_id
+    
     survey_section_agency_information = SurveySection.find_by_data_export_identifier_and_survey_id("agency_information", survey_id)
     survey_section_program_information = SurveySection.find_by_data_export_identifier_and_survey_id("program_information", survey_id)
     survey_section_hmis_information = SurveySection.find_by_data_export_identifier_and_survey_id("hmis_participation", survey_id)
@@ -29,14 +31,33 @@ class CreateAndSendPdfJob
     self_suff = get_response_with_only_one_value("self_suff", response_set_id, survey_section_program_information)
     program_verif_proc = get_response_with_only_one_value("program_verif_proc", response_set_id, survey_section_program_information)
     program_renewal_budget_pct = get_response_with_only_one_value("program_renewal_budget_pct", response_set_id, survey_section_program_information)
+    
+    #page 3 values
+    participating_maine_hmis = get_response_with_only_one_value("your_project_participating_maine_hmis", response_set_id, survey_section_hmis_information)
+    attachment_info_ude = get_attachment_info_ude(mcoc_renewal_id)
+    letter_grade_ude = get_response_with_only_one_value("letter_grade_ude", response_set_id, survey_section_hmis_information)
+    letter_grade_dkr = get_response_with_only_one_value("letter_grade_dkr", response_set_id, survey_section_hmis_information)
+    
 
-    Prawn::Document.generate("zzzzzz-hello.pdf") do
+    myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
+      
       #text "Hello World!"
       #first section - Agency Information
       font_size 16
       text "2012 Monitoring and Evaluation", :style => :bold 
       move_down 10
       font_size 14
+      text "Grantee Name:", :style => :bold
+      move_down 5
+      text "#{grantee_name}"
+      move_down 10
+      text "Project Name:", :style => :bold
+      move_down 5
+      text "#{project_name}"
+      move_down 5
+      font_size 12
+      stroke_horizontal_rule
+      move_down 15
       text "Agency Information", :style => :bold 
       font_size 10
       move_down 10
@@ -44,23 +65,46 @@ class CreateAndSendPdfJob
       text "Please complete this form if your agency intends to apply for Renewal McKinney Vento Funding through the Maine Continuum of Care in 2012. If you do not intend to apply for renewal funding, please let us know. All forms and appropriate attachments must be received electronically by Scott Tibbitts no later than July 15, 2012. Please direct all questions to: stibbitts@mainehousing.org. A separate form must be completed for EACH program/project seeking renewal."
       move_down 10
       text "Agency Name", :style => :bold 
-      text "#{agency_name}"
+      if agency_name.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{agency_name}"
+      end
       move_down 5
       text "Program Name", :style => :bold 
-      text "#{program_name}"
+      if program_name.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{program_name}"
+      end
       move_down 5
       text "Project Address(es)", :style => :bold 
-      text "#{project_address}"
+      if project_address.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{project_address}"
+      end
       move_down 5
       text "Contact Person", :style => :bold 
-      text "#{contact_person}"
+      if contact_person.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{contact_person}"
+      end
       move_down 5
       text "Phone Number", :style => :bold 
-      text "#{phone_number}"
+      if phone_number.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{phone_number}"
+      end
       move_down 5
       text "E-mail Address", :style => :bold 
-      text "#{e_mail_address}"
-      
+      if e_mail_address.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{e_mail_address}"
+      end 
       
       start_new_page
       font_size 14
@@ -71,18 +115,35 @@ class CreateAndSendPdfJob
       move_down 10
       text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
       move_down 5
-      text "#{data_program_info}"
+      if data_program_info.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{data_program_info}"
+      end
       move_down 10
       text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
       move_down 5
-      text "#{self_suff}"
+      if self_suff.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{self_suff}"
+      end
       move_down 10
       text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
       move_down 5
-      text "#{program_verif_proc}"
+      if program_verif_proc.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{program_verif_proc}"
+      end
       move_down 10
       text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
-      text "#{program_renewal_budget_pct}"
+      if program_renewal_budget_pct.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        text "#{program_renewal_budget_pct}"
+      end
+      
       
       start_new_page
       font_size 14
@@ -90,15 +151,33 @@ class CreateAndSendPdfJob
       font_size 10
       move_down 10
       text "Is your project participating in the Maine HMIS (Homeless Management Information System)?"
-      text ":hmis_participation"
-      move_down 10
-      text ":hmis_ude_completeness_report_attached"
-      move_down 10 
-      text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
-      text ":hmis_ude_grade"
-      move_down 10
-      text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
-      text ":hmis_dkr_grade"
+      move_down 5
+      var_hmis_particp = ""
+      puts " participating_maine_hmis = #{participating_maine_hmis}"
+      if participating_maine_hmis.nil?
+        text "<b><color rgb='ff0000'>not provided</color></b>", :inline_format => true
+      else
+        var_hmis_particp = participating_maine_hmis
+        text "#{var_hmis_particp}"
+      end
+      if var_hmis_particp == "Yes"
+        move_down 10
+        text "Please follow this link to a video that will explain how to run the 'UDE Data Completeness Report', and how to make any corrections or updates needed to improve your data completeness."
+        move_down 5
+        formatted_text [{:text =>"CoC UDE Data Completeness and DKR Reports Video",
+                         :color => "0000FF",
+                         :link =>"http://mainehmis.org/2011/12/07/coc-ude-data-completeness-and-dkr-reports-video/"}]
+        move_down 5
+        text "Run the report for this facility (which is up for renewal this year) <b><u>and attach an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
+        move_down 10
+        text "#{attachment_info_ude}"
+        move_down 10 
+        text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
+        text "#{letter_grade_ude}"
+        move_down 10
+        text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
+        text "#{letter_grade_dkr}"
+      end
       
       start_new_page
       font_size 14
@@ -133,7 +212,6 @@ class CreateAndSendPdfJob
       move_down 10
       
       
-      
       pgnum_string = "Page <page> of <total>  #{grantee_name} - #{project_name}" 
       
       options = { :at => [bounds.right - 700, 0],
@@ -144,13 +222,16 @@ class CreateAndSendPdfJob
                     :color => "999999" }
       number_pages pgnum_string, options
       
-      
-    end
+  
+    end #prawndoc
+  
+    
   end
+
 
   def create_and_put_pdf
 
-    @mcoc_renewal = McocRenewals.find(mcoc_renewal_id)
+    @mcoc_renewal = McocRenewal.find(mcoc_renewal_id)
 
     @response_set = ResponseSet.find_by_access_code(response_set_code, :include => {:responses => [:question, :answer]})
     if @response_set
@@ -210,25 +291,56 @@ class CreateAndSendPdfJob
   end
   handle_asynchronously :create_and_put_pdf, :queue => 'completedsurveys'
   
+  
+  
   private
+  
+
   
   def get_response_with_only_one_value(data_export_identifier, response_set_id, survey_section_id)
     tmp_question = Question.find_by_data_export_identifier_and_survey_section_id(data_export_identifier, survey_section_id)
     tmp_question_id = tmp_question.id
     puts "testing tmp_question_id = #{tmp_question_id}"
-    tmp_answer = Answer.find_by_question_id(tmp_question_id)
-    tmp_answer_response_class = tmp_answer.response_class
-    tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.id, response_set_id)
-    @retval = ""
-    case tmp_answer_response_class
-      when "string"
-        @retval = tmp_response.string_value
-      when "text"
-        @retval = tmp_response.text_value
-      when "answer" #todo!
+    tmp_answer = Answer.find_all_by_question_id(tmp_question_id) #we may have multiple answer values (e.g. yes/no)
+    multi_answer_short_text = ""
+    if tmp_answer.size > 1
+      tmp_answer.each do |answer_item|
+        tmp_response_item = Response.find_by_answer_id_and_response_set_id(answer_item.id, response_set_id)
+        if !tmp_response_item.nil?
+          tmp_response = tmp_response_item
+          tmp_answer_response_class = answer_item.response_class
+          multi_answer_short_text = answer_item.short_text
+          puts " multi_answer_short_text -- #{multi_answer_short_text}"
+          #multi_answer_item = answer_item
+          #puts "multi_answer_item -- #{multi_answer_item.id}"
+        end
+      end
+    else
+      tmp_answer_response_class = tmp_answer.first.response_class
+      tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.first.id, response_set_id)
     end
-    return @retval
     
+    @retval = ""
+    if !tmp_response.nil? 
+      if !tmp_response.id.nil? 
+        case tmp_answer_response_class
+          when "string"
+            @retval = tmp_response.string_value
+          when "text"
+            @retval = tmp_response.text_value
+          when "answer" #yes/no values
+            @retval = tmp_answer.short_text
+            #@retval = multi_answer_item.short_text
+            #@retval = multi_answer_short_text
+        end
+        return @retval
+      end
+    else
+      case tmp_answer_response_class
+        when "answer" #yes/no values 
+          @retval = multi_answer_short_text
+      end
+    end
   end
   
   #this will be called when we want to get multiple answers with one question - such as question 1 - agency information
@@ -239,15 +351,29 @@ class CreateAndSendPdfJob
     tmp_answer_response_class = tmp_answer.response_class
     tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.id, response_set_id)
     @retval = ""
-    case tmp_answer_response_class
-      when "string"
-        @retval = tmp_response.string_value
-      when "text"
-        @retval = tmp_response.text_value
-      when "answer" #todo!
+    if !tmp_response.nil? 
+      if !tmp_response.id.nil? 
+        case tmp_answer_response_class
+          when "string"
+            @retval = tmp_response.string_value
+          when "text"
+            @retval = tmp_response.text_value
+          when "answer"   #yes/no values
+            @retval = tmp_answer.short_text
+        end
+        return @retval
+      end
     end
-    return @retval
-    
   end
   
+  def get_attachment_info_ude(mcoc_renewal_id)
+    tmp_mcoc_renewal = McocRenewal.find(mcoc_renewal_id)
+    retval = ""
+    if !tmp_mcoc_renewal.nil?
+      retval = "UDE Data Completeness Report attached: #{tmp_mcoc_renewal.attachment_ude_file_name} "
+    end
+    return retval
+  end
+  
+
 end
