@@ -337,7 +337,6 @@ class CreateAndSendPdfJob
         var_involve_permanent_supportive_housing_projects = involve_permanent_supportive_housing_projects
         text "#{var_involve_permanent_supportive_housing_projects}"
       end
-    ##
       if var_involve_permanent_supportive_housing_projects == "Yes"
         move_down 10
         text "WWhat percentage of tenants have been in permanent housing over 6 months?"
@@ -361,14 +360,13 @@ class CreateAndSendPdfJob
           text "#{if_below_77_please_explain}"
         end
       end #supportive housing = yes block      
-    ##  
-      
       
       start_new_page
       font_size 14
       text "Physical Plant", :style => :bold 
       font_size 10
       move_down 10
+      text "Please indicate if any of the agencies below conduct site visits for this program. If so, please list the date of last inspection and status of that inspection. If there are any unresolved findings or other issues, please explain briefly how they were or will be resolved and upload relevant documentation (at the bottom of this page)."
       
       start_new_page
       font_size 14
