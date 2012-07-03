@@ -303,24 +303,29 @@ class CreateAndSendPdfJob
     puts "testing tmp_question_id = #{tmp_question_id}"
     tmp_answer = Answer.find_all_by_question_id(tmp_question_id) #we may have multiple answer values (e.g. yes/no)
     multi_answer_short_text = ""
+    tmp_answer_response_class = ""
     if tmp_answer.size > 1
-      tmp_answer.each do |answer_item|
+      puts "tmp_answer.size > 1 "
+      tmp_answer.each do |answer_item|                      
         tmp_response_item = Response.find_by_answer_id_and_response_set_id(answer_item.id, response_set_id)
         if !tmp_response_item.nil?
           tmp_response = tmp_response_item
           tmp_answer_response_class = answer_item.response_class
           multi_answer_short_text = answer_item.short_text
           puts " multi_answer_short_text -- #{multi_answer_short_text}"
+          puts " tmp_answer_response_class = #{tmp_answer_response_class}"
           #multi_answer_item = answer_item
           #puts "multi_answer_item -- #{multi_answer_item.id}"
         end
       end
     else
+      puts "tmp_answer.size = 1 "
       tmp_answer_response_class = tmp_answer.first.response_class
       tmp_response = Response.find_by_answer_id_and_response_set_id(tmp_answer.first.id, response_set_id)
     end
     
     @retval = ""
+    
     if !tmp_response.nil? 
       if !tmp_response.id.nil? 
         case tmp_answer_response_class
@@ -329,6 +334,7 @@ class CreateAndSendPdfJob
           when "text"
             @retval = tmp_response.text_value
           when "answer" #yes/no values
+            puts "in here == why?"
             @retval = tmp_answer.short_text
             #@retval = multi_answer_item.short_text
             #@retval = multi_answer_short_text
@@ -336,6 +342,7 @@ class CreateAndSendPdfJob
         return @retval
       end
     else
+      puts "in here.....tmp_answer_response_class = #{tmp_answer_response_class}.?"
       case tmp_answer_response_class
         when "answer" #yes/no values 
           @retval = multi_answer_short_text
