@@ -190,7 +190,7 @@ survey "2012 Monitoring and Evaluation" do
         a_33_n "Fail", :data_export_identifier => 'msha_fail'
         a_33_x "Not Applicable", :data_export_identifier => 'msha_na'
         
-        q_34 "DHHS - Not Applicable Reason", :custom_class => 'c_q34txt'
+        q_34 "MaineHousing - Not Applicable Reason", :custom_class => 'c_q34txt'
         a_34 :text, :data_export_identifier => 'dhhs_na_reason'
         dependency :rule => "J"
         condition_J :q_33, "==", :a_33_x
