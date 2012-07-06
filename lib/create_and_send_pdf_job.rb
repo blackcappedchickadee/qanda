@@ -85,46 +85,79 @@ class CreateAndSendPdfJob
       text "Please complete this form if your agency intends to apply for Renewal McKinney Vento Funding through the Maine Continuum of Care in 2012. If you do not intend to apply for renewal funding, please let us know. All forms and appropriate attachments must be received electronically by Scott Tibbitts no later than July 15, 2012. Please direct all questions to: stibbitts@mainehousing.org. A separate form must be completed for EACH program/project seeking renewal."
       move_down 10
       text "Agency Name", :style => :bold 
+      font "Times-Roman"
       if agency_name.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{agency_name}"
       end
+      font "Helvetica"  # back to normal
       move_down 5
       text "Program Name", :style => :bold 
+      font "Times-Roman"
       if program_name.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{program_name}"
       end
+      font "Helvetica"  # back to normal
       move_down 5
       text "Project Address(es)", :style => :bold 
+      font "Times-Roman"
       if project_address.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{project_address}"
       end
+      font "Helvetica"  # back to normal
       move_down 5
       text "Contact Person", :style => :bold 
+      font "Times-Roman"
       if contact_person.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{contact_person}"
       end
+      font "Helvetica"  # back to normal
       move_down 5
       text "Phone Number", :style => :bold 
+      font "Times-Roman"
       if phone_number.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{phone_number}"
       end
+      font "Helvetica"  # back to normal
       move_down 5
       text "E-mail Address", :style => :bold 
+      font "Times-Roman"
       if e_mail_address.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{e_mail_address}"
       end 
+      font "Helvetica"  # back to normal
+      move_down 50
+      #legend
+      bounding_box [175, cursor], :width => 350 do
+        move_down 10
+        indent(10) do
+          text "<b>Legend</b>", :inline_format => true
+          move_down 10
+          indent(5) do
+            text "Questions are displayed using this style."
+            move_down 5
+            font "Times-Roman"
+            text "Answers are displayed using this style."
+            font "Helvetica"  # back to normal
+            move_down 5
+            text "'#{not_provided_text}' will display if required information was not furnished.", :inline_format => true
+          end
+        end
+        move_down 10
+        transparent(0.3) { stroke_bounds }
+      end
+      
       
       start_new_page
       font_size 14
@@ -135,35 +168,43 @@ class CreateAndSendPdfJob
       move_down 10
       text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
       move_down 5
+      font "Times-Roman"
       if data_program_info.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{data_program_info}"
       end
+      font "Helvetica"  # back to normal
       move_down 10
       text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
       move_down 5
+      font "Times-Roman"
       if self_suff.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{self_suff}"
       end
+      font "Helvetica"  # back to normal
       move_down 10
       text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
       move_down 5
+      font "Times-Roman"
       if program_verif_proc.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{program_verif_proc}"
       end
+      font "Helvetica"  # back to normal
       move_down 10
       text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
+      move_down 5
+      font "Times-Roman"
       if program_renewal_budget_pct.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         text "#{program_renewal_budget_pct}"
       end
-      
+      font "Helvetica"  # back to normal
       
       start_new_page
       font_size 14
@@ -173,13 +214,14 @@ class CreateAndSendPdfJob
       text "Is your project participating in the Maine HMIS (Homeless Management Information System)?"
       move_down 5
       var_hmis_particp = ""
-      puts " participating_maine_hmis = #{participating_maine_hmis}"
+      font "Times-Roman"
       if participating_maine_hmis.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         var_hmis_particp = participating_maine_hmis
         text "#{var_hmis_particp}"
       end
+      font "Helvetica"  # back to normal
       if var_hmis_particp == "Yes"
         move_down 10
         text "Please follow this link to a video that will explain how to run the 'UDE Data Completeness Report', and how to make any corrections or updates needed to improve your data completeness."
@@ -188,19 +230,25 @@ class CreateAndSendPdfJob
                          :color => "0000FF",
                          :link =>"http://mainehmis.org/2011/12/07/coc-ude-data-completeness-and-dkr-reports-video/"}]
         move_down 5
-        text "Run the report for this facility (which is up for renewal this year) <b><u>and attach an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
+        text "Run the report for this facility (which is up for renewal this year) <b><u>and upload an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
         move_down 10
+        font "Times-Roman"
         if attachment_info_ude.nil?
            text "#{not_provided_text}", :inline_format => true
         else
-          text "UDE Data Completeness Report attached: #{attachment_info_ude}"
+          text "UDE Data Completeness Report uploaded: #{attachment_info_ude}"
         end
+        font "Helvetica"  # back to normal
         move_down 10 
         text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
+        font "Times-Roman"
         text "#{letter_grade_ude}"
+        font "Helvetica"  # back to normal
         move_down 10
         text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
+        font "Times-Roman"
         text "#{letter_grade_dkr}"
+        font "Helvetica"  # back to normal
       end
       
       start_new_page
@@ -211,32 +259,38 @@ class CreateAndSendPdfJob
       text "Does your project work with Families or Youth?"
       var_project_work_with_families_youth = ""
       move_down 5
+      font "Times-Roman"
       if project_work_with_families_youth.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         var_project_work_with_families_youth = project_work_with_families_youth
         text "#{var_project_work_with_families_youth}"
       end
+      font "Helvetica"  # back to normal
       if var_project_work_with_families_youth == "Yes"
         move_down 10
         text "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?"
         var_and_form_process_document_this = ""
         move_down 5
+        font "Times-Roman"
         if and_form_process_document_this.nil?
           text "#{not_provided_text}", :inline_format => true
         else
           var_and_form_process_document_this = and_form_process_document_this
           text "#{var_and_form_process_document_this}"
         end
+        font "Helvetica"  # back to normal
         if var_and_form_process_document_this == "No or Not Applicable"
           move_down 10
           text "Since you have indicated 'No or Not Applicable' to the prior question, please explain."
           move_down 5
+          font "Times-Roman"
           if applicable_prior_question_please_explain.nil?
             text "#{not_provided_text}", :inline_format => true
           else
             text "#{applicable_prior_question_please_explain}"
           end
+          font "Helvetica"  # back to normal
         end
       end
       
@@ -245,119 +299,149 @@ class CreateAndSendPdfJob
       text "HUD Continuum Goals", :style => :bold 
       font_size 10
       move_down 10
-      text "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released. Please use the figures reported in your most recent Annual Progress Report (APR) submitted to HUD and <b>attach an electronic copy of the APR below</b>.", :inline_format => true
+      text "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released. Please use the figures reported in your most recent Annual Progress Report (APR) submitted to HUD and <b>upload an electronic copy of the APR below</b>.", :inline_format => true
       move_down 5
+      font "Times-Roman"
       if attachment_info_apr.nil?
         text "#{not_provided_text}", :inline_format => true
       else
-        text "APR Report attached: #{attachment_info_apr}"
+        text "APR Report uploaded: #{attachment_info_apr}"
       end
+      font "Helvetica"  # back to normal
       move_down 10
       text "What was your Average Daily Bed Utilization reported in your most recent APR?"
       move_down 5
       var_reported_your_most_recent_apr = 0
+      font "Times-Roman"
       if reported_your_most_recent_apr.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         var_reported_your_most_recent_apr = reported_your_most_recent_apr
         text "#{var_reported_your_most_recent_apr}%"
       end
+      font "Helvetica"  # back to normal
       move_down 10
       if var_reported_your_most_recent_apr.to_f < 85 && if_below_85_please_explain.nil?
         text "If below 85%, please explain:"
         move_down 5
+        font "Times-Roman"
         text "#{not_provided_text}", :inline_format => true
+        font "Helvetica"  # back to normal
       end
       if !if_below_85_please_explain.nil? #render even if the value was > 85
         text "If below 85%, please explain:"
         move_down 5
+        font "Times-Roman"
         text "#{if_below_85_please_explain}"
+        font "Helvetica"  # back to normal
       end
       move_down 10
       text "What percentage of your tenants were employed at program at exit?"
       move_down 5
       var_employed_at_program_at_exit = 0
+      font "Times-Roman"
       if employed_at_program_at_exit.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         var_employed_at_program_at_exit = employed_at_program_at_exit
         text "#{var_employed_at_program_at_exit}%"
       end
+      font "Helvetica"  # back to normal
       move_down 10
       if var_employed_at_program_at_exit.to_f < 85 && less_than_20_please_explain.nil?
         text "If less than 20%, please explain:"
         move_down 5
+        font "Times-Roman"
         text "#{not_provided_text}", :inline_format => true
+        font "Helvetica"  # back to normal
       end
       if !less_than_20_please_explain.nil? #render even if the value was < 85
         text "If less than 20%, please explain:"
         move_down 5
+        font "Times-Roman"
         text "#{less_than_20_please_explain}"
+        font "Helvetica"  # back to normal
       end
       move_down 10
       text "Does your project involve <u>Transitional</u> Housing Projects?", :inline_format => true
       move_down 5
       var_project_involve_transitional_housing_projects = ""
+      font "Times-Roman"
       if project_involve_transitional_housing_projects.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         var_project_involve_transitional_housing_projects = project_involve_transitional_housing_projects
         text "#{var_project_involve_transitional_housing_projects}"
       end
+      font "Helvetica"  # back to normal
       if var_project_involve_transitional_housing_projects == "Yes"
         move_down 10
         text "What percentage of tenants moved from transitional to permanent housing?"
         move_down 5
         var_moved_from_transitional_permanent_housing = 0
+        font "Times-Roman"
         if moved_from_transitional_permanent_housing.nil?
           text "#{not_provided_text}", :inline_format => true
         else
           var_moved_from_transitional_permanent_housing = moved_from_transitional_permanent_housing
           text "#{var_moved_from_transitional_permanent_housing}%"
         end
+        font "Helvetica"  # back to normal
         move_down 10
         if var_moved_from_transitional_permanent_housing.to_f < 65 && if_below_65_please_explain.nil?
           text "If less than 65%, please explain:"
           move_down 5
+          font "Times-Roman"
           text "#{not_provided_text}", :inline_format => true
+          font "Helvetica"  # back to normal
         end
         if !if_below_65_please_explain.nil? #render even if the value was < 65
           text "If below 65%, please explain:"
           move_down 5
+          font "Times-Roman"
           text "#{if_below_65_please_explain}"
+          font "Helvetica"  # back to normal
         end
       end #transitional housing = yes block
       move_down 10
       text "Does your project involve <u>Permanent Supportive</u> Housing Projects?", :inline_format => true
       move_down 5
       var_involve_permanent_supportive_housing_projects = ""
+      font "Times-Roman"
       if involve_permanent_supportive_housing_projects.nil?
         text "#{not_provided_text}", :inline_format => true
       else
         var_involve_permanent_supportive_housing_projects = involve_permanent_supportive_housing_projects
         text "#{var_involve_permanent_supportive_housing_projects}"
       end
+      font "Helvetica"  # back to normal
       if var_involve_permanent_supportive_housing_projects == "Yes"
         move_down 10
-        text "WWhat percentage of tenants have been in permanent housing over 6 months?"
+        text "What percentage of tenants have been in permanent housing over 6 months?"
         move_down 5
         var_permanent_housing_over_6_months = 0
+        font "Times-Roman"
         if permanent_housing_over_6_months.nil?
           text "#{not_provided_text}", :inline_format => true
         else
           var_permanent_housing_over_6_months = permanent_housing_over_6_months
           text "#{var_permanent_housing_over_6_months}%"
         end
+        font "Helvetica"  # back to normal
         move_down 10
         if var_permanent_housing_over_6_months.to_f < 77 && if_below_77_please_explain.nil?
           text "If less than 77%, please explain:"
           move_down 5
+          font "Times-Roman"
           text "#{not_provided_text}", :inline_format => true
+          font "Helvetica"  # back to normal
         end
         if !if_below_77_please_explain.nil? #render even if the value was < 77
           text "If below 77%, please explain:"
           move_down 5
+          font "Times-Roman"
           text "#{if_below_77_please_explain}"
+          font "Helvetica"  # back to normal
         end
       end #supportive housing = yes block      
       

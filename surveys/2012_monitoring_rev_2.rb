@@ -49,7 +49,7 @@ survey "2012 Monitoring and Evaluation" do
             make any corrections or updates needed to improve your data completeness.
             <br/><br/>
             <a target='_blank' href='http://mainehmis.org/2011/12/07/coc-ude-data-completeness-and-dkr-reports-video/'>CoC UDE Data Completeness and DKR Reports Video</a>
-            <br/><br/>Run the report for this facility (which is up for renewal this year) and <b><u>attach an electronic copy of the report below</u></b>.
+            <br/><br/>Run the report for this facility (which is up for renewal this year) and <b><u>upload an electronic copy of the report below</u></b>.
             <b>Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</b><br/>
             <br/><br/>
             <iframe id='ude_upload' name='ude_upload' src='attachments/ude_report'></iframe>
@@ -90,7 +90,7 @@ survey "2012 Monitoring and Evaluation" do
   section "HUD Continuum Goals" do
       label "The next few questions are based on Continuum Goals set by HUD and subject to change once the 2012 NOFA is released.
            Please use the figures reported in your <u>most recent</u> Annual Progress Report (APR) submitted to HUD and 
-           <b>attach an electronic copy of the APR below</b>.
+           <b>upload an electronic copy of the APR below</b>.
            <br/><br/>
            <iframe id='apr_upload' name='apr_upload' src='attachments/apr_report'></iframe>
            <br/>"
