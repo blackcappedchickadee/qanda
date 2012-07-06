@@ -264,7 +264,7 @@ survey "2012 Monitoring and Evaluation" do
         a_50_n "Fail", :data_export_identifier => 'other1_fail'
         a_50_x "Not Applicable", :data_export_identifier => 'other1_na'
         
-        q_51 "Other - Not Applicable Reason", :custom_class => 'c_q51txt'
+        q_51 "Other - Not Applicable Reason", :custom_class => 'c_q51txt', :data_export_identifier => 'other1_na_reason'
         a_51 :text, :data_export_identifier => 'other1_na_reason'
         dependency :rule => "N"
         condition_N :q_50, "==", :a_50_x
@@ -284,7 +284,7 @@ survey "2012 Monitoring and Evaluation" do
         a_55_n "Fail", :data_export_identifier => 'other2_fail'
         a_55_x "Not Applicable", :data_export_identifier => 'other2_na'
 
-        q_56 "Other - Not Applicable Reason", :custom_class => 'c_q56txt'
+        q_56 "Other - Not Applicable Reason", :custom_class => 'c_q56txt', :data_export_identifier => 'other2_na_reason'
         a_56 :text, :data_export_identifier => 'other2_na_reason'
         dependency :rule => "N"
         condition_N :q_55, "==", :a_55_x

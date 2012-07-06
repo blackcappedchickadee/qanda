@@ -58,6 +58,251 @@ class CreateAndSendPdfJob
     permanent_housing_over_6_months = get_response_with_only_one_value("permanent_housing_over_6_months", response_set_id, survey_section_hud_continuum_goals)    
     if_below_77_please_explain = get_response_with_only_one_value("if_below_77_please_explain", response_set_id, survey_section_hud_continuum_goals)    
 
+    #page 6 values - physcial plant
+    site_visit_fire_marshall = get_response_with_only_one_value("site_visit_fire_marshall", response_set_id, survey_section_physical_plant)
+    inspection_date_fire_marshall = get_response_with_only_one_value("inspection_date_fire_marshall", response_set_id, survey_section_physical_plant)
+    pass_fail_fire_marshall = get_response_with_only_one_value("pass_fail_fire_marshall", response_set_id, survey_section_physical_plant)
+    fire_marshall_not_applicable_reason = get_response_with_only_one_value("fire_marshall_not_applicable_reason", response_set_id, survey_section_physical_plant)
+    fire_marshall_col_1 = ""
+    fire_marshall_col_2 = ""
+    fire_marshall_col_3 = ""
+    fire_marshall_col_4 = ""
+    if !site_visit_fire_marshall.nil?
+      fire_marshall_col_1 = site_visit_fire_marshall
+      if site_visit_fire_marshall == "Yes"
+        if !inspection_date_fire_marshall.nil?
+          fire_marshall_col_2 = inspection_date_fire_marshall
+        else
+          fire_marshall_col_2 = "#{not_provided_text}"
+        end
+        if !pass_fail_fire_marshall.nil?
+          fire_marshall_col_3 = pass_fail_fire_marshall
+          if pass_fail_fire_marshall == "Not Applicable"
+            if !fire_marshall_not_applicable_reason.nil?
+              fire_marshall_col_4 = fire_marshall_not_applicable_reason
+            else
+              fire_marshall_col_4 = "#{not_provided_text}"
+            end
+          end
+        else
+          fire_marshall_col_3 = "#{not_provided_text}"
+        end
+      end #yes - site visit
+    else
+      fire_marshall_col_1 = "#{not_provided_text}"
+    end
+    data_fire_marshall = [[ fire_marshall_col_1, fire_marshall_col_2, fire_marshall_col_3 + fire_marshall_col_4]]
+    
+     site_visit_dhhs = get_response_with_only_one_value("site_visit_dhhs", response_set_id, survey_section_physical_plant)
+     inspection_date_dhhs = get_response_with_only_one_value("inspection_date_dhhs", response_set_id, survey_section_physical_plant)
+     pass_fail_dhhs = get_response_with_only_one_value("pass_fail_dhhs", response_set_id, survey_section_physical_plant)
+     dhhs_not_applicable_reason = get_response_with_only_one_value("dhhs_not_applicable_reason", response_set_id, survey_section_physical_plant)
+     dhhs_col_1 = ""
+     dhhs_col_2 = ""
+     dhhs_col_3 = ""
+     dhhs_col_4 = ""
+     if !site_visit_dhhs.nil?
+       dhhs_col_1 = site_visit_dhhs
+       if site_visit_dhhs == "Yes"
+         if !inspection_date_dhhs.nil?
+           dhhs_col_2 = inspection_date_dhhs
+         else
+           dhhs_col_2 = "#{not_provided_text}"
+         end
+         if !pass_fail_dhhs.nil?
+           dhhs_col_3 = pass_fail_dhhs
+           if pass_fail_dhhs == "Not Applicable"
+             if !dhhs_not_applicable_reason.nil?
+               dhhs_col_4 = dhhs_not_applicable_reason
+             else
+               dhhs_col_4 = "#{not_provided_text}"
+             end
+           end
+         else
+           dhhs_col_3 = "#{not_provided_text}"
+         end
+       end #yes - site visit
+     else
+       dhhs_col_1 = "#{not_provided_text}"
+     end
+     data_dhhs = [[ dhhs_col_1, dhhs_col_2, dhhs_col_3 + " " + dhhs_col_4]]
+
+    site_visit_msha = get_response_with_only_one_value("site_visit_msha", response_set_id, survey_section_physical_plant)
+    inspection_date_msha = get_response_with_only_one_value("inspection_date_msha", response_set_id, survey_section_physical_plant)
+    pass_fail_msha = get_response_with_only_one_value("pass_fail_msha", response_set_id, survey_section_physical_plant)
+    msha_not_applicable_reason = get_response_with_only_one_value("mainehousing_not_applicable_reason", response_set_id, survey_section_physical_plant)
+    msha_col_1 = ""
+    msha_col_2 = ""
+    msha_col_3 = ""
+    msha_col_4 = ""
+    if !site_visit_msha.nil?
+      msha_col_1 = site_visit_msha
+      if site_visit_msha == "Yes"
+        if !inspection_date_msha.nil?
+          msha_col_2 = inspection_date_msha
+        else
+          msha_col_2 = "#{not_provided_text}"
+        end
+        if !pass_fail_msha.nil?
+          msha_col_3 = pass_fail_msha
+          if pass_fail_msha == "Not Applicable"
+            if !msha_not_applicable_reason.nil?
+              msha_col_4 = msha_not_applicable_reason
+            else
+              msha_col_4 = "#{not_provided_text}"
+            end
+          end
+        else
+          msha_col_3 = "#{not_provided_text}"
+        end
+      end #yes - site visit
+    else
+      msha_col_1 = "#{not_provided_text}"
+    end
+    data_msha = [[ msha_col_1, msha_col_2, msha_col_3 + " " + msha_col_4]]    
+
+    site_visit_carf = get_response_with_only_one_value("site_visit_carf", response_set_id, survey_section_physical_plant)
+    inspection_date_carf = get_response_with_only_one_value("inspection_date_carf", response_set_id, survey_section_physical_plant)
+    pass_fail_carf = get_response_with_only_one_value("pass_or_fail_carf", response_set_id, survey_section_physical_plant)
+    carf_not_applicable_reason = get_response_with_only_one_value("carf_not_applicable_reason", response_set_id, survey_section_physical_plant)
+    carf_col_1 = ""
+    carf_col_2 = ""
+    carf_col_3 = ""
+    carf_col_4 = ""
+    if !site_visit_carf.nil?
+      carf_col_1 = site_visit_carf
+      if site_visit_carf == "Yes"
+        if !inspection_date_carf.nil?
+          carf_col_2 = inspection_date_carf
+        else
+          carf_col_2 = "#{not_provided_text}"
+        end
+        if !pass_fail_carf.nil?
+          carf_col_3 = pass_fail_carf
+          if pass_fail_carf == "Not Applicable"
+            if !carf_not_applicable_reason.nil?
+              carf_col_4 = carf_not_applicable_reason
+            else
+              carf_col_4 = "#{not_provided_text}"
+            end
+          end
+        else
+          carf_col_3 = "#{not_provided_text}"
+        end
+      end #yes - site visit
+    else
+      carf_col_1 = "#{not_provided_text}"
+    end
+    data_carf = [[ carf_col_1, carf_col_2, carf_col_3 + " " + carf_col_4]]
+    
+    site_visit_hud = get_response_with_only_one_value("site_visit_hud", response_set_id, survey_section_physical_plant)
+    inspection_date_hud = get_response_with_only_one_value("inspection_date_hud", response_set_id, survey_section_physical_plant)
+    pass_fail_hud = get_response_with_only_one_value("pass_or_fail_hud", response_set_id, survey_section_physical_plant)
+    hud_not_applicable_reason = get_response_with_only_one_value("hud_not_applicable_reason", response_set_id, survey_section_physical_plant)
+    hud_col_1 = ""
+    hud_col_2 = ""
+    hud_col_3 = ""
+    hud_col_4 = ""
+    if !site_visit_hud.nil?
+      hud_col_1 = site_visit_hud
+      if site_visit_hud == "Yes"
+        if !inspection_date_hud.nil?
+          hud_col_2 = inspection_date_hud
+        else
+          hud_col_2 = "#{not_provided_text}"
+        end
+        if !pass_fail_hud.nil?
+          hud_col_3 = pass_fail_hud
+          if pass_fail_hud == "Not Applicable"
+            if !hud_not_applicable_reason.nil?
+              hud_col_4 = hud_not_applicable_reason
+            else
+              hud_col_4 = "#{not_provided_text}"
+            end
+          end
+        else
+          hud_col_3 = "#{not_provided_text}"
+        end
+      end #yes - site visit
+    else
+      hud_col_1 = "#{not_provided_text}"
+    end
+    data_hud = [[ hud_col_1, hud_col_2, hud_col_3 + " " + hud_col_4]]
+    
+    site_visit_hqs = get_response_with_only_one_value("site_visit_hqs", response_set_id, survey_section_physical_plant)
+    inspection_date_hqs = get_response_with_only_one_value("inspection_date_hqs", response_set_id, survey_section_physical_plant)
+    pass_fail_hqs = get_response_with_only_one_value("pass_or_fail_hqs", response_set_id, survey_section_physical_plant)
+    hqs_not_applicable_reason = get_response_with_only_one_value("hqs_not_applicable_reason", response_set_id, survey_section_physical_plant)
+    hqs_col_1 = ""
+    hqs_col_2 = ""
+    hqs_col_3 = ""
+    hqs_col_4 = ""
+    if !site_visit_hqs.nil?
+      hqs_col_1 = site_visit_hqs
+      if site_visit_hqs == "Yes"
+        if !inspection_date_hqs.nil?
+          hqs_col_2 = inspection_date_hqs
+        else
+          hqs_col_2 = "#{not_provided_text}"
+        end
+        if !pass_fail_hqs.nil?
+          hqs_col_3 = pass_fail_hqs
+          if pass_fail_hqs == "Not Applicable"
+            if !hqs_not_applicable_reason.nil?
+              hqs_col_4 = hqs_not_applicable_reason
+            else
+              hqs_col_4 = "#{not_provided_text}"
+            end
+          end
+        else
+          hqs_col_3 = "#{not_provided_text}"
+        end
+      end #yes - site visit
+    else
+      hqs_col_1 = "#{not_provided_text}"
+    end
+    data_hqs = [[ hqs_col_1, hqs_col_2, hqs_col_3 + " " + hqs_col_4]]
+    
+    name_other1 = get_response_with_only_one_value("name_other1", response_set_id, survey_section_physical_plant)
+    site_visit_other1 = get_response_with_only_one_value("site_visit_other1", response_set_id, survey_section_physical_plant)
+    inspection_date_other1 = get_response_with_only_one_value("inspection_date_other1", response_set_id, survey_section_physical_plant)
+    pass_fail_other1 = get_response_with_only_one_value("pass_or_fail_other1", response_set_id, survey_section_physical_plant)
+    other1_not_applicable_reason = get_response_with_only_one_value("other1_not_applicable_reason", response_set_id, survey_section_physical_plant)
+    other1_col_0 = ""
+    other1_col_1 = ""
+    other1_col_2 = ""
+    other1_col_3 = ""
+    other1_col_4 = ""
+    puts "now????"
+    if !name_other1.nil?
+      other1_col_0 = name_other1
+      if !site_visit_other1.nil?
+        other1_col_1 = site_visit_other1
+        if site_visit_other1 == "Yes"
+          if !inspection_date_other1.nil?
+            other1_col_2 = inspection_date_other1
+          else
+            other1_col_2 = "#{not_provided_text}"
+          end
+          if !pass_fail_other1.nil?
+            other1_col_3 = pass_fail_other1
+            if pass_fail_other1 == "Not Applicable"
+              if !other1_not_applicable_reason.nil?
+                other1_col_4 = other1_not_applicable_reason
+              else
+                other1_col_4 = "#{not_provided_text}"
+              end
+            end
+          else
+            other1_col_3 = "#{not_provided_text}"
+          end
+        end #yes - site visit
+      end
+    end
+    puts "before......."
+    data_other1 = [[ other1_col_0, other1_col_1, other1_col_2, other1_col_3 + " " + other1_col_4]]
+    puts "after......."
+
 
     myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
       
@@ -151,7 +396,7 @@ class CreateAndSendPdfJob
             text "Answers are displayed using this style."
             font "Helvetica"  # back to normal
             move_down 5
-            text "'#{not_provided_text}' will display if required information was not furnished.", :inline_format => true
+            text "<font name='Times-Roman'>'#{not_provided_text}'</font> will display if required information was not furnished.", :inline_format => true
           end
         end
         move_down 10
@@ -241,13 +486,23 @@ class CreateAndSendPdfJob
         font "Helvetica"  # back to normal
         move_down 10 
         text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
+        move_down 5
         font "Times-Roman"
-        text "#{letter_grade_ude}"
+        if letter_grade_ude.nil?
+          text "#{not_provided_text}", :inline_format => true
+        else
+          text "#{letter_grade_ude}"
+        end
         font "Helvetica"  # back to normal
         move_down 10
         text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
+        move_down 5
         font "Times-Roman"
-        text "#{letter_grade_dkr}"
+        if letter_grade_dkr.nil?
+          text "#{not_provided_text}", :inline_format => true
+        else
+          text "#{letter_grade_dkr}"
+        end
         font "Helvetica"  # back to normal
       end
       
@@ -451,6 +706,35 @@ class CreateAndSendPdfJob
       font_size 10
       move_down 10
       text "Please indicate if any of the agencies below conduct site visits for this program. If so, please list the date of last inspection and status of that inspection. If there are any unresolved findings or other issues, please explain briefly how they were or will be resolved and upload relevant documentation (at the bottom of this page)."
+      move_down 10
+      text "Fire Marshall", :style => :bold 
+      data_headers = [["Site Visit?", "Date of last inspection?", "Pass or Fail?"]]
+      data_headers1 = [["Name","Site Visit?", "Date of last inspection?", "Pass or Fail?"]]
+      table(data_headers, :column_widths => [100, 200, 200])
+      table data_fire_marshall, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      move_down 10
+      text "DHHS", :style => :bold 
+      table(data_headers, :column_widths => [100, 200, 200])
+      table data_dhhs, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      move_down 10
+      text "MaineHousing", :style => :bold 
+      table(data_headers, :column_widths => [100, 200, 200])
+      table data_msha, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      move_down 10
+      text "CARF", :style => :bold 
+      table(data_headers, :column_widths => [100, 200, 200])
+      table data_carf, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      move_down 10
+      text "HUD", :style => :bold 
+      table(data_headers, :column_widths => [100, 200, 200])
+      table data_hud, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      move_down 10
+      text "HQS", :style => :bold 
+      table(data_headers, :column_widths => [100, 200, 200])
+      table data_hqs, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }    
+      text "Other agency", :style => :bold 
+      table(data_headers1, :column_widths => [200, 100, 200, 200])
+      table data_other1, :column_widths => [200, 100, 200, 200], :cell_style => { :inline_format => true }
       
       start_new_page
       font_size 14
@@ -575,6 +859,8 @@ class CreateAndSendPdfJob
             @retval = tmp_response.text_value
           when "answer" #yes/no values
             @retval = tmp_answer.short_text
+          when "date"
+            @retval = tmp_response.datetime_value.strftime("%m/%d/%Y")
         end
         return @retval
       end
@@ -603,6 +889,8 @@ class CreateAndSendPdfJob
             @retval = tmp_response.text_value
           when "answer"   #yes/no values
             @retval = tmp_answer.short_text
+          when "date"
+            @retval = tmp_response.datetime_value.strftime("%m/%d/%Y")
         end
         return @retval
       end
