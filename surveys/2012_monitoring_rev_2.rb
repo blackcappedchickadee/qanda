@@ -293,7 +293,7 @@ survey "2012 Monitoring and Evaluation" do
     
       q_56 "Physical plant narrative (if necessary). If there are any unresolved 
       findings or other issues, please explain briefly how they were or will be resolved and upload
-      relevant documentation.", :custom_class => 'c_q56'
+      relevant documentation.", :custom_class => 'c_q56', :data_export_identifier => 'phys_plant_narrative'
       a_56 :text
       
       label "<iframe id='additional_doc_upload' name='additional_doc_upload' src='attachments/additional_doc'></iframe>"

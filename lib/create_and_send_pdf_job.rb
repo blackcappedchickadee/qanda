@@ -267,13 +267,11 @@ class CreateAndSendPdfJob
     site_visit_other1 = get_response_with_only_one_value("site_visit_other1", response_set_id, survey_section_physical_plant)
     inspection_date_other1 = get_response_with_only_one_value("inspection_date_other1", response_set_id, survey_section_physical_plant)
     pass_fail_other1 = get_response_with_only_one_value("pass_or_fail_other1", response_set_id, survey_section_physical_plant)
-    other1_not_applicable_reason = get_response_with_only_one_value("other1_not_applicable_reason", response_set_id, survey_section_physical_plant)
-    other1_col_0 = ""
+    other1_not_applicable_reason = get_response_with_only_one_value("other1_na_reason", response_set_id, survey_section_physical_plant)
     other1_col_1 = ""
     other1_col_2 = ""
     other1_col_3 = ""
     other1_col_4 = ""
-    puts "now????"
     if !name_other1.nil?
       other1_col_0 = name_other1
       if !site_visit_other1.nil?
@@ -299,9 +297,57 @@ class CreateAndSendPdfJob
         end #yes - site visit
       end
     end
-    puts "before......."
-    data_other1 = [[ other1_col_0, other1_col_1, other1_col_2, other1_col_3 + " " + other1_col_4]]
-    puts "after......."
+    data_other1 = [[ other1_col_1, other1_col_2, other1_col_3 + " " + other1_col_4]]
+    
+    name_other2 = get_response_with_only_one_value("name_other2", response_set_id, survey_section_physical_plant)
+    site_visit_other2 = get_response_with_only_one_value("site_visit_other2", response_set_id, survey_section_physical_plant)
+    inspection_date_other2 = get_response_with_only_one_value("inspection_date_other2", response_set_id, survey_section_physical_plant)
+    pass_fail_other2 = get_response_with_only_one_value("pass_or_fail_other2", response_set_id, survey_section_physical_plant)
+    other2_not_applicable_reason = get_response_with_only_one_value("other2_na_reason", response_set_id, survey_section_physical_plant)
+    other2_col_1 = ""
+    other2_col_2 = ""
+    other2_col_3 = ""
+    other2_col_4 = ""
+    if !name_other2.nil?
+      other2_col_0 = name_other2
+      if !site_visit_other2.nil?
+        other2_col_1 = site_visit_other2
+        if site_visit_other2 == "Yes"
+          if !inspection_date_other2.nil?
+            other2_col_2 = inspection_date_other2
+          else
+            other2_col_2 = "#{not_provided_text}"
+          end
+          if !pass_fail_other2.nil?
+            other2_col_3 = pass_fail_other2
+            if pass_fail_other2 == "Not Applicable"
+              if !other2_not_applicable_reason.nil?
+                other2_col_4 = other2_not_applicable_reason
+              else
+                other2_col_4 = "#{not_provided_text}"
+              end
+            end
+          else
+            other2_col_3 = "#{not_provided_text}"
+          end
+        end #yes - site visit
+      end
+    end
+    data_other2 = [[ other2_col_1, other2_col_2, other2_col_3 + " " + other2_col_4]]
+    
+    phys_plant_narrative = get_response_with_only_one_value("phys_plant_narrative", response_set_id, survey_section_physical_plant)
+    attachment_info_other = get_attachment_other(mcoc_renewal_id)
+    
+    preparer_first_name = get_response_with_only_one_value("preparer_first_name", response_set_id, survey_section_finish)
+    preparer_last_name = get_response_with_only_one_value("preparer_last_name", response_set_id, survey_section_finish)
+    preparer_title = get_response_with_only_one_value("preparer_title", response_set_id, survey_section_finish)
+    preparer_email_address = get_response_with_only_one_value("preparer_email_address", response_set_id, survey_section_finish)
+    preparer_phone_number = get_response_with_only_one_value("preparer_phone_number", response_set_id, survey_section_finish)
+    execdir_first_name = get_response_with_only_one_value("execdir_first_name", response_set_id, survey_section_finish)
+    execdir_last_name = get_response_with_only_one_value("execdir_last_name", response_set_id, survey_section_finish)
+    execdir_email_address = get_response_with_only_one_value("execdir_email_address", response_set_id, survey_section_finish)
+    elect_sig_checkval = get_response_with_only_one_value("elect_sig_checkval", response_set_id, survey_section_finish)
+    elect_sig_name = get_response_with_only_one_value("elect_sig_name", response_set_id, survey_section_finish)
 
 
     myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
@@ -710,37 +756,131 @@ class CreateAndSendPdfJob
       text "Fire Marshall", :style => :bold 
       data_headers = [["Site Visit?", "Date of last inspection?", "Pass or Fail?"]]
       data_headers1 = [["Name","Site Visit?", "Date of last inspection?", "Pass or Fail?"]]
-      table(data_headers, :column_widths => [100, 200, 200])
-      table data_fire_marshall, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      table(data_headers, :column_widths => [60, 120, 310])
+      font "Times-Roman"
+      table data_fire_marshall, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      font "Helvetica"  # back to normal
       move_down 10
       text "DHHS", :style => :bold 
-      table(data_headers, :column_widths => [100, 200, 200])
-      table data_dhhs, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      table(data_headers, :column_widths => [60, 120, 310])
+      font "Times-Roman"
+      table data_dhhs, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      font "Helvetica"  # back to normal
       move_down 10
       text "MaineHousing", :style => :bold 
-      table(data_headers, :column_widths => [100, 200, 200])
-      table data_msha, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      table(data_headers, :column_widths => [60, 120, 310])
+      font "Times-Roman"
+      table data_msha, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      font "Helvetica"  # back to normal
       move_down 10
       text "CARF", :style => :bold 
-      table(data_headers, :column_widths => [100, 200, 200])
-      table data_carf, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      table(data_headers, :column_widths => [60, 120, 310])
+      font "Times-Roman"
+      table data_carf, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      font "Helvetica"  # back to normal
       move_down 10
       text "HUD", :style => :bold 
-      table(data_headers, :column_widths => [100, 200, 200])
-      table data_hud, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }
+      table(data_headers, :column_widths => [60, 120, 310])
+      font "Times-Roman"
+      table data_hud, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      font "Helvetica"  # back to normal
       move_down 10
       text "HQS", :style => :bold 
-      table(data_headers, :column_widths => [100, 200, 200])
-      table data_hqs, :column_widths => [100, 200, 200], :cell_style => { :inline_format => true }    
-      text "Other agency", :style => :bold 
-      table(data_headers1, :column_widths => [200, 100, 200, 200])
-      table data_other1, :column_widths => [200, 100, 200, 200], :cell_style => { :inline_format => true }
+      table(data_headers, :column_widths => [60, 120, 310])
+      font "Times-Roman"
+      table data_hqs, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }   
+      font "Helvetica"  # back to normal 
+      if !name_other1.nil?
+        move_down 10
+        text name_other1, :style => :bold 
+        table(data_headers, :column_widths => [60, 120, 310])
+        font "Times-Roman"
+        table data_other1, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+        font "Helvetica"  # back to normal
+      end
+      if !name_other2.nil?
+        move_down 10
+        text name_other2, :style => :bold 
+        table(data_headers, :column_widths => [60, 120, 310])
+        font "Times-Roman"
+        table data_other2, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+        font "Helvetica"  # back to normal
+      end
+      move_down 10
+      text "Physical plant narrative (if necessary). If there are any unresolved findings or other issues, please explain briefly how they were or will be resolved and upload relevant documentation."
+      move_down 5
+      font "Times-Roman"
+      text "#{phys_plant_narrative}"
+      font "Helvetica"  # back to normal
+      
+      font "Times-Roman"
+      if !attachment_info_other.nil?
+        move_down 10
+        text "Relevant and supporting documentation uploaded:\n #{attachment_info_other}", :inline_format => true
+      end
+      font "Helvetica"  # back to normal
       
       start_new_page
       font_size 14
       text "Finish", :style => :bold 
       font_size 10
       move_down 10
+      text "Please provide the following information to complete the Monitoring and Evaluation questionnaire:"
+      move_down 5
+      text "<i>All information submitted is true and accurate to the best of my knowledge.</i>", :inline_format => true
+      move_down 10
+      text "Prepared By", :style => :bold
+      move_down 5
+      text "First Name"
+      font "Times-Roman"
+      if preparer_first_name.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{preparer_first_name}"
+      end
+      font "Helvetica"  # back to normal
+      move_down 5
+      text "Last Name"
+      font "Times-Roman"
+      if preparer_last_name.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{preparer_last_name}"
+      end
+      font "Helvetica"  # back to normal
+      move_down 5
+      text "Last Name"
+      font "Times-Roman"
+      if preparer_title.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{preparer_title}"
+      end
+      font "Helvetica"  # back to normal
+      move_down 5
+      text "(If different from agency/program contact information):"
+      move_down 5
+      text "Email Address"
+      font "Times-Roman"
+      if preparer_email_address.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{preparer_email_address}"
+      end
+      font "Helvetica"  # back to normal      
+      move_down 5
+      text "Phone number"
+      font "Times-Roman"
+      if preparer_phone_number.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{preparer_phone_number}"
+      end
+      font "Helvetica"  # back to normal      
+      move_down 10
+      text "Executive Director Information", :style => :bold
+      
+      
       
       
       pgnum_string = "Page <page> of <total>  #{grantee_name} - #{project_name}" 
@@ -857,8 +997,12 @@ class CreateAndSendPdfJob
             @retval = tmp_response.string_value
           when "text"
             @retval = tmp_response.text_value
-          when "answer" #yes/no values
-            @retval = tmp_answer.short_text
+          when "answer" #yes/no values, and checkbox
+            if data_export_identifier == "elect_sig_checkval"
+              @retval = "checked: I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge."
+            else
+              @retval = tmp_answer.short_text
+            end
           when "date"
             @retval = tmp_response.datetime_value.strftime("%m/%d/%Y")
         end
@@ -913,6 +1057,20 @@ class CreateAndSendPdfJob
       if !tmp_mcoc_renewal.attachment_apr_file_name.nil?
         retval = "#{tmp_mcoc_renewal.attachment_apr_file_name}"
       end
+    end
+    return retval
+  end
+
+  def get_attachment_other(mcoc_renewal_id)
+    tmp_mcoc_asset = McocAsset.find_all_by_mcoc_renewal_id(mcoc_renewal_id)
+    tmp_str = ""
+    if !tmp_mcoc_asset.nil?
+      tmp_mcoc_asset.each do |asset|
+        if !asset.supporting_doc_file_name.nil?
+          tmp_str <<  "- #{asset.supporting_doc_file_name} \n"
+        end
+      end
+      retval = tmp_str
     end
     return retval
   end
