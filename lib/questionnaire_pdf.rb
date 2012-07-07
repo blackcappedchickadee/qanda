@@ -1,6 +1,6 @@
 class QuestionnairePdf < Prawn::Document
   
-  def initialize(mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name, view)
+  def initialize(mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
     
       not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
 

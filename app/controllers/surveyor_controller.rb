@@ -39,37 +39,37 @@ module SurveyorControllerCustomMethods
     end
   end
   def update
-          saved = false
-          ActiveRecord::Base.transaction do
-            @response_set = ResponseSet.find_by_access_code(params[:response_set_code], :include => {:responses => :answer}, :lock => true)
-            unless @response_set.blank?
-              saved = @response_set.update_attributes(:responses_attributes => ResponseSet.to_savable(params[:r]))
-              @response_set.complete! if saved && params[:finish]
-              saved &= @response_set.save
-            end
-          end
-          return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && params[:finish]
+    saved = false
+    ActiveRecord::Base.transaction do
+      @response_set = ResponseSet.find_by_access_code(params[:response_set_code], :include => {:responses => :answer}, :lock => true)
+      unless @response_set.blank?
+        saved = @response_set.update_attributes(:responses_attributes => ResponseSet.to_savable(params[:r]))
+        @response_set.complete! if saved && params[:finish]
+        saved &= @response_set.save
+      end
+    end
+    return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && params[:finish]
 
-          respond_to do |format|
-            format.html do
-              if @response_set.blank?
-                return redirect_with_message(available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
-              else
-                flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
-                redirect_to edit_my_survey_path(:anchor => anchor_from(params[:section]), :section => section_id_from(params[:section]))
-              end
-            end
-            format.js do
-              ids, remove, question_ids = {}, {}, []
-              ResponseSet.trim_for_lookups(params[:r]).each do |k,v|
-                v[:answer_id].reject!(&:blank?) if v[:answer_id].is_a?(Array)
-                ids[k] = @response_set.responses.find(:first, :conditions => v, :order => "created_at DESC").id if !v.has_key?("id")
-                remove[k] = v["id"] if v.has_key?("id") && v.has_key?("_destroy")
-                question_ids << v["question_id"]
-              end
-              render :json => {"ids" => ids, "remove" => remove}.merge(@response_set.reload.all_dependencies(question_ids))
-            end
-          end
+    respond_to do |format|
+      format.html do
+        if @response_set.blank?
+          return redirect_with_message(available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
+        else
+          flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
+          redirect_to edit_my_survey_path(:anchor => anchor_from(params[:section]), :section => section_id_from(params[:section]))
+        end
+      end
+      format.js do
+        ids, remove, question_ids = {}, {}, []
+        ResponseSet.trim_for_lookups(params[:r]).each do |k,v|
+          v[:answer_id].reject!(&:blank?) if v[:answer_id].is_a?(Array)
+          ids[k] = @response_set.responses.find(:first, :conditions => v, :order => "created_at DESC").id if !v.has_key?("id")
+          remove[k] = v["id"] if v.has_key?("id") && v.has_key?("_destroy")
+          question_ids << v["question_id"]
+        end
+        render :json => {"ids" => ids, "remove" => remove}.merge(@response_set.reload.all_dependencies(question_ids))
+      end
+    end
   end
   
   def show_questionnaire
@@ -100,18 +100,13 @@ module SurveyorControllerCustomMethods
     end
     
     respond_to do |format|
-        puts "in respond to do pdf..."
-        format.html
-          puts "in format html in pdf block -- but why?"
-        format.pdf do
-          puts "in format pdf block..."
-          pdf = QuestionnairePdf.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name, view_context)
-          puts "in here pdf...."
-          send_data pdf.render, filename: "#{@tmp_project_name}-2012-questionnaire.pdf",
-                                type: "application/pdf",
-                                disposition: "inline"
-        end
+      format.pdf do
+        pdf = QuestionnairePdf.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
+        send_data pdf.render, filename: "#{@tmp_project_name}-2012-questionnaire.pdf",
+                              type: "application/pdf",
+                              disposition: "inline"
       end
+    end
     
     
   end
@@ -121,10 +116,7 @@ module SurveyorControllerCustomMethods
       #the precondition (very important) is that these have been instanced/seeded prior
       #refer to lib/tasks/instance_surveys_for_id+"N".rake
       @list_of_instanced_surveys = []
-      #puts "Current user = #{current_user.id}"
       @user_renewals_instanced_surveys = McocRenewal.joins(:mcoc_user_renewals).where(:mcoc_user_renewals => {:user_id => current_user.id}).order('grantee_name ASC, project_name ASC')
-      #puts "test_sql = #{@test_sql}"
-      #@instanced_surveys = McocRenewal.where(:user_id => current_user.id).joins(:mcoc_renewals).order('grantee_name ASC, project_name ASC')
       @user_renewals_instanced_surveys.each do |user_renewals|
         puts "testing #{user_renewals.id}"
         @mcoc_renewals = McocUserRenewal.find_by_mcoc_renewal_id(user_renewals.id)
@@ -147,8 +139,7 @@ module SurveyorControllerCustomMethods
   def list_instanced_questionnaire_status
       @report_list = []
       @mcoc_renewals = McocRenewal.find(:all, :order => 'grantee_name ASC, project_name ASC')
-      #@mcoc_renewals = McocRenewal.joins(:mcoc_user_renewals).where(:mcoc_user_renewals => {:user_id => current_user.id}).order('grantee_name ASC, project_name ASC')
-      
+
       @mcoc_renewals.each do |renewals|
         @tmp_user_renewals = McocUserRenewal.where(:mcoc_renewal_id => renewals.id)
         @grantee_name = renewals.grantee_name
@@ -194,9 +185,7 @@ module SurveyorControllerCustomMethods
     @mcoc_constants_3 = McocConstants.where(:mcoc_constant_name => 'recipient_email_address')
     
     MustacheContext.new(@mcoc_constants_3.first.mcoc_constant_value, @mcoc_constants_1.first.mcoc_constant_value, @mcoc_constants_2.first.mcoc_constant_value )
-  
-    
-  
+
   end
   
   
@@ -283,34 +272,27 @@ module SurveyorControllerCustomMethods
   
   
     def put_completed_survey_pdf_to_doclib
-      @tmp_mcoc_renewal_id = session[:mcoc_renewals_id]
+
       @tmp_response_set_code = session[:response_set_code]
       @tmp_grantee_name = session[:grantee_name]
       @tmp_project_name = session[:project_name]
-      
-      @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
-      @tmp_doc_name = @mcoc_renewal.questionnaire_doc_name
-      if @tmp_doc_name.blank? 
-        @questionnaire_doc_name = 0
-      else
-        @questionnaire_doc_name = @tmp_doc_name
-      end
-      puts "======= doc_name of completed survey pdf is -- #{@questionnaire_doc_name}"
-      @response_set = ResponseSet.find_by_access_code(@tmp_response_set_code, :include => {:responses => [:question, :answer]})
-      
-      if @response_set
-        @survey = @response_set.survey
-        html = render_to_string(:layout => false , :action => "show")
-        
-        #the automatic (no user intervention) creation of the completed questionnaire pdf and 
-        #transmission of the pdf to the external DocLib (via the add WS operation) is being
-        #handled by a delayed job, that way the user doesn't need to "wait" for this process to complete
-        #since it runs on a separate thread.
-        delayed_job = CreateAndSendPdfJob.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, html, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
-        delayed_job.create_and_put_pdf
-        
-      end
 
+      @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+      @tmp_response_set_id = @tmp_response_set.id
+      @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
+      @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+
+      @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
+      @tmp_grantee_name = @mcoc_renewal.grantee_name
+      @tmp_project_name = @mcoc_renewal.project_name
+
+      #the automatic (no user intervention) creation of the completed questionnaire pdf and 
+      #transmission of the pdf to the external DocLib (via the add WS operation) is being
+      #handled by a delayed job, that way the user doesn't need to "wait" for this process to complete
+      #since it runs on a separate thread.
+      delayed_job = CreateAndSendPdfJob.new
+      delayed_job.create_and_put_pdf(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name)
+  
     end
     
 end
