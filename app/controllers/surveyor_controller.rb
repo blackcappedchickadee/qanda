@@ -72,10 +72,8 @@ module SurveyorControllerCustomMethods
           end
   end
   def generate_pdf
-    puts "in generate_pdf..."
- 
+    
     @tmp_response_set_code = params[:response_set_code]
-    puts "  tmp_response_set_code = #{@tmp_response_set_code}"
     @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
     @tmp_response_set_id = @tmp_response_set.id
     @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
@@ -85,37 +83,35 @@ module SurveyorControllerCustomMethods
     @tmp_grantee_name = @mcoc_renewal.grantee_name
     @tmp_project_name = @mcoc_renewal.project_name
     
-    
     @tmp_doc_name = @mcoc_renewal.questionnaire_doc_name
     if @tmp_doc_name.blank? 
       @questionnaire_doc_name = 0
     else
       @questionnaire_doc_name = @tmp_doc_name
     end
-    #puts "======= doc_name of completed survey pdf is -- #{@questionnaire_doc_name}"
-    
 
     @tmp_pdf_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code, :include => {:responses => [:question, :answer]})
     @tmp_pdf_response_set_responses = @tmp_pdf_response_set.responses
     
     #iterate through responses
     @tmp_pdf_response_set_responses.each do |response|
-      #puts "answer_id = #{response.answer_id}, question_id = #{response.question_id}, response_id = #{response.id}"
       @question = response.question
-      #puts "question info = #{@question.survey_section_id} - #{@question.text} "
     end
-    #puts "tmp_pdf_response_set_responses.json = #{@tmp_pdf_response_set_responses.to_json}" 
-    @test_pdf = CreateAndSendPdfJob.new
-    #puts "before calling test_pdf..."
-    @test_pdf.test_pdf(@tmp_mcoc_renewal_id, @tmp_response_set_code, "html", @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
     
-    #puts @tmp_pdf_response_set_responses.to_json
-    #@tmp_hash_obj = @tmp_pdf_response_set_responses.to_json
-    #@json_1 = JSON.parse(@tmp_hash_obj).each do |json_1|
-    #  puts "json_1 = #{json_1}"
-    #  
-    #end
-
+    respond_to do |format|
+        puts "in respond to do pdf..."
+        format.html
+          puts "in format html in pdf block -- but why?"
+        format.pdf do
+          puts "in format pdf block..."
+          pdf = QuestionnairePdf.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name, view_context)
+          puts "in here pdf...."
+          send_data pdf.render, filename: "#{@tmp_project_name}-2012-questionnaire.pdf",
+                                type: "application/pdf",
+                                disposition: "inline"
+        end
+      end
+    
     
   end
   #custom Action

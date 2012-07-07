@@ -350,7 +350,7 @@ class CreateAndSendPdfJob
     elect_sig_name = get_response_with_only_one_value("elect_sig_name", response_set_id, survey_section_finish)
 
 
-    myDoc = Prawn::Document.generate("zzzzzz-hello.pdf") do
+    pdf = Prawn::Document.generate("#{@project_name}-2012-questionnaire.pdf") do
       
       #text "Hello World!"
       #first section - Agency Information
@@ -943,6 +943,8 @@ class CreateAndSendPdfJob
       
   
     end #prawndoc
+    
+    return pdf
   
     
   end

@@ -33,7 +33,7 @@
                 %div.project_name_links
                   - if report.survey_access_code != "notinstanced"
                     = link_to '(View as PDF)', generate_pdf_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code)
-                    = link_to '(View as PDF2)', get_pdf_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code)
+                    = link_to '(View as PDF2)', get_pdf_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code, format: "pdf")
                   - if report.completed_flag == "No"
                     Completed? #{report.completed_flag} 
                   - else
