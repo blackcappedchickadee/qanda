@@ -136,7 +136,7 @@ class CreateAndSendPdfJob
        #send an email notification to the individual who filled out the questionnaire, and to the executive 
        #director of the program (will send a notification to the finished_survey_email_lists if an exec dir email address was not furnished BUT the "click here to finish"
        #button was used)
-       FinishedSurveyMailer.send_finished_questionnaire_to_recipients(@finished_survey).deliver
+       FinishedSurveyMailer.send_finished_questionnaire_to_recipients(@finished_survey, response_set_code, @survey.id).deliver
        
        
     end
