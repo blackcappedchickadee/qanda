@@ -879,15 +879,63 @@ class CreateAndSendPdfJob
       font "Helvetica"  # back to normal      
       move_down 10
       text "Executive Director Information", :style => :bold
+      move_down 5
+      text "Executive Director First Name"
+      font "Times-Roman"
+      if execdir_first_name.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{execdir_first_name}"
+      end
+      font "Helvetica"  # back to normal
+      move_down 5
+      text "Executive Director Last Name"
+      font "Times-Roman"
+      if execdir_last_name.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{execdir_last_name}"
+      end
+      font "Helvetica"  # back to normal
+      move_down 5
+      text "Executive Director Email Address"
+      font "Times-Roman"
+      if execdir_email_address.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{execdir_email_address}"
+      end
+      font "Helvetica"  # back to normal
+      move_down 10
+      text "Electronic Signature", :style => :bold
+      move_down 5
+      text "By checking this box:"   
+      move_down 5  
+      font "Times-Roman"
+      if elect_sig_checkval.nil?
+         text "#{not_provided_text} I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge", :inline_format => true
+      else
+        text "#{elect_sig_checkval} I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge."
+      end
+      font "Helvetica"  # back to normal
+      move_down 5
+      text "By typing my name in the following space, I certify that I am authorized to submit this questionnaire. I further certify that this questionnaire is submitted with full knowledge and consent of my agency's Executive Director or other governing body."
+      move_down 5
+      font "Times-Roman"
+      if elect_sig_name.nil?
+         text "#{not_provided_text}", :inline_format => true
+      else
+        text "#{elect_sig_name}"
+      end
+      font "Helvetica"  # back to normal
       
       
       
+      pgnum_string = "Page <page> of <total> -- #{grantee_name} - #{project_name}" 
       
-      pgnum_string = "Page <page> of <total>  #{grantee_name} - #{project_name}" 
-      
-      options = { :at => [bounds.right - 700, 0],
+      options = { :at => [bounds.left + 0, 0],
                     :width => 700,
-                    :align => :right,
+                    :align => :left,
                     :size => 9,
                     :start_count_at => 1,
                     :color => "999999" }
@@ -999,7 +1047,7 @@ class CreateAndSendPdfJob
             @retval = tmp_response.text_value
           when "answer" #yes/no values, and checkbox
             if data_export_identifier == "elect_sig_checkval"
-              @retval = "checked: I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge."
+              @retval = "Checked"
             else
               @retval = tmp_answer.short_text
             end
