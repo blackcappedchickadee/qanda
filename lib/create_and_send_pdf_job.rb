@@ -912,10 +912,10 @@ class CreateAndSendPdfJob
       text "By checking this box:"   
       move_down 5  
       font "Times-Roman"
-      if elect_sig_checkval.nil?
-         text "#{not_provided_text} I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge", :inline_format => true
+      if elect_sig_checkval.length == 0
+         text "#{not_provided_text} - I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge", :inline_format => true
       else
-        text "#{elect_sig_checkval} I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge."
+        text "#{elect_sig_checkval} - I hereby indicate the information contained in this questionnaire is true and correct to the best of my knowledge."
       end
       font "Helvetica"  # back to normal
       move_down 5
