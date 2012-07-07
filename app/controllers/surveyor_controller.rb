@@ -71,7 +71,8 @@ module SurveyorControllerCustomMethods
             end
           end
   end
-  def generate_pdf
+  
+  def show_questionnaire
     
     @tmp_response_set_code = params[:response_set_code]
     @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)

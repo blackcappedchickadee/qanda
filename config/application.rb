@@ -61,8 +61,6 @@ module Qanda
 
     config.active_record.logger = Logger.new("log/development_sql.log")
     
-    config.middleware.use PDFKit::Middleware, :print_media_type => true
-    
     config.autoload_paths << "#{Rails.root}/lib"
     
     
