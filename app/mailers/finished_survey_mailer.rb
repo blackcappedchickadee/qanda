@@ -4,10 +4,21 @@ class FinishedSurveyMailer < ActionMailer::Base
   
   def send_finished_email(finished_survey)
 
-      @finished_survey = finished_survey
-      puts "in send_finished_email..."
-      mail(:subject => "2012 Monitoring Questionnaire notification - #{@finished_survey.grantee_name} - #{@finished_survey.project_name}",
-           :from => ENV['GMAIL_USER_NAME'])
+    @finished_survey = finished_survey
+
+    mail(:subject => "2012 Monitoring Questionnaire notification - #{@finished_survey.grantee_name} - #{@finished_survey.project_name}",
+         :from => ENV['GMAIL_USER_NAME'])
+  end
+  
+  def send_finished_questionnaire_to_recipients(finished_survey)
+    
+    @finished_survey = finished_survey
+    
+    attachments[@finished_survey.questionnaire_file_name] = File.read(@finished_survey.questionnaire.path)
+    
+    mail(:subject => "2012 Monitoring Questionnaire notification - #{@finished_survey.grantee_name} - #{@finished_survey.project_name}",
+         :from => ENV['GMAIL_USER_NAME'])
+    
   end
   
 end

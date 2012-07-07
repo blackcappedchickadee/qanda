@@ -291,7 +291,7 @@ module SurveyorControllerCustomMethods
       #handled by a delayed job, that way the user doesn't need to "wait" for this process to complete
       #since it runs on a separate thread.
       delayed_job = CreateAndSendPdfJob.new
-      delayed_job.create_and_put_pdf(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name)
+      delayed_job.test_create_and_put_pdf(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name)
   
     end
     
