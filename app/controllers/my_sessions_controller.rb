@@ -28,6 +28,7 @@ class MySessionsController < Devise::SessionsController
         @user_auto_id = @mcoc_user.first.id
         @user_auto = User.where(:id => @user_auto_id)
         if (@user_auto.first != nil) 
+          session[:user_id] = @mcoc_user.first.id
           sign_in(:user, User.find(@user_auto))
           redirect_to list_surveys_path
         else

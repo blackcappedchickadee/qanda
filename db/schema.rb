@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120707213816) do
+ActiveRecord::Schema.define(:version => 20120708161949) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -94,6 +94,8 @@ ActiveRecord::Schema.define(:version => 20120707213816) do
     t.string   "questionnaire_content_type"
     t.integer  "questionnaire_file_size"
     t.datetime "questionnaire_updated_at"
+    t.integer  "user_id"
+    t.boolean  "exec_dir_notified",          :default => false, :null => false
   end
 
   create_table "mcoc_assets", :force => true do |t|

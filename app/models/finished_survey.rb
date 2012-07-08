@@ -1,6 +1,6 @@
 class FinishedSurvey < ActiveRecord::Base
   
-  attr_accessible :url, :grantee_name, :project_name, :questionnaire, :questionnaire_file_name
+  attr_accessible :url, :grantee_name, :project_name, :user_id, :exec_dir_notified, :questionnaire, :questionnaire_file_name
   
   has_attached_file :questionnaire,
                 :url => "/questionnaire/:grantee_name/:project_name/:basename.:extension",    

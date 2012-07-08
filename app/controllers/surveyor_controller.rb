@@ -253,12 +253,9 @@ module SurveyorControllerCustomMethods
                 end
               else
                 @tmp_project_name = session[:project_name]
-                puts "program name is nil -- this is where we will create a response with #{session[:project_name]} as the project name..."
                 # @finished_survey = FinishedSurvey.create({:url => full_doclib_url, :grantee_name => grantee_name, :project_name => project_name})
                 @response_for_program_name = Response.create({:response_set_id => @tmp_response_set_id, :question_id => @tmp_question_id, 
                           :answer_id => @tmp_answer_id, :string_value => @tmp_project_name})
-                puts "completed the save..."
-                
                 
               end
             end
@@ -267,7 +264,6 @@ module SurveyorControllerCustomMethods
         
       end
       
-      puts "In prepopulate_program_name... end"
     end
   
   
@@ -276,7 +272,8 @@ module SurveyorControllerCustomMethods
       @tmp_response_set_code = session[:response_set_code]
       @tmp_grantee_name = session[:grantee_name]
       @tmp_project_name = session[:project_name]
-
+      @tmp_user_id = session[:user_id]
+      
       @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
       @tmp_response_set_id = @tmp_response_set.id
       @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
@@ -291,7 +288,7 @@ module SurveyorControllerCustomMethods
       #handled by a delayed job, that way the user doesn't need to "wait" for this process to complete
       #since it runs on a separate thread.
       delayed_job = CreateAndSendPdfJob.new
-      delayed_job.test_create_and_put_pdf(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name)
+      delayed_job.test_create_and_put_pdf(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name, @tmp_user_id)
   
     end
     

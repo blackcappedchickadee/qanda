@@ -1,7 +1,7 @@
 class CreateAndSendPdfJob
 
   #puts the completed questionnaire PDF in the Document Library, and sends an email notification
-  def create_and_put_pdf(response_set_code, mcoc_renewal_id, grantee_name, project_name)
+  def create_and_put_pdf(response_set_code, mcoc_renewal_id, grantee_name, project_name, user_id)
     
     @mcoc_renewal = McocRenewal.find(mcoc_renewal_id)
 
@@ -69,7 +69,7 @@ class CreateAndSendPdfJob
   end
   handle_asynchronously :create_and_put_pdf, :queue => 'completedsurveys'
   
-  def test_create_and_put_pdf(response_set_code, mcoc_renewal_id, grantee_name, project_name)
+  def test_create_and_put_pdf(response_set_code, mcoc_renewal_id, grantee_name, project_name, user_id)
     
     @mcoc_renewal = McocRenewal.find(mcoc_renewal_id)
 
@@ -121,8 +121,7 @@ class CreateAndSendPdfJob
        url_stem = Rails.configuration.doclibrootstem 
        url_path = Rails.configuration.doclibrootmainecoc
        full_doclib_url = "#{url_stem}#{url_path}#{mcoc_folder_id}"
-       
-       @finished_survey = FinishedSurvey.create({:url => full_doclib_url, :grantee_name => grantee_name, :project_name => project_name})
+       @finished_survey = FinishedSurvey.create({:url => full_doclib_url, :grantee_name => grantee_name, :project_name => project_name, :user_id => user_id})
        pdf.render_file(pdf_file_name)
        pdf_file_perm = File.open(pdf_file_name)
        @finished_survey.questionnaire = pdf_file_perm 

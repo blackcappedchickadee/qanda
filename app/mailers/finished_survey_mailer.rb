@@ -54,16 +54,16 @@ class FinishedSurveyMailer < ActionMailer::Base
     @email_list << "#{@email_prep}"
     
     if !@execdir_email_address.nil?
-      puts "execdir is NOT nil..."
       @email_exec = @execdir_email_address
       @email_list << ", #{@email_exec} "
+      @finished_survey.update_column(:exec_dir_notified, true)
     else
       #nil execdir email address - - this is a problem since we want the exec directors to receive these notifications, so we
       #will email to the FinishedSurveyEmailList.all.map(&:email_address) list, as a .bcc
       @bcc_list = "Yes"
     end
     
-    puts "email_list - #{@email_list}"
+    #puts "email_list - #{@email_list}"
     
     if @bcc_list == "Yes"
       mail(:subject => "2012 Monitoring Questionnaire completion notification - #{@finished_survey.grantee_name} - #{@finished_survey.project_name}",
