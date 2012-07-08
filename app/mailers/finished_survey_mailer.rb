@@ -12,28 +12,32 @@ class FinishedSurveyMailer < ActionMailer::Base
          :from => ENV['GMAIL_USER_NAME'])
   end
   
-  def send_finished_questionnaire_to_recipients(finished_survey, response_set_id, survey_id)
+  def send_finished_questionnaire_to_recipients(finished_survey, access_code, survey_id)
     
     @finished_survey = finished_survey
     
-    puts " response_set_id #{response_set_id} survey_id #{survey_id}"
+    response_set = ResponseSet.find_by_access_code(access_code)
+    response_set_id = response_set.id
     
     attachments[@finished_survey.questionnaire_file_name] = File.read(@finished_survey.questionnaire.path)
     
     survey_section_agency_information = SurveySection.find_by_data_export_identifier_and_survey_id("agency_information", survey_id)
-    puts "survey_section_agency_information = #{survey_section_agency_information}"
     survey_section_finish = SurveySection.find_by_data_export_identifier_and_survey_id("finish", survey_id)
-    puts " survey_section_finish = #{survey_section_finish}"
-    
+
     @e_mail_address = get_agency_information_response("e_mail_address", response_set_id, survey_section_agency_information)
-    
-    puts "@e_mail_address = #{@e_mail_address}"
-    
     @preparer_first_name = get_response_with_only_one_value("preparer_first_name", response_set_id, survey_section_finish)
     @preparer_last_name = get_response_with_only_one_value("preparer_last_name", response_set_id, survey_section_finish)
-    
     @preparer_email_address = get_response_with_only_one_value("preparer_email_address", response_set_id, survey_section_finish)
     @execdir_email_address = get_response_with_only_one_value("execdir_email_address", response_set_id, survey_section_finish)
+    
+    @preparer_full_name = ""
+    
+    if !@preparer_first_name.nil?
+      @preparer_full_name << @preparer_first_name
+    end
+    if !@preparer_last_name.nil?
+      @preparer_full_name << @preparer_last_name
+    end
     
     @email_list = ""
     @bcc_list = "No"
@@ -50,6 +54,7 @@ class FinishedSurveyMailer < ActionMailer::Base
     @email_list << "#{@email_prep}"
     
     if !@execdir_email_address.nil?
+      puts "execdir is NOT nil..."
       @email_exec = @execdir_email_address
       @email_list << ", #{@email_exec} "
     else
