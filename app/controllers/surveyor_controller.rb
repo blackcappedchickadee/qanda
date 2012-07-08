@@ -204,8 +204,21 @@ module SurveyorControllerCustomMethods
   def surveyor_finish
     # the update action redirects to this method if given params[:finish]
     #super # available_surveys_path
-    put_completed_survey_pdf_to_doclib
-    list_surveys_path #returns to the list of instanced, available surveys for the given user.
+    
+    @tmp_response_set_code = session[:response_set_code]
+    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+    @tmp_survey = Survey.find(@tmp_response_set.survey_id)
+
+    #only do this with the Monitoring Questionnaire, NOT for the mini-satisfaction survey!
+    if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
+      put_completed_survey_pdf_to_doclib
+      
+      perform_mini_survey
+      
+    else
+      list_surveys_path #returns to the list of instanced, available surveys for the given user.
+    end
+    
   end
   
   private
@@ -278,6 +291,8 @@ module SurveyorControllerCustomMethods
       @tmp_response_set_id = @tmp_response_set.id
       @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
       @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+      
+      session[:mcoc_renewal_id] = @tmp_mcoc_renewal_id
 
       @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
       @tmp_grantee_name = @mcoc_renewal.grantee_name
@@ -290,6 +305,29 @@ module SurveyorControllerCustomMethods
       delayed_job = CreateAndSendPdfJob.new
       delayed_job.create_and_put_pdf(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name, @tmp_user_id)
   
+    end
+    
+    def perform_mini_survey
+       @tmp_user_id = session[:user_id]
+       @mcoc_mini_survey = McocMiniSurvey.find_by_user_id(@tmp_user_id)
+       if !@mcoc_mini_survey.nil?
+         #we won't ask if dont_ask = 1 (true)
+         if !@mcoc_mini_survey.dont_ask 
+           #redirect to mini_survey lead-in
+           session[:mcoc_mini_survey] = @mcoc_mini_survey
+           mini_survey_ask_path
+         end
+       else
+         #we'll insert the "base" values to the mcoc_mini_survey table -- then we'll redirect to ask if they are
+         #interested in taking a mini-survey
+         @mcoc_mini_survey = McocMiniSurvey.create(:user_id => @tmp_user_id)
+         #redirect to mini_survey lead-in
+         session[:mcoc_mini_survey] = @mcoc_mini_survey
+         mini_survey_ask_path
+         
+         
+       end
+      
     end
     
 end

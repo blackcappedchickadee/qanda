@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  mcoc_renewal_id: 1
+  user_id: 1
+  dont_ask: false
+  response_set_access_code: MyString
+  survey_id: 1
+
+two:
+  mcoc_renewal_id: 1
+  user_id: 1
+  dont_ask: false
+  response_set_access_code: MyString
+  survey_id: 1

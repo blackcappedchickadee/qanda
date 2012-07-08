@@ -103,6 +103,9 @@ Qanda::Application.routes.draw do
     
     match "/surveys/:mcoc_asset_id/:response_set_code/attachments/additional_doc/show", :to => "mcoc_assets#show", :as => "additional_asset_show", :via => :get
    
+    match "/surveys/mini_survey", :to => "mcoc_mini_survey#index", :as => "mini_survey_ask", :via => :get
+    
+    match "/surveys/mini_survey", :to => "mcoc_mini_survey#handle_mini_survey_pref", :as => "handle_mini_survey_pref"
 
 
   end

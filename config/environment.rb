@@ -31,4 +31,7 @@ Qanda::Application.config.questionnairefilename = '2012-questionnaire.pdf'
 Qanda::Application.config.doclibrootstem = "http://localhost:8090"
 Qanda::Application.config.doclibrootmainecoc = "/group/maine-continuum-of-care/documents/-/document_library/view/"
 
+Qanda::Application.config.minisatisfactionsurveyaccesscode = "2012-monitoring-and-evaluation-questionnaire-mini-survey"
+Qanda::Application.config.liferayminisatisfactionsurveyfolderid = 19517
+
 

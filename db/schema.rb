@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120708161949) do
+ActiveRecord::Schema.define(:version => 20120708222934) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -121,6 +121,20 @@ ActiveRecord::Schema.define(:version => 20120708161949) do
     t.boolean  "is_active",        :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "mcoc_mini_surveys", :force => true do |t|
+    t.integer  "mcoc_renewal_id"
+    t.integer  "user_id"
+    t.boolean  "dont_ask",                 :default => false, :null => false
+    t.string   "response_set_access_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "mini_survey_file_name"
+    t.string   "mini_survey_content_type"
+    t.integer  "mini_survey_file_size"
+    t.datetime "mini_survey_updated_at"
+    t.integer  "doc_name"
   end
 
   create_table "mcoc_renewals", :force => true do |t|

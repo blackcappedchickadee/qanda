@@ -1,0 +1,6 @@
+<%= form_for @mcoc_mini_survey, :url => { :action => 'handle_mini_survey_pref' } do |f| %>
+	<h3>Satisfaction Mini Survey</h3>
+	<p>Are you interested in taking a very short survey which captures your level of satisfaction regarding the 2012 Monitoring and Evaluation questionnaire?</p>
+	<%= submit_tag 'Yes', :name => 'mini_survey_pref' %>
+	<%= submit_tag 'No', :name => 'mini_survey_pref' %>
+<% end %>
