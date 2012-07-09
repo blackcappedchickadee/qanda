@@ -209,12 +209,17 @@ module SurveyorControllerCustomMethods
     @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
     @tmp_survey = Survey.find(@tmp_response_set.survey_id)
 
-    #only do this with the Monitoring Questionnaire, NOT for the mini-satisfaction survey!
-    if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
-      put_completed_survey_pdf_to_doclib
-      
-      perform_mini_survey
-      
+    #only do this with the Monitoring Questionnaire related items
+    case @tmp_survey.access_code 
+      when "2012-monitoring-and-evaluation"
+        put_completed_survey_pdf_to_doclib
+        perform_mini_survey
+      when "2012-monitoring-and-evaluation-questionnaire-mini-survey"
+        puts "in mini survey logic..."
+        put_completed_mini_satisf_survey_pdf_to_doclib
+        
+        list_surveys_path
+        
     else
       list_surveys_path #returns to the list of instanced, available surveys for the given user.
     end
@@ -307,6 +312,33 @@ module SurveyorControllerCustomMethods
   
     end
     
+    def put_completed_mini_satisf_survey_pdf_to_doclib
+      
+      @tmp_response_set_code = session[:response_set_code]
+      @tmp_grantee_name = session[:grantee_name]
+      @tmp_project_name = session[:project_name]
+      @tmp_user_id = session[:user_id]
+      
+      @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+      @tmp_response_set_id = @tmp_response_set.id
+      @mcoc_mini_survey = McocMiniSurvey.find_by_response_set_access_code(@tmp_response_set_code)
+      @tmp_mcoc_renewal_id = @mcoc_mini_survey.mcoc_renewal_id
+      
+      session[:mcoc_renewal_id] = @tmp_mcoc_renewal_id
+
+      @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
+      @tmp_grantee_name = @mcoc_renewal.grantee_name
+      @tmp_project_name = @mcoc_renewal.project_name
+
+      #the automatic (no user intervention) creation of the completed questionnaire pdf and 
+      #transmission of the pdf to the external DocLib (via the add WS operation) is being
+      #handled by a delayed job, that way the user doesn't need to "wait" for this process to complete
+      #since it runs on a separate thread.
+      delayed_job = CreateAndSendPdfJob.new
+      delayed_job.test_create_and_put_pdf_for_mini_satisf_survey(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name, @tmp_user_id)
+      
+    end
+    
     def perform_mini_survey
        @tmp_user_id = session[:user_id]
        @mcoc_mini_survey = McocMiniSurvey.find_by_user_id(@tmp_user_id)
@@ -316,6 +348,8 @@ module SurveyorControllerCustomMethods
            #redirect to mini_survey lead-in
            session[:mcoc_mini_survey] = @mcoc_mini_survey
            mini_survey_ask_path
+         else
+           list_surveys_path
          end
        else
          #we'll insert the "base" values to the mcoc_mini_survey table -- then we'll redirect to ask if they are
@@ -324,8 +358,6 @@ module SurveyorControllerCustomMethods
          #redirect to mini_survey lead-in
          session[:mcoc_mini_survey] = @mcoc_mini_survey
          mini_survey_ask_path
-         
-         
        end
       
     end

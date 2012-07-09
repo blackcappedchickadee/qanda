@@ -75,6 +75,78 @@ class CreateAndSendPdfJob
   end  
   handle_asynchronously :create_and_put_pdf, :queue => 'completedsurveys'
   
- 
+  
+  #puts the completed mini satisfaction survey  PDF in the Document Library, and sends an email notification
+  def create_and_put_pdf_for_mini_satisf_survey(response_set_code, mcoc_renewal_id, grantee_name, project_name, user_id)
+
+    @mcoc_mini_survey = McocMiniSurvey.find_by_mcoc_renewal_id(mcoc_renewal_id)
+
+    @mcoc_renewal = McocRenewal.find(@mcoc_mini_survey.mcoc_renewal_id)
+    @grantee_name = @mcoc_renewal.grantee_name
+    @project_name = @mcoc_renewal.project_name
+    
+     @response_set = ResponseSet.find_by_access_code(response_set_code, :include => {:responses => [:question, :answer]})
+     if @response_set
+       @survey = @response_set.survey
+       mcoc_group_id = Rails.configuration.liferaymcocgroupid.to_i
+       mcoc_questionnaire_file_name_stem = Rails.configuration.minisatisffilename
+       pdf_file_name = "#{@mcoc_renewal.project_name}-#{mcoc_questionnaire_file_name_stem}"
+       #puts "mcoc_renewal_id #{mcoc_renewal_id} response_set_code #{response_set_code} grantee_name #{grantee_name} project_name #{project_name}  pdf_file_name = #{pdf_file_name}..."
+       pdf = MiniSatisfSurvey.new(mcoc_renewal_id, response_set_code, @grantee_name, @project_name, pdf_file_name)
+
+       pdf_file_as_base_64 = Base64.encode64(pdf.render)
+
+       #to do: wire in a please wait dialog, or fire this off asynchronously (longer-running process that doesn't need
+       #to hang up the user)
+       doc_name = @mcoc_mini_survey.doc_name
+       description = ""
+       mcoc_folder_id = Rails.configuration.liferayminisatisfactionsurveyfolderid.to_i
+
+       liferay_ws = LiferayDocument.new
+       #So we have the most up to date questionnaire pushed to the DocLib) we will first see if we
+       #already have a DocLib entry:
+
+       liferay_ws_result = liferay_ws.get(mcoc_group_id, mcoc_folder_id, doc_name)
+
+       if liferay_ws_result == "found"
+         #we need to update, as opposed to add
+         liferay_ws.update(mcoc_group_id, mcoc_folder_id, doc_name, pdf_file_name, description, pdf_file_as_base_64)
+       else
+         #we didn't find an existing DocLib entry, so we'll create a new one via an "add" call:
+         added_result = liferay_ws.add(mcoc_group_id, mcoc_folder_id, pdf_file_name, description, pdf_file_as_base_64)
+
+         #update the given mcoc_renewal record with the doc_name that we just generated due to the addition of the document in the doclib.
+         doc_name = added_result[:doc_name]
+         @mcoc_mini_survey.update_column(:doc_name, doc_name)
+
+         #call the webservice that applies specific permissions on the file (primary_ley) just added to the document library:
+         liferay_ws_permission = LiferayPermission.new
+         company_id = Rails.configuration.liferaycompanyid
+         added_primary_key = added_result[:primary_key]
+         role_id = Rails.configuration.liferaymcocmonitoringcmterole
+         name = Rails.configuration.liferaywsdldlfileentryname
+         action_ids = Rails.configuration.liferaymcocmonitoringcmteroleactionidsfile
+         liferay_ws_permission.add_for_mcoc_user(mcoc_group_id, company_id, name, added_primary_key, role_id, action_ids)
+
+       end
+
+       url_stem = Rails.configuration.doclibrootstem 
+       url_path = Rails.configuration.doclibrootmainecoc
+       full_doclib_url = "#{url_stem}#{url_path}#{mcoc_folder_id}"
+       pdf.render_file(pdf_file_name)
+       pdf_file_perm = File.open(pdf_file_name)
+       @mcoc_mini_survey.mini_survey = pdf_file_perm 
+       @mcoc_mini_survey.save #saves the recently-created mini survey PDF
+       File.delete(pdf_file_name) #keep things tidy!
+
+       #send an email notification using the finished_survey_email_lists "distribution": this will be used for internal use only...
+       #FinishedSurveyMailer.delay.send_finished_mini_survey_email(@mcoc_mini_survey) #delayed_job
+       FinishedSurveyMailer.send_finished_mini_survey_email(@mcoc_mini_survey).deliver #when we're not delaying...
+       
+    end
+    
+  end
+  handle_asynchronously :create_and_put_pdf_for_mini_satisf_survey, :queue => 'completedsurveys'
+
 
 end

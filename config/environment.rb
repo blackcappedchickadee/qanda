@@ -27,6 +27,7 @@ Qanda::Application.config.liferaywsdldlfoldername = 'com.liferay.portlet.documen
 Qanda::Application.config.liferaywsdldlfileentryname ='com.liferay.portlet.documentlibrary.model.DLFileEntry'
 
 Qanda::Application.config.questionnairefilename = '2012-questionnaire.pdf'
+Qanda::Application.config.minisatisffilename = '2012-mini-satisfaction-survey.pdf'
 
 Qanda::Application.config.doclibrootstem = "http://localhost:8090"
 Qanda::Application.config.doclibrootmainecoc = "/group/maine-continuum-of-care/documents/-/document_library/view/"

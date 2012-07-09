@@ -12,6 +12,16 @@ class FinishedSurveyMailer < ActionMailer::Base
          :from => ENV['GMAIL_USER_NAME'])
   end
   
+  def send_finished_mini_survey_email(mcoc_mini_survey)
+    @mcoc_mini_survey = mcoc_mini_survey
+    
+    attachments[@mcoc_mini_survey.mini_survey_file_name] = File.read(@mcoc_mini_survey.mini_survey.path)
+
+    mail(:subject => "Notification: A mini-survey for the 2012 Monitoring and Evaluation questionnaire has been posted to the Document Library.",
+         :from => ENV['GMAIL_USER_NAME'])
+    
+  end
+  
   def send_finished_questionnaire_to_recipients(finished_survey, access_code, survey_id)
     
     @finished_survey = finished_survey
