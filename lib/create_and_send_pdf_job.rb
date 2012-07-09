@@ -140,8 +140,8 @@ class CreateAndSendPdfJob
        File.delete(pdf_file_name) #keep things tidy!
 
        #send an email notification using the finished_survey_email_lists "distribution": this will be used for internal use only...
-       #FinishedSurveyMailer.delay.send_finished_mini_survey_email(@mcoc_mini_survey) #delayed_job
-       FinishedSurveyMailer.send_finished_mini_survey_email(@mcoc_mini_survey).deliver #when we're not delaying...
+       FinishedSurveyMailer.delay.send_finished_mini_survey_email(@mcoc_mini_survey) #delayed_job
+       #FinishedSurveyMailer.send_finished_mini_survey_email(@mcoc_mini_survey).deliver #when we're not delaying...
        
     end
     

@@ -27,7 +27,7 @@ namespace :qanda do
     liferay_grantee_folder_id = 0
     liferay_project_folder_id = 0
     
-    @renewals_list = McocRenewals.find(:all, :order => 'grantee_name ASC, project_name ASC') 
+    @renewals_list = McocRenewal.find(:all, :order => 'grantee_name ASC, project_name ASC') 
     @renewals_list.each do |renewals|
     
       puts "Processing: mcoc_renewals. #{renewals.grantee_name} - Project name: #{renewals.project_name}..."
