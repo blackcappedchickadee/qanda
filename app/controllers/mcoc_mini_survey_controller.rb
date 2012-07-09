@@ -5,6 +5,10 @@ class McocMiniSurveyController < ApplicationController
       @mcoc_mini_survey = session[:mcoc_mini_survey]
       @tmp_user_id = session[:user_id]
       @tmp_mcoc_renewal_id = session[:mcoc_renewal_id]
+      
+      @constant_orgname = McocConstants.where(:mcoc_constant_name => 'mini_survey_orgname')
+      @mini_survey_orgname = @constant_orgname.first.mcoc_constant_value
+      
     end
   end
   
