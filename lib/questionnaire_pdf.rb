@@ -519,10 +519,15 @@ class QuestionnairePdf < Prawn::Document
         move_down 10
         font "Times-Roman"
         if attachment_info_ude.nil?
-          text "UDE Data Completeness Report uploaded:
+          text "UDE Data Completeness Report:"
           text "#{not_provided_text}", :inline_format => true
         else
-          text "UDE Data Completeness Report uploaded: #{attachment_info_ude}"
+          if attachment_info_ude == "text"
+            text "UDE Data Completeness Report:"
+            text "#{not_provided_text}", :inline_format => true
+          else
+            text "UDE Data Completeness Report uploaded: #{attachment_info_ude}"
+          end
         end
         font "Helvetica"  # back to normal
         move_down 10 
@@ -599,10 +604,15 @@ class QuestionnairePdf < Prawn::Document
       move_down 5
       font "Times-Roman"
       if attachment_info_apr.nil?
-        text "APR Report uploaded:"
+        text "APR Report:"
         text "#{not_provided_text}", :inline_format => true
       else
-        text "APR Report uploaded: #{attachment_info_apr}"
+        if attachment_info_apr == "text"
+          text "APR Report:"
+          text "#{not_provided_text}", :inline_format => true
+        else
+          text "APR Report uploaded: #{attachment_info_apr}"
+        end
       end
       font "Helvetica"  # back to normal
       move_down 10
