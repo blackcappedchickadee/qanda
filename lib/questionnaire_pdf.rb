@@ -60,7 +60,7 @@ class QuestionnairePdf < Prawn::Document
       site_visit_fire_marshall = get_response_with_only_one_value("site_visit_fire_marshall", response_set_id, survey_section_physical_plant)
       inspection_date_fire_marshall = get_response_with_only_one_value("inspection_date_fire_marshall", response_set_id, survey_section_physical_plant)
       pass_fail_fire_marshall = get_response_with_only_one_value("pass_fail_fire_marshall", response_set_id, survey_section_physical_plant)
-      fire_marshall_not_applicable_reason = get_response_with_only_one_value("fire_marshall_not_applicable_reason", response_set_id, survey_section_physical_plant)
+      fire_marshall_not_applicable_reason = get_response_with_only_one_value("fire_marshall_na_reason", response_set_id, survey_section_physical_plant)
       fire_marshall_col_1 = ""
       fire_marshall_col_2 = ""
       fire_marshall_col_3 = ""
@@ -101,7 +101,7 @@ class QuestionnairePdf < Prawn::Document
        site_visit_dhhs = get_response_with_only_one_value("site_visit_dhhs", response_set_id, survey_section_physical_plant)
        inspection_date_dhhs = get_response_with_only_one_value("inspection_date_dhhs", response_set_id, survey_section_physical_plant)
        pass_fail_dhhs = get_response_with_only_one_value("pass_fail_dhhs", response_set_id, survey_section_physical_plant)
-       dhhs_not_applicable_reason = get_response_with_only_one_value("dhhs_not_applicable_reason", response_set_id, survey_section_physical_plant)
+       dhhs_not_applicable_reason = get_response_with_only_one_value("dhhs_na_reason", response_set_id, survey_section_physical_plant)
        dhhs_col_1 = ""
        dhhs_col_2 = ""
        dhhs_col_3 = ""
@@ -142,7 +142,7 @@ class QuestionnairePdf < Prawn::Document
       site_visit_msha = get_response_with_only_one_value("site_visit_msha", response_set_id, survey_section_physical_plant)
       inspection_date_msha = get_response_with_only_one_value("inspection_date_msha", response_set_id, survey_section_physical_plant)
       pass_fail_msha = get_response_with_only_one_value("pass_fail_msha", response_set_id, survey_section_physical_plant)
-      msha_not_applicable_reason = get_response_with_only_one_value("mainehousing_not_applicable_reason", response_set_id, survey_section_physical_plant)
+      msha_not_applicable_reason = get_response_with_only_one_value("msha_na_reason", response_set_id, survey_section_physical_plant)
       msha_col_1 = ""
       msha_col_2 = ""
       msha_col_3 = ""
@@ -183,7 +183,7 @@ class QuestionnairePdf < Prawn::Document
       site_visit_carf = get_response_with_only_one_value("site_visit_carf", response_set_id, survey_section_physical_plant)
       inspection_date_carf = get_response_with_only_one_value("inspection_date_carf", response_set_id, survey_section_physical_plant)
       pass_fail_carf = get_response_with_only_one_value("pass_or_fail_carf", response_set_id, survey_section_physical_plant)
-      carf_not_applicable_reason = get_response_with_only_one_value("carf_not_applicable_reason", response_set_id, survey_section_physical_plant)
+      carf_not_applicable_reason = get_response_with_only_one_value("carf_na_reason", response_set_id, survey_section_physical_plant)
       carf_col_1 = ""
       carf_col_2 = ""
       carf_col_3 = ""
@@ -224,7 +224,7 @@ class QuestionnairePdf < Prawn::Document
       site_visit_hud = get_response_with_only_one_value("site_visit_hud", response_set_id, survey_section_physical_plant)
       inspection_date_hud = get_response_with_only_one_value("inspection_date_hud", response_set_id, survey_section_physical_plant)
       pass_fail_hud = get_response_with_only_one_value("pass_or_fail_hud", response_set_id, survey_section_physical_plant)
-      hud_not_applicable_reason = get_response_with_only_one_value("hud_not_applicable_reason", response_set_id, survey_section_physical_plant)
+      hud_not_applicable_reason = get_response_with_only_one_value("hud_na_reason", response_set_id, survey_section_physical_plant)
       hud_col_1 = ""
       hud_col_2 = ""
       hud_col_3 = ""
@@ -265,7 +265,7 @@ class QuestionnairePdf < Prawn::Document
       site_visit_hqs = get_response_with_only_one_value("site_visit_hqs", response_set_id, survey_section_physical_plant)
       inspection_date_hqs = get_response_with_only_one_value("inspection_date_hqs", response_set_id, survey_section_physical_plant)
       pass_fail_hqs = get_response_with_only_one_value("pass_or_fail_hqs", response_set_id, survey_section_physical_plant)
-      hqs_not_applicable_reason = get_response_with_only_one_value("hqs_not_applicable_reason", response_set_id, survey_section_physical_plant)
+      hqs_not_applicable_reason = get_response_with_only_one_value("hqs_na_reason", response_set_id, survey_section_physical_plant)
       hqs_col_1 = ""
       hqs_col_2 = ""
       hqs_col_3 = ""
