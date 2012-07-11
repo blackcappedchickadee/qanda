@@ -43,7 +43,7 @@ class FinishedSurveyMailer < ActionMailer::Base
     @preparer_full_name = ""
     
     if !@preparer_first_name.nil?
-      @preparer_full_name << @preparer_first_name
+      @preparer_full_name << "#{@preparer_first_name} "
     end
     if !@preparer_last_name.nil?
       @preparer_full_name << @preparer_last_name
