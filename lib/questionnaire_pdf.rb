@@ -513,14 +513,14 @@ class QuestionnairePdf < Prawn::Document
         text "Please follow this link to a video that will explain how to run the 'UDE Data Completeness Report', and how to make any corrections or updates needed to improve your data completeness."
         move_down 5
         formatted_text [{:text =>"CoC UDE Data Completeness and DKR Reports Video",
-                         :color => "0000FF",
-                         :link =>"http://mainehmis.org/2011/12/07/coc-ude-data-completeness-and-dkr-reports-video/"}]
+                         :color => "0000FF"}]
         move_down 5
         text "Run the report for this facility (which is up for renewal this year) <b><u>and upload an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
         move_down 10
         font "Times-Roman"
         if attachment_info_ude.nil?
-           text "#{not_provided_text}", :inline_format => true
+          text "UDE Data Completeness Report uploaded:
+          text "#{not_provided_text}", :inline_format => true
         else
           text "UDE Data Completeness Report uploaded: #{attachment_info_ude}"
         end
@@ -599,6 +599,7 @@ class QuestionnairePdf < Prawn::Document
       move_down 5
       font "Times-Roman"
       if attachment_info_apr.nil?
+        text "APR Report uploaded:"
         text "#{not_provided_text}", :inline_format => true
       else
         text "APR Report uploaded: #{attachment_info_apr}"
@@ -812,6 +813,9 @@ class QuestionnairePdf < Prawn::Document
       if !attachment_info_other.nil?
         move_down 10
         text "Relevant and supporting documentation uploaded:\n #{attachment_info_other}", :inline_format => true
+      else
+        move_down 10
+        text "Relevant and supporting documentation uploaded: Not Applicable"
       end
       font "Helvetica"  # back to normal
 
