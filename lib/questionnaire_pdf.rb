@@ -844,7 +844,7 @@ class QuestionnairePdf < Prawn::Document
       end
       font "Helvetica"  # back to normal
       move_down 5
-      text "Last Name"
+      text "Title"
       font "Times-Roman"
       if preparer_title.nil?
          text "#{not_provided_text}", :inline_format => true
