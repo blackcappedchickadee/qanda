@@ -31,7 +31,7 @@ class MiniSatisfSurvey < Prawn::Document
     
     sat_quest_thoughts = get_response_with_only_one_value("sat_quest_thoughts", response_set_id, survey_section_id)
     
-    text "Do you have any thoughts for the questionnaire process you just completed? Please provide suggestions to improve the questionnaire process you just completed."
+    text "Do you have any thoughts for the questionnaire process you just completed? Please provide your suggestions below."
     font "Times-Roman"
     if sat_quest_thoughts.nil?
       text "#{not_provided_text}", :inline_format => true

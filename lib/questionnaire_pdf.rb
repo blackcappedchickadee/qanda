@@ -853,25 +853,25 @@ class QuestionnairePdf < Prawn::Document
       end
       font "Helvetica"  # back to normal
       move_down 5
-      text "(If different from agency/program contact information):"
-      move_down 5
-      text "Email Address"
-      font "Times-Roman"
-      if preparer_email_address.nil?
-         text "#{not_provided_text}", :inline_format => true
-      else
-        text "#{preparer_email_address}"
-      end
-      font "Helvetica"  # back to normal      
-      move_down 5
-      text "Phone number"
-      font "Times-Roman"
-      if preparer_phone_number.nil?
-         text "#{not_provided_text}", :inline_format => true
-      else
-        text "#{preparer_phone_number}"
-      end
-      font "Helvetica"  # back to normal      
+      if !preparer_email_address.nil? || !preparer_phone_number.nil?
+        text "(If different from agency/program contact information):"
+        move_down 5
+        text "Email Address"
+        font "Times-Roman"
+        if preparer_email_address.nil?
+        else
+          text "#{preparer_email_address}"
+        end
+        font "Helvetica"  # back to normal      
+        move_down 5
+        text "Phone number"
+        font "Times-Roman"
+        if preparer_phone_number.nil?
+        else
+          text "#{preparer_phone_number}"
+        end
+        font "Helvetica"  # back to normal     
+      end 
       move_down 10
       text "Executive Director Information", :style => :bold
       move_down 5
