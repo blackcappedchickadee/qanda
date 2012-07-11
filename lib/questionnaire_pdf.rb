@@ -822,10 +822,14 @@ class QuestionnairePdf < Prawn::Document
       font "Times-Roman"
       if !attachment_info_other.nil?
         move_down 10
-        text "Relevant and supporting documentation uploaded:\n #{attachment_info_other}", :inline_format => true
+        if attachment_info_other.length > 0
+          text "Relevant and Supporting Documentation uploaded:\n #{attachment_info_other}", :inline_format => true
+        else
+          text "Relevant and Supporting Documentation: Not Applicable (no attachments uploaded)"
+        end
       else
         move_down 10
-        text "Relevant and supporting documentation uploaded: Not Applicable"
+        text "Relevant and Supporting Documentation: Not Applicable (no attachments uploaded)"
       end
       font "Helvetica"  # back to normal
 
