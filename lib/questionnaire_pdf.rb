@@ -75,21 +75,28 @@ class QuestionnairePdf < Prawn::Document
           end
           if !pass_fail_fire_marshall.nil?
             fire_marshall_col_3 = pass_fail_fire_marshall
-            if pass_fail_fire_marshall == "Not Applicable"
-              if !fire_marshall_not_applicable_reason.nil?
-                fire_marshall_col_4 = fire_marshall_not_applicable_reason
-              else
-                fire_marshall_col_4 = "#{not_provided_text}"
-              end
-            end
           else
             fire_marshall_col_3 = "#{not_provided_text}"
           end
+        else
+          #begin 7.11.2012
+          if site_visit_fire_marshall == "Not Applicable"
+              if !fire_marshall_not_applicable_reason.nil?
+                if fire_marshall_not_applicable_reason.length > 0
+                  fire_marshall_col_1 << " - #{fire_marshall_not_applicable_reason}"
+                else
+                  fire_marshall_col_1 << " - Reason: #{not_provided_text}"
+                end
+              else
+                fire_marshall_col_1 << " - Reason: #{not_provided_text}"
+              end
+          end
+          #end 7.11.2012
         end #yes - site visit
       else
         fire_marshall_col_1 = "#{not_provided_text}"
       end
-      data_fire_marshall = [[ fire_marshall_col_1, fire_marshall_col_2, fire_marshall_col_3 + fire_marshall_col_4]]
+      data_fire_marshall = [[ fire_marshall_col_1, fire_marshall_col_2, fire_marshall_col_3]]
 
        site_visit_dhhs = get_response_with_only_one_value("site_visit_dhhs", response_set_id, survey_section_physical_plant)
        inspection_date_dhhs = get_response_with_only_one_value("inspection_date_dhhs", response_set_id, survey_section_physical_plant)
@@ -109,16 +116,23 @@ class QuestionnairePdf < Prawn::Document
            end
            if !pass_fail_dhhs.nil?
              dhhs_col_3 = pass_fail_dhhs
-             if pass_fail_dhhs == "Not Applicable"
-               if !dhhs_not_applicable_reason.nil?
-                 dhhs_col_4 = dhhs_not_applicable_reason
-               else
-                 dhhs_col_4 = "#{not_provided_text}"
-               end
-             end
            else
              dhhs_col_3 = "#{not_provided_text}"
            end
+         else
+           #begin 7.11.2012
+           if site_visit_dhhs == "Not Applicable"
+               if !dhhs_not_applicable_reason.nil?
+                 if dhhs_not_applicable_reason.length > 0
+                   dhhs_col_1 << " - #{dhhs_not_applicable_reason}"
+                 else
+                   dhhs_col_1 << " - Reason: #{not_provided_text}"
+                 end
+               else
+                 dhhs_col_1 << " - Reason: #{not_provided_text}"
+               end
+           end
+           #end 7.11.2012
          end #yes - site visit
        else
          dhhs_col_1 = "#{not_provided_text}"
@@ -143,16 +157,23 @@ class QuestionnairePdf < Prawn::Document
           end
           if !pass_fail_msha.nil?
             msha_col_3 = pass_fail_msha
-            if pass_fail_msha == "Not Applicable"
-              if !msha_not_applicable_reason.nil?
-                msha_col_4 = msha_not_applicable_reason
-              else
-                msha_col_4 = "#{not_provided_text}"
-              end
-            end
           else
             msha_col_3 = "#{not_provided_text}"
           end
+        else
+          #begin 7.11.2012
+          if site_visit_msha == "Not Applicable"
+              if !msha_not_applicable_reason.nil?
+                if msha_not_applicable_reason.length > 0
+                  msha_col_1 << " - #{msha_not_applicable_reason}"
+                else
+                  msha_col_1 << " - Reason: #{not_provided_text}"
+                end
+              else
+                msha_col_1 << " - Reason: #{not_provided_text}"
+              end
+          end
+          #end 7.11.2012
         end #yes - site visit
       else
         msha_col_1 = "#{not_provided_text}"
@@ -177,16 +198,23 @@ class QuestionnairePdf < Prawn::Document
           end
           if !pass_fail_carf.nil?
             carf_col_3 = pass_fail_carf
-            if pass_fail_carf == "Not Applicable"
-              if !carf_not_applicable_reason.nil?
-                carf_col_4 = carf_not_applicable_reason
-              else
-                carf_col_4 = "#{not_provided_text}"
-              end
-            end
           else
             carf_col_3 = "#{not_provided_text}"
           end
+        else
+          #begin 7.11.2012
+          if site_visit_carf == "Not Applicable"
+              if !carf_not_applicable_reason.nil?
+                if carf_not_applicable_reason.length > 0
+                  carf_col_1 << " - #{carf_not_applicable_reason}"
+                else
+                  carf_col_1 << " - Reason: #{not_provided_text}"
+                end
+              else
+                carf_col_1 << " - Reason: #{not_provided_text}"
+              end
+          end
+          #end 7.11.2012
         end #yes - site visit
       else
         carf_col_1 = "#{not_provided_text}"
@@ -211,16 +239,23 @@ class QuestionnairePdf < Prawn::Document
           end
           if !pass_fail_hud.nil?
             hud_col_3 = pass_fail_hud
-            if pass_fail_hud == "Not Applicable"
-              if !hud_not_applicable_reason.nil?
-                hud_col_4 = hud_not_applicable_reason
-              else
-                hud_col_4 = "#{not_provided_text}"
-              end
-            end
           else
             hud_col_3 = "#{not_provided_text}"
           end
+        else
+          #begin 7.11.2012
+          if site_visit_hud == "Not Applicable"
+              if !hud_not_applicable_reason.nil?
+                if hud_not_applicable_reason.length > 0
+                  hud_col_1 << " - #{hud_not_applicable_reason}"
+                else
+                  hud_col_1 << " - Reason: #{not_provided_text}"
+                end
+              else
+                hud_col_1 << " - Reason: #{not_provided_text}"
+              end
+          end
+          #end 7.11.2012
         end #yes - site visit
       else
         hud_col_1 = "#{not_provided_text}"
@@ -255,6 +290,20 @@ class QuestionnairePdf < Prawn::Document
           else
             hqs_col_3 = "#{not_provided_text}"
           end
+        else
+          #begin 7.11.2012
+          if site_visit_hqs == "Not Applicable"
+              if !hqs_not_applicable_reason.nil?
+                if hqs_not_applicable_reason.length > 0
+                  hqs_col_1 << " - #{hqs_not_applicable_reason}"
+                else
+                  hqs_col_1 << " - Reason: #{not_provided_text}"
+                end
+              else
+                hqs_col_1 << " - Reason: #{not_provided_text}"
+              end
+          end
+          #end 7.11.2012
         end #yes - site visit
       else
         hqs_col_1 = "#{not_provided_text}"
@@ -282,13 +331,6 @@ class QuestionnairePdf < Prawn::Document
             end
             if !pass_fail_other1.nil?
               other1_col_3 = pass_fail_other1
-              if pass_fail_other1 == "Not Applicable"
-                if !other1_not_applicable_reason.nil?
-                  other1_col_4 = other1_not_applicable_reason
-                else
-                  other1_col_4 = "#{not_provided_text}"
-                end
-              end
             else
               other1_col_3 = "#{not_provided_text}"
             end
@@ -318,13 +360,6 @@ class QuestionnairePdf < Prawn::Document
             end
             if !pass_fail_other2.nil?
               other2_col_3 = pass_fail_other2
-              if pass_fail_other2 == "Not Applicable"
-                if !other2_not_applicable_reason.nil?
-                  other2_col_4 = other2_not_applicable_reason
-                else
-                  other2_col_4 = "#{not_provided_text}"
-                end
-              end
             else
               other2_col_3 = "#{not_provided_text}"
             end
@@ -761,55 +796,55 @@ class QuestionnairePdf < Prawn::Document
       move_down 10
       text "Fire Marshall", :style => :bold 
       data_headers = [["Site Visit?", "Date of last inspection?", "Pass or Fail?"]]
-      data_headers1 = [["Name","Site Visit?", "Date of last inspection?", "Pass or Fail?"]]
-      table(data_headers, :column_widths => [60, 120, 310])
+      data_headers1 = [["Name","Site Visit?", "Date of 160, 160, 160last inspection?", "Pass or Fail?"]]
+      table(data_headers, :column_widths => [160, 160, 160])
       font "Times-Roman"
-      table data_fire_marshall, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      table data_fire_marshall, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
       font "Helvetica"  # back to normal
       move_down 10
-      text "DHHS", :style => :bold 
-      table(data_headers, :column_widths => [60, 120, 310])
+      text "DHHS Licensing", :style => :bold 
+      table(data_headers, :column_widths => [160, 160, 160])
       font "Times-Roman"
-      table data_dhhs, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      table data_dhhs, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
       font "Helvetica"  # back to normal
       move_down 10
       text "MaineHousing", :style => :bold 
-      table(data_headers, :column_widths => [60, 120, 310])
+      table(data_headers, :column_widths => [160, 160, 160])
       font "Times-Roman"
-      table data_msha, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      table data_msha, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
       font "Helvetica"  # back to normal
       move_down 10
       text "CARF", :style => :bold 
-      table(data_headers, :column_widths => [60, 120, 310])
+      table(data_headers, :column_widths => [160, 160, 160])
       font "Times-Roman"
-      table data_carf, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      table data_carf, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
       font "Helvetica"  # back to normal
       move_down 10
       text "HUD", :style => :bold 
-      table(data_headers, :column_widths => [60, 120, 310])
+      table(data_headers, :column_widths => [160, 160, 160])
       font "Times-Roman"
-      table data_hud, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+      table data_hud, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
       font "Helvetica"  # back to normal
       move_down 10
       text "HQS", :style => :bold 
-      table(data_headers, :column_widths => [60, 120, 310])
+      table(data_headers, :column_widths => [160, 160, 160])
       font "Times-Roman"
-      table data_hqs, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }   
+      table data_hqs, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }   
       font "Helvetica"  # back to normal 
       if !name_other1.nil?
         move_down 10
         text name_other1, :style => :bold 
-        table(data_headers, :column_widths => [60, 120, 310])
+        table(data_headers, :column_widths => [160, 160, 160])
         font "Times-Roman"
-        table data_other1, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+        table data_other1, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
         font "Helvetica"  # back to normal
       end
       if !name_other2.nil?
         move_down 10
         text name_other2, :style => :bold 
-        table(data_headers, :column_widths => [60, 120, 310])
+        table(data_headers, :column_widths => [160, 160, 160])
         font "Times-Roman"
-        table data_other2, :column_widths => [60, 120, 310], :cell_style => { :inline_format => true }
+        table data_other2, :column_widths => [160, 160, 160], :cell_style => { :inline_format => true }
         font "Helvetica"  # back to normal
       end
       move_down 10

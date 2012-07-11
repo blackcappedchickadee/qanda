@@ -147,17 +147,17 @@ survey "2012 Monitoring and Evaluation" do
         q_23 "Site visit?", :custom_class => 'c_q23', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_fire_marshall'
           a_23_y "Yes"
           a_23_n "No"
+          a_23_x "Not Applicable"
         q_24 "Date of last inspection", :custom_class => 'c_q24', :display_type => :inline, :data_export_identifier => 'inspection_date_fire_marshall'
         a_24 :date
         q_25 "Pass or Fail?", :custom_class => 'c_q25', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_fail_fire_marshall'
         a_25_y "Pass", :data_export_identifier => 'fire_marshall_pass'
         a_25_n "Fail", :data_export_identifier => 'fire_marshall_fail'
-        a_25_x "Not Applicable", :data_export_identifier => 'fire_marshall_na'
         
         q_26 "Fire Marshall - Not Applicable Reason", :custom_class => 'c_q26txt'
         a_26 :text, :data_export_identifier => 'fire_marshall_na_reason'
         dependency :rule => "I"
-        condition_I :q_25, "==", :a_25_x
+        condition_I :q_23, "==", :a_23_x
 
       end
       
@@ -165,17 +165,17 @@ survey "2012 Monitoring and Evaluation" do
         q_27 "Site visit?", :custom_class => 'c_q27', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_dhhs'
           a_27_y "Yes"
           a_27_n "No"
+          a_27_x "Not Applicable"
         q_28 "Date of last inspection", :custom_class => 'c_q28', :display_type => :inline, :data_export_identifier => 'inspection_date_dhhs'
         a_28 :date
         q_29 "Pass or Fail?", :custom_class => 'c_q29', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_fail_dhhs'
         a_29_y "Pass", :data_export_identifier => 'dhhs_pass'
         a_29_n "Fail", :data_export_identifier => 'dhhs_fail'
-        a_29_x "Not Applicable", :data_export_identifier => 'dhhs_na'
         
-        q_30 "DHHS - Not Applicable Reason", :custom_class => 'c_q30txt'
+        q_30 "DHHS - Licensing Not Applicable Reason", :custom_class => 'c_q30txt'
         a_30 :text, :data_export_identifier => 'dhhs_na_reason'
         dependency :rule => "J"
-        condition_J :q_29, "==", :a_29_x
+        condition_J :q_27, "==", :a_27_x
         
       end
       
@@ -183,35 +183,35 @@ survey "2012 Monitoring and Evaluation" do
         q_31 "Site visit?", :custom_class => 'c_q31', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_msha'
           a_31_y "Yes"
           a_31_n "No"
+          a_31_x "Not Applicable"
         q_32 "Date of last inspection", :custom_class => 'c_q32', :display_type => :inline, :data_export_identifier => 'inspection_date_msha'
         a_32 :date
         q_33 "Pass or Fail?", :custom_class => 'c_q33', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_fail_msha'
         a_33_y "Pass", :data_export_identifier => 'msha_pass'
         a_33_n "Fail", :data_export_identifier => 'msha_fail'
-        a_33_x "Not Applicable", :data_export_identifier => 'msha_na'
         
         q_34 "MaineHousing - Not Applicable Reason", :custom_class => 'c_q34txt'
         a_34 :text, :data_export_identifier => 'dhhs_na_reason'
         dependency :rule => "J"
-        condition_J :q_33, "==", :a_33_x
+        condition_J :q_31, "==", :a_31_x
         
       end
       
       group "CARF", :display_type => :inline do  
         q_35 "Site visit?", :custom_class => 'c_q35', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_carf'
-          a_32_y "Yes"
-          a_32_n "No"
+          a_35_y "Yes"
+          a_35_n "No"
+          a_35_x "Not Applicable"
         q_36 "Date of last inspection", :custom_class => 'c_q36', :display_type => :inline, :data_export_identifier => 'inspection_date_carf'
         a_36 :date
         q_37 "Pass or Fail?", :custom_class => 'c_q37', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_carf'
         a_37_y "Pass", :data_export_identifier => 'carf_pass'
         a_37_n "Fail", :data_export_identifier => 'carf_fail'
-        a_37_x "Not Applicable", :data_export_identifier => 'carf_na'
         
         q_38 "CARF - Not Applicable Reason", :custom_class => 'c_q38txt'
         a_38 :text, :data_export_identifier => 'carf_na_reason'
         dependency :rule => "K"
-        condition_K :q_37, "==", :a_37_x
+        condition_K :q_35, "==", :a_35_x
         
       end
       
@@ -219,17 +219,17 @@ survey "2012 Monitoring and Evaluation" do
         q_39 "Site visit?", :custom_class => 'c_q39', :pick => :one, :display_type => :inline, :data_export_identifier => 'site_visit_hud'
           a_39_y "Yes"
           a_39_n "No"
+          a_39_x "Not Applicable"
         q_40 "Date of last inspection", :custom_class => 'c_q40', :display_type => :inline, :data_export_identifier => 'inspection_date_hud'
         a_40 :date
         q_41 "Pass or Fail?", :custom_class => 'c_q41', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_hud'
         a_41_y "Pass", :data_export_identifier => 'hud_pass'
         a_41_n "Fail", :data_export_identifier => 'hud_fail'
-        a_41_x "Not Applicable", :data_export_identifier => 'hud_na'
-        
+
         q_42 "HUD - Not Applicable Reason", :custom_class => 'c_q42txt'
         a_42 :text, :data_export_identifier => 'hud_na_reason'
         dependency :rule => "L"
-        condition_L :q_41, "==", :a_41_x
+        condition_L :q_39, "==", :a_39_x
         
       end
       
@@ -237,17 +237,17 @@ survey "2012 Monitoring and Evaluation" do
         q_43 "Site visit?", :custom_class => 'c_q43', :pick => :one, :display_type => :inline,  :data_export_identifier => 'site_visit_hqs'
           a_43_y "Yes"
           a_43_n "No"
+          a_43_x "Not Applicable"
         q_44 "Date of last inspection", :custom_class => 'c_q44', :display_type => :inline,  :data_export_identifier => 'inspection_date_hqs'
         a_44 :date
         q_45 "Pass or Fail?", :custom_class => 'c_q45', :pick => :one, :display_type => :inline,  :data_export_identifier => 'pass_or_fail_hqs'
         a_45_y "Pass", :data_export_identifier => 'hqs_pass'
         a_45_n "Fail", :data_export_identifier => 'hqs_fail'
-        a_45_x "Not Applicable", :data_export_identifier => 'hqs_na'
         
         q_46 "HQS - Not Applicable Reason", :custom_class => 'c_q46txt'
         a_46 :text, :data_export_identifier => 'hqs_na_reason'
         dependency :rule => "M"
-        condition_M :q_45, "==", :a_45_x
+        condition_M :q_43, "==", :a_43_x
         
       end
       
@@ -262,12 +262,6 @@ survey "2012 Monitoring and Evaluation" do
         q_50 "Pass or Fail?", :custom_class => 'c_q50', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_other1'
         a_50_y "Pass", :data_export_identifier => 'other1_pass'
         a_50_n "Fail", :data_export_identifier => 'other1_fail'
-        a_50_x "Not Applicable", :data_export_identifier => 'other1_na'
-        
-        q_51 "Other - Not Applicable Reason", :custom_class => 'c_q51txt', :data_export_identifier => 'other1_na_reason'
-        a_51 :text, :data_export_identifier => 'other1_na_reason'
-        dependency :rule => "N"
-        condition_N :q_50, "==", :a_50_x
         
       end
       
@@ -282,12 +276,6 @@ survey "2012 Monitoring and Evaluation" do
         q_55 "Pass or Fail?", :custom_class => 'c_q55', :pick => :one, :display_type => :inline, :data_export_identifier => 'pass_or_fail_other2'
         a_55_y "Pass", :data_export_identifier => 'other2_pass'
         a_55_n "Fail", :data_export_identifier => 'other2_fail'
-        a_55_x "Not Applicable", :data_export_identifier => 'other2_na'
-
-        q_56 "Other - Not Applicable Reason", :custom_class => 'c_q56txt', :data_export_identifier => 'other2_na_reason'
-        a_56 :text, :data_export_identifier => 'other2_na_reason'
-        dependency :rule => "N"
-        condition_N :q_55, "==", :a_55_x
         
       end
     
