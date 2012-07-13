@@ -218,15 +218,22 @@ module SurveyorControllerCustomMethods
         puts "in mini survey logic..."
         put_completed_mini_satisf_survey_pdf_to_doclib
         
-        list_surveys_path
+        #list_surveys_path
+        end_message
         
     else
-      list_surveys_path #returns to the list of instanced, available surveys for the given user.
+      end_message
+      #list_surveys_path #returns to the list of instanced, available surveys for the given user.
     end
     
   end
   
+  def end_message
+    end_message_path
+  end
+  
   private
+  
   
     def prepopulate_program_name
       puts "In prepopulate_program_name... start"
@@ -283,7 +290,6 @@ module SurveyorControllerCustomMethods
       end
       
     end
-  
   
     def put_completed_survey_pdf_to_doclib
 

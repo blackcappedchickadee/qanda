@@ -11,7 +11,7 @@
    <ul>
     <% if request.fullpath == '/surveys/list_current' || request.fullpath == '/surveys/questionnaire_status' %>
     <%else%>
-     <li><%=session[:project_name]%></li>
+     <li>Questionnaire: <%=session[:project_name]%></li>
     <%end %>
    </ul>
   </div>

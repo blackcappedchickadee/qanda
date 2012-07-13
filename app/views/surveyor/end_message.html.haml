@@ -1,0 +1,7 @@
+#surveyor
+  - unless (types = flash.keys.select{|k| [:notice, :error, :warning].include?(k)}).blank?
+    .surveyor_flash
+      = flash_messages(types)
+      .close
+  %br
+  The Questionnaire is complete. Please close this window.
