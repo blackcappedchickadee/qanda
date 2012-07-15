@@ -20,9 +20,10 @@ class LiferayDocument
   def add(groupId, folderId, name, description, fileAsBase64)
     begin
       #puts "in add -----#{@liferay_url} #{groupId}, #{folderId}, #{name}, #{description}, #{fileAsBase64}"
+      truncated_name = name.truncate(254)
       
-      response = @client.request :add_file_entry, body: { groupId: groupId, folderId: folderId, name: name, 
-                                title: name, description: description, changeLog: "", extraSettings: "", 
+      response = @client.request :add_file_entry, body: { groupId: groupId, folderId: folderId, name: truncated_name, 
+                                title: truncated_name, description: description, changeLog: "", extraSettings: "", 
                                 bytes: fileAsBase64, serviceContext: ""}
  
       if response.success?
@@ -42,8 +43,9 @@ class LiferayDocument
   
   def update(groupId, folderId, name, title, description, fileAsBase64)
     begin
+      truncated_title = title.truncate(254)
       response = @client.request :update_file_entry, body: { groupId: groupId, folderId: folderId, name: name, sourceFileName: title, 
-                              title: title, description: description, changeLog: "", majorVersion: false, extraSettings: "", 
+                              title: truncated_title, description: description, changeLog: "", majorVersion: false, extraSettings: "", 
                               bytes: fileAsBase64, serviceContext: ""}
       if response.success?
          #puts "success ------------- #{response.to_json}"
