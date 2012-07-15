@@ -9,7 +9,7 @@ module SurveyorControllerCustomMethods
   # Actions
   def new
     super
-    @title = "Available Surveys"
+    @title = "Available Questionnaires"
   end
   def create
     puts "survey code = #{params[:survey_code]}"
@@ -48,7 +48,7 @@ module SurveyorControllerCustomMethods
         saved &= @response_set.save
       end
     end
-    return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && params[:finish]
+    return redirect_with_message(surveyor_finish, :notice, "Completed Questionnaire") if saved && params[:finish]
 
     respond_to do |format|
       format.html do
