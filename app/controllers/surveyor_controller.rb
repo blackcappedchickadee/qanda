@@ -218,7 +218,7 @@ module SurveyorControllerCustomMethods
   def surveyor_finish
     # the update action redirects to this method if given params[:finish]
     #super # available_surveys_path
-    
+
     @tmp_response_set_code = session[:response_set_code]
     @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
     @tmp_survey = Survey.find(@tmp_response_set.survey_id)
@@ -369,7 +369,7 @@ module SurveyorControllerCustomMethods
            session[:mcoc_mini_survey] = @mcoc_mini_survey
            mini_survey_ask_path
          else
-           list_surveys_path
+           end_message #list_surveys_path
          end
        else
          #we'll insert the "base" values to the mcoc_mini_survey table -- then we'll redirect to ask if they are
