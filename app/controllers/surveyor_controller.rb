@@ -121,15 +121,26 @@ module SurveyorControllerCustomMethods
         puts "testing #{user_renewals.id}"
         @mcoc_renewals = McocUserRenewal.find_by_mcoc_renewal_id(user_renewals.id)
         
-        
+        @completed_date = ""
+        @completed_flag = ""
         
         @response_set_for_user = ResponseSet.find_by_id(@mcoc_renewals.response_set_id)
         @survey = Survey.find_by_id(@response_set_for_user.survey_id)
+        
+        if !@response_set_for_user.completed_at.nil?
+          @completed_date = @response_set_for_user.completed_at.in_time_zone("Eastern Time (US & Canada)")
+        end
+        if @completed_date.blank?
+          @completed_flag = "No"
+        else  
+          @completed_flag = "Yes"
+        end
+        
         #stuff into the array
         @transitory_surveys = TransitoryInstancedSurvey.new(@survey.access_code, 
                       @response_set_for_user.access_code, 
                       user_renewals.grantee_name, 
-                      user_renewals.project_name, nil, nil)           
+                      user_renewals.project_name, @completed_flag, @completed_date)           
         @list_of_instanced_surveys << @transitory_surveys
         
       end
@@ -141,6 +152,7 @@ module SurveyorControllerCustomMethods
       @mcoc_renewals = McocRenewal.find(:all, :order => 'grantee_name ASC, project_name ASC')
 
       @mcoc_renewals.each do |renewals|
+        @completed_date = ""
         @tmp_user_renewals = McocUserRenewal.where(:mcoc_renewal_id => renewals.id)
         @grantee_name = renewals.grantee_name
         @project_name = renewals.project_name
@@ -155,7 +167,9 @@ module SurveyorControllerCustomMethods
           @response_set = ResponseSet.where(:id => @tmp_user_renewals.first.response_set_id)
           @response_set_access_code = @response_set.first.access_code
           @survey = Survey.find_by_id(@response_set.first.survey_id)
-          @completed_date = @response_set.first.completed_at
+          if !@response_set.first.completed_at.nil?
+            @completed_date = @response_set.first.completed_at.in_time_zone("Eastern Time (US & Canada)")
+          end
           if @completed_date.blank?
             @completed_flag = "No"
           else  

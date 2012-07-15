@@ -30,8 +30,11 @@
                   = link_to survey.project_name, edit_my_survey_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code), :target => "_blank" 
                 %div.project_name_links
                   = link_to '(View PDF)', show_questionnaire_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code, format: "pdf")
+                  - if survey.completed_flag == "No"
+                    Completed? #{survey.completed_flag} 
+                  - else
+                    Completed? #{survey.completed_flag} - #{survey.completed_date}
               - @working_grantee_name = survey.grantee_name
-              
       - else
         %li
           No surveys
