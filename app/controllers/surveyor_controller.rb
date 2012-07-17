@@ -101,10 +101,13 @@ module SurveyorControllerCustomMethods
     
     respond_to do |format|
       format.pdf do
-        pdf = QuestionnairePdf.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
-        send_data pdf.render, filename: "#{@tmp_project_name}-2012-questionnaire.pdf",
+        questionnaire = QuestionnairePdf.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
+        if !questionnaire.nil?
+          
+          send_data questionnaire.render, filename: "#{@tmp_project_name}-2012-questionnaire.pdf",
                               type: "application/pdf",
                               disposition: "inline"
+        end
       end
     end
     
