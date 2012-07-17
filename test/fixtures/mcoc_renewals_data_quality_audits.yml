@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user_id: 1
+  mcoc_renewal_id: 1
+  section_id: 1
+  audit_key: MyString
+  audit_value: MyString
+
+two:
+  user_id: 1
+  mcoc_renewal_id: 1
+  section_id: 1
+  audit_key: MyString
+  audit_value: MyString

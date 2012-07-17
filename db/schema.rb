@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120708222934) do
+ActiveRecord::Schema.define(:version => 20120717204056) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -160,6 +160,16 @@ ActiveRecord::Schema.define(:version => 20120708222934) do
     t.datetime "attachment_apr_updated_at"
     t.integer  "apr_report_folder_id"
     t.integer  "apr_report_doc_name"
+  end
+
+  create_table "mcoc_renewals_data_quality_audits", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "mcoc_renewal_id"
+    t.integer  "section_id"
+    t.string   "audit_key"
+    t.string   "audit_value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "mcoc_renewals_supporting_assets", :force => true do |t|

@@ -3,8 +3,9 @@ class QuestionnairePdf < Prawn::Document
   include Questionnaire::Data
   
 
-  def initialize(mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
+  def initialize(user_id, mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
       
+      @user_id = user_id
       @mcoc_renewal_id = mcoc_renewal_id
       @response_set_code = response_set_code
       @grantee_name = grantee_name
@@ -14,7 +15,7 @@ class QuestionnairePdf < Prawn::Document
       @response_set_id = response_set.id
       @survey_id = response_set.survey_id
       
-      configure(mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
+      configure(user_id, mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
       
       get_agency_information_section_values
       get_program_information_section_values

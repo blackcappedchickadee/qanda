@@ -12,7 +12,7 @@ class CreateAndSendPdfJob
        mcoc_questionnaire_file_name_stem = Rails.configuration.questionnairefilename
        pdf_file_name = "#{@mcoc_renewal.project_name}-#{mcoc_questionnaire_file_name_stem}"
        puts "mcoc_renewal_id #{mcoc_renewal_id} response_set_code #{response_set_code} grantee_name #{grantee_name} project_name #{project_name}  pdf_file_name = #{pdf_file_name}..."
-       pdf = QuestionnairePdf.new(mcoc_renewal_id, response_set_code, grantee_name, project_name, pdf_file_name)
+       pdf = QuestionnairePdf.new(user_id, mcoc_renewal_id, response_set_code, grantee_name, project_name, pdf_file_name)
 
        pdf_file_as_base_64 = Base64.encode64(pdf.render)
 

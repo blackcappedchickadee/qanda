@@ -8,10 +8,10 @@ module Questionnaire
     @project_name = "" 
     @doc_name = 0
     
-    def configure(mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
-
-      #@write_audit = write_audit(mcoc_renewal_id, 1, "Fire Marshall Site Visit", "Not Provided" )
-
+    def configure(user_id, mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
+      
+      audit_destroy_all
+      
       @mcoc_renewal_id = mcoc_renewal_id
       @response_set_code = response_set_code
       @grantee_name = grantee_name
@@ -20,20 +20,13 @@ module Questionnaire
       response_set = ResponseSet.find_by_access_code(response_set_code)
       @response_set_id = response_set.id
       @survey_id = response_set.survey_id
+      
+      @not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
+      
+      #write_audit(user_id, mcoc_renewal_id, 5, "Fire Marshall Site Visit", "Not Provided")
 
     end
     
-    
-    def write_audit(mcoc_renewal_id, section_id, audit_key, audit_value) 
-        #saved = false
-        #@audit_record = McocRenewalsDataQualityAudit.create(:mcoc_renewal_id => mcoc_renewal_id, :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value)
-        #saved &= @audit_record.save
-    end
-    
-    def audit_destroy_all
-       #cleanup any audit (missing data) information before we produce the PDF
-       #McocRenewalsDataQualityAudit.destroy_all(:mcoc_renewal_id => @mcoc_renewal_id)
-    end
 
     def get_agency_information_section_values
      #page 1 values 
@@ -133,8 +126,6 @@ module Questionnaire
        fire_marshall_col_1 = "#{@not_provided_text}"
      end
      @data_fire_marshall = [[ fire_marshall_col_1, fire_marshall_col_2, fire_marshall_col_3]]
-
-puts "data_fire_marshall ================== #{@data_fire_marshall.to_json}"
 
       site_visit_dhhs = get_response_with_only_one_value("site_visit_dhhs", @response_set_id, survey_section_physical_plant)
       inspection_date_dhhs = get_response_with_only_one_value("inspection_date_dhhs", @response_set_id, survey_section_physical_plant)
@@ -427,12 +418,16 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
     
   private
     
-    def write_audit(mcoc_renewal_id, section_id, audit_key, audit_value) 
+    def write_audit(user_id, mcoc_renewal_id, section_id, audit_key, audit_value) 
         saved = false
-        #@audit_record = McocRenewalsDataQualityAudit.create(:mcoc_renewal_id => mcoc_renewal_id, :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value)
-        #saved &= @audit_record.save
+        @audit_record = McocRenewalsDataQualityAudit.create(:user_id => user_id, :mcoc_renewal_id => mcoc_renewal_id, :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value)
+        saved &= @audit_record.save
     end
-
+    
+    def audit_destroy_all
+       #cleanup any audit (missing data) information before we produce the PDF
+       McocRenewalsDataQualityAudit.destroy_all(:mcoc_renewal_id => @mcoc_renewal_id)
+    end
 
     def get_response_with_only_one_value(data_export_identifier, response_set_id, survey_section_id)
       tmp_question = Question.find_by_data_export_identifier_and_survey_section_id(data_export_identifier, survey_section_id)

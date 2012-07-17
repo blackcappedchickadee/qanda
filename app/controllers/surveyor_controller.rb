@@ -79,6 +79,7 @@ module SurveyorControllerCustomMethods
     @tmp_response_set_id = @tmp_response_set.id
     @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
     @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+    @tmp_user_id = session[:user_id]
     
     @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
     @tmp_grantee_name = @mcoc_renewal.grantee_name
@@ -101,7 +102,7 @@ module SurveyorControllerCustomMethods
     
     respond_to do |format|
       format.pdf do
-        questionnaire = QuestionnairePdf.new(@tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
+        questionnaire = QuestionnairePdf.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @questionnaire_doc_name)
         if !questionnaire.nil?
           
           send_data questionnaire.render, filename: "#{@tmp_project_name}-2012-questionnaire.pdf",
