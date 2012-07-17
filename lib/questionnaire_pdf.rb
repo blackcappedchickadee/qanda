@@ -26,20 +26,45 @@ class QuestionnairePdf < Prawn::Document
       final_section_values
       
       @not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
-
-      #first section - Agency Information
+      
       super(top_margin: 50)
+      
+      #create the pdf - by section
+      generate_agency_information_section 
+      generate_program_information_section_values
+      generate_hmis_information_section_values
+      generate_families_youth_section_values
+      generate_hud_section_values
+      generate_physical_plant_section_values
+      generate_final_section_values
+
+      
+      pgnum_string = "Page <page> of <total> -- #{@grantee_name} - #{@project_name}" 
+
+      options = { :at => [bounds.left + 0, 0],
+                    :width => 700,
+                    :align => :left,
+                    :size => 9,
+                    :start_count_at => 1,
+                    :color => "999999" }
+      number_pages pgnum_string, options
+
+  end #initialize
+  
+  def generate_agency_information_section
+      #first section - Agency Information
+   
       font_size 16
       text "2012 Monitoring and Evaluation", :style => :bold 
       move_down 10
       font_size 14
       text "Grantee Name:", :style => :bold
       move_down 5
-      text "#{grantee_name}"
+      text "#{@grantee_name}"
       move_down 10
       text "Project Name:", :style => :bold
       move_down 5
-      text "#{project_name}"
+      text "#{@project_name}"
       move_down 5
       font_size 12
       stroke_horizontal_rule
@@ -123,158 +148,166 @@ class QuestionnairePdf < Prawn::Document
         move_down 10
         transparent(0.3) { stroke_bounds }
       end
-
-
-      start_new_page
-      font_size 14
-      text "Program Information", :style => :bold 
-      font_size 10
-      move_down 10
-      text "Please answer the following questions in regard to the program during the Operating Year covered by your most recently submitted HUD APR:"
-      move_down 10
-      text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
-      move_down 5
-      font "Times-Roman"
-      if @data_program_info.nil?
-        text "#{@not_provided_text}", :inline_format => true
-      else
-        text "#{@data_program_info}"
-      end
-      font "Helvetica"  # back to normal
-      move_down 10
-      text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
-      move_down 5
-      font "Times-Roman"
-      if @self_suff.nil?
-        text "#{@not_provided_text}", :inline_format => true
-      else
-        text "#{@self_suff}"
-      end
-      font "Helvetica"  # back to normal
-      move_down 10
-      text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
-      move_down 5
-      font "Times-Roman"
-      if @program_verif_proc.nil?
-        text "#{@not_provided_text}", :inline_format => true
-      else
-        text "#{@program_verif_proc}"
-      end
-      font "Helvetica"  # back to normal
-      move_down 10
-      text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
-      move_down 5
-      font "Times-Roman"
-      if @program_renewal_budget_pct.nil?
-        text "#{@not_provided_text}", :inline_format => true
-      else
-        text "#{@program_renewal_budget_pct}"
-      end
-      font "Helvetica"  # back to normal
-
-      start_new_page
-      font_size 14
-      text "HMIS Participation", :style => :bold 
-      font_size 10
-      move_down 10
-      text "Is your project participating in the Maine HMIS (Homeless Management Information System)?"
-      move_down 5
-      var_hmis_particp = ""
-      font "Times-Roman"
-      if @participating_maine_hmis.nil?
-        text "#{@not_provided_text}", :inline_format => true
-      else
-        var_hmis_particp = @participating_maine_hmis
-        text "#{var_hmis_particp}"
-      end
-      font "Helvetica"  # back to normal
-      if var_hmis_particp == "Yes"
-        move_down 10
-        text "Please follow this link to a video that will explain how to run the 'UDE Data Completeness Report', and how to make any corrections or updates needed to improve your data completeness."
-        move_down 5
-        formatted_text [{:text =>"CoC UDE Data Completeness and DKR Reports Video",
-                         :color => "0000FF"}]
-        move_down 5
-        text "Run the report for this facility (which is up for renewal this year) <b><u>and upload an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
-        move_down 10
-        font "Times-Roman"
-        if @attachment_info_ude.nil?
-          text "UDE Data Completeness Report:"
-          text "#{@not_provided_text}", :inline_format => true
-        else
-          if @attachment_info_ude == "text"
-            text "UDE Data Completeness Report:"
-            text "#{@not_provided_text}", :inline_format => true
-          else
-            text "UDE Data Completeness Report uploaded: #{@attachment_info_ude}"
-          end
-        end
-        font "Helvetica"  # back to normal
-        move_down 10 
-        text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
-        move_down 5
-        font "Times-Roman"
-        if @letter_grade_ude.nil?
-          text "#{@not_provided_text}", :inline_format => true
-        else
-          text "#{@letter_grade_ude}"
-        end
-        font "Helvetica"  # back to normal
-        move_down 10
-        text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
-        move_down 5
-        font "Times-Roman"
-        if @letter_grade_dkr.nil?
-          text "#{@not_provided_text}", :inline_format => true
-        else
-          text "#{@letter_grade_dkr}"
-        end
-        font "Helvetica"  # back to normal
-      end
-
-      start_new_page
-      font_size 14
-      text "Families or Youth", :style => :bold 
-      font_size 10
-      move_down 10
-      text "Does your project work with Families or Youth?"
-      var_project_work_with_families_youth = ""
-      move_down 5
-      font "Times-Roman"
-      if @project_work_with_families_youth.nil?
-        text "#{@not_provided_text}", :inline_format => true
-      else
-        var_project_work_with_families_youth = @project_work_with_families_youth
-        text "#{var_project_work_with_families_youth}"
-      end
-      font "Helvetica"  # back to normal
-      if var_project_work_with_families_youth == "Yes"
-        move_down 10
-        text "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?"
-        var_and_form_process_document_this = ""
-        move_down 5
-        font "Times-Roman"
-        if @and_form_process_document_this.nil?
-          text "#{@not_provided_text}", :inline_format => true
-        else
-          var_and_form_process_document_this = @and_form_process_document_this
-          text "#{var_and_form_process_document_this}"
-        end
-        font "Helvetica"  # back to normal
-        if var_and_form_process_document_this == "No or Not Applicable"
-          move_down 10
-          text "Since you have indicated 'No or Not Applicable' to the prior question, please explain."
-          move_down 5
-          font "Times-Roman"
-          if @applicable_prior_question_please_explain.nil?
-            text "#{@not_provided_text}", :inline_format => true
-          else
-            text "#{@applicable_prior_question_please_explain}"
-          end
-          font "Helvetica"  # back to normal
-        end
-      end
-
+    
+  end
+  
+  def generate_program_information_section_values
+     start_new_page
+     font_size 14
+     text "Program Information", :style => :bold 
+     font_size 10
+     move_down 10
+     text "Please answer the following questions in regard to the program during the Operating Year covered by your most recently submitted HUD APR:"
+     move_down 10
+     text "1) Please provide a brief program summary. Include information about the type of program, population served, and the specific services or operations for which the McKinney-Vento funding was used."
+     move_down 5
+     font "Times-Roman"
+     if @data_program_info.nil?
+       text "#{@not_provided_text}", :inline_format => true
+     else
+       text "#{@data_program_info}"
+     end
+     font "Helvetica"  # back to normal
+     move_down 10
+     text "2) Please describe how project participants have been assisted to access Mainstream resources, increase incomes and maximize their ability to live independently? (In your narrative, please make specific reference to relevant sections of your APR)."
+     move_down 5
+     font "Times-Roman"
+     if @self_suff.nil?
+       text "#{@not_provided_text}", :inline_format => true
+     else
+       text "#{@self_suff}"
+     end
+     font "Helvetica"  # back to normal
+     move_down 10
+     text "3) Projects are required to verify homeless and chronic homeless status during intake. Please describe your verification process."
+     move_down 5
+     font "Times-Roman"
+     if @program_verif_proc.nil?
+       text "#{@not_provided_text}", :inline_format => true
+     else
+       text "#{@program_verif_proc}"
+     end
+     font "Helvetica"  # back to normal
+     move_down 10
+     text "4) What percentage of your total budget for THIS program does the McKinney-Vento renewal represent?"
+     move_down 5
+     font "Times-Roman"
+     if @program_renewal_budget_pct.nil?
+       text "#{@not_provided_text}", :inline_format => true
+     else
+       text "#{@program_renewal_budget_pct}"
+     end
+     font "Helvetica"  # back to normal
+  end
+  
+  def generate_hmis_information_section_values
+     start_new_page
+     font_size 14
+     text "HMIS Participation", :style => :bold 
+     font_size 10
+     move_down 10
+     text "Is your project participating in the Maine HMIS (Homeless Management Information System)?"
+     move_down 5
+     var_hmis_particp = ""
+     font "Times-Roman"
+     if @participating_maine_hmis.nil?
+       text "#{@not_provided_text}", :inline_format => true
+     else
+       var_hmis_particp = @participating_maine_hmis
+       text "#{var_hmis_particp}"
+     end
+     font "Helvetica"  # back to normal
+     if var_hmis_particp == "Yes"
+       move_down 10
+       text "Please follow this link to a video that will explain how to run the 'UDE Data Completeness Report', and how to make any corrections or updates needed to improve your data completeness."
+       move_down 5
+       formatted_text [{:text =>"CoC UDE Data Completeness and DKR Reports Video",
+                        :color => "0000FF"}]
+       move_down 5
+       text "Run the report for this facility (which is up for renewal this year) <b><u>and upload an electronic copy of the report below. Please run the UDE Data Completeness Report for the same time frame as your most recent APR Operating Year for each program.</u></b>", :inline_format => true
+       move_down 10
+       font "Times-Roman"
+       if @attachment_info_ude.nil?
+         text "UDE Data Completeness Report:"
+         text "#{@not_provided_text}", :inline_format => true
+       else
+         if @attachment_info_ude == "text"
+           text "UDE Data Completeness Report:"
+           text "#{@not_provided_text}", :inline_format => true
+         else
+           text "UDE Data Completeness Report uploaded: #{@attachment_info_ude}"
+         end
+       end
+       font "Helvetica"  # back to normal
+       move_down 10 
+       text "What is your <b>UDE Data Completeness letter grade</b> for this project?", :inline_format => true
+       move_down 5
+       font "Times-Roman"
+       if @letter_grade_ude.nil?
+         text "#{@not_provided_text}", :inline_format => true
+       else
+         text "#{@letter_grade_ude}"
+       end
+       font "Helvetica"  # back to normal
+       move_down 10
+       text "What is your <b>DKR letter grade</b> for this project?", :inline_format => true
+       move_down 5
+       font "Times-Roman"
+       if @letter_grade_dkr.nil?
+         text "#{@not_provided_text}", :inline_format => true
+       else
+         text "#{@letter_grade_dkr}"
+       end
+       font "Helvetica"  # back to normal
+     end
+  end
+  
+  def generate_families_youth_section_values
+     start_new_page
+     font_size 14
+     text "Families or Youth", :style => :bold 
+     font_size 10
+     move_down 10
+     text "Does your project work with Families or Youth?"
+     var_project_work_with_families_youth = ""
+     move_down 5
+     font "Times-Roman"
+     if @project_work_with_families_youth.nil?
+       text "#{@not_provided_text}", :inline_format => true
+     else
+       var_project_work_with_families_youth = @project_work_with_families_youth
+       text "#{var_project_work_with_families_youth}"
+     end
+     font "Helvetica"  # back to normal
+     if var_project_work_with_families_youth == "Yes"
+       move_down 10
+       text "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?"
+       var_and_form_process_document_this = ""
+       move_down 5
+       font "Times-Roman"
+       if @and_form_process_document_this.nil?
+         text "#{@not_provided_text}", :inline_format => true
+       else
+         var_and_form_process_document_this = @and_form_process_document_this
+         text "#{var_and_form_process_document_this}"
+       end
+       font "Helvetica"  # back to normal
+       if var_and_form_process_document_this == "No or Not Applicable"
+         move_down 10
+         text "Since you have indicated 'No or Not Applicable' to the prior question, please explain."
+         move_down 5
+         font "Times-Roman"
+         if @applicable_prior_question_please_explain.nil?
+           text "#{@not_provided_text}", :inline_format => true
+         else
+           text "#{@applicable_prior_question_please_explain}"
+         end
+         font "Helvetica"  # back to normal
+       end
+     end
+  end
+  
+  def generate_hud_section_values
       start_new_page
       font_size 14
       text "HUD Continuum Goals", :style => :bold 
@@ -430,8 +463,10 @@ class QuestionnairePdf < Prawn::Document
           text "#{@if_below_77_please_explain}"
           font "Helvetica"  # back to normal
         end
-      end #supportive housing = yes block      
-
+      end #supportive housing = yes block
+  end
+  
+  def generate_physical_plant_section_values
       start_new_page
       font_size 14
       text "Physical Plant", :style => :bold 
@@ -512,7 +547,9 @@ class QuestionnairePdf < Prawn::Document
         text "Relevant and Supporting Documentation: Not Applicable (no attachments uploaded)"
       end
       font "Helvetica"  # back to normal
-
+  end
+  
+  def generate_final_section_values
       start_new_page
       font_size 14
       text "Finish", :style => :bold 
@@ -621,20 +658,7 @@ class QuestionnairePdf < Prawn::Document
         text "#{@elect_sig_name}"
       end
       font "Helvetica"  # back to normal
-      
-      pgnum_string = "Page <page> of <total> -- #{@grantee_name} - #{@project_name}" 
-
-      options = { :at => [bounds.left + 0, 0],
-                    :width => 700,
-                    :align => :left,
-                    :size => 9,
-                    :start_count_at => 1,
-                    :color => "999999" }
-      number_pages pgnum_string, options
-
-  end #initialize
-  
-
+    end
 
   
 end
