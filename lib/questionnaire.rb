@@ -12,6 +12,7 @@ module Questionnaire
       
       audit_destroy_all
       
+      @user_id = user_id
       @mcoc_renewal_id = mcoc_renewal_id
       @response_set_code = response_set_code
       @grantee_name = grantee_name
@@ -23,7 +24,6 @@ module Questionnaire
       
       @not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
       
-      #write_audit(user_id, mcoc_renewal_id, 5, "Fire Marshall Site Visit", "Not Provided")
 
     end
     
@@ -99,13 +99,13 @@ module Questionnaire
            fire_marshall_col_2 = inspection_date_fire_marshall
          else
            fire_marshall_col_2 = "#{@not_provided_text}"
-          # write_audit (mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit", "Not Provided" 
-
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit - Date of Last Inspection", @not_provided_text)
          end
          if !pass_fail_fire_marshall.nil?
            fire_marshall_col_3 = pass_fail_fire_marshall
          else
            fire_marshall_col_3 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit - Pass or Fail", @not_provided_text)
          end
        else
          #begin 7.11.2012
@@ -115,15 +115,18 @@ module Questionnaire
                  fire_marshall_col_1 << " - #{fire_marshall_not_applicable_reason}"
                else
                  fire_marshall_col_1 << " - Reason: #{@not_provided_text}"
+                 write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit - Not Applicable Reason", @not_provided_text)
                end
              else
                fire_marshall_col_1 << " - Reason: #{@not_provided_text}"
+               write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit - Not Applicable Reason", @not_provided_text)
              end
          end
          #end 7.11.2012
        end #yes - site visit
      else
        fire_marshall_col_1 = "#{@not_provided_text}"
+       write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit", @not_provided_text)
      end
      @data_fire_marshall = [[ fire_marshall_col_1, fire_marshall_col_2, fire_marshall_col_3]]
 
@@ -142,11 +145,13 @@ module Questionnaire
             dhhs_col_2 = inspection_date_dhhs
           else
             dhhs_col_2 = "#{@not_provided_text}"
+            write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "DHHS Licensing Site Visit - Date of Last Inspection", @not_provided_text)
           end
           if !pass_fail_dhhs.nil?
             dhhs_col_3 = pass_fail_dhhs
           else
             dhhs_col_3 = "#{@not_provided_text}"
+            write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "DHHS Licensing Site Visit - Pass or Fail", @not_provided_text)
           end
         else
           #begin 7.11.2012
@@ -156,18 +161,20 @@ module Questionnaire
                   dhhs_col_1 << " - #{dhhs_not_applicable_reason}"
                 else
                   dhhs_col_1 << " - Reason: #{@not_provided_text}"
+                  write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "DHHS Licensing Site Visit - Not Applicable Reason", @not_provided_text)
                 end
               else
                 dhhs_col_1 << " - Reason: #{@not_provided_text}"
+                write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "DHHS Licensing Site Visit - Not Applicable Reason", @not_provided_text)
               end
           end
           #end 7.11.2012
         end #yes - site visit
       else
         dhhs_col_1 = "#{@not_provided_text}"
+        write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "DHHS Licensing Site Visit", @not_provided_text)
       end
       @data_dhhs = [[ dhhs_col_1, dhhs_col_2, dhhs_col_3]]
-puts "data_dhhs ============ #{@data_dhhs.to_json}"
 
      site_visit_msha = get_response_with_only_one_value("site_visit_msha", @response_set_id, survey_section_physical_plant)
      inspection_date_msha = get_response_with_only_one_value("inspection_date_msha", @response_set_id, survey_section_physical_plant)
@@ -184,11 +191,13 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
            msha_col_2 = inspection_date_msha
          else
            msha_col_2 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "MaineHousing Site Visit - Date of Last Inspection", @not_provided_text)
          end
          if !pass_fail_msha.nil?
            msha_col_3 = pass_fail_msha
          else
            msha_col_3 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "MaineHousing Site Visit - Pass or Fail", @not_provided_text)
          end
        else
          #begin 7.11.2012
@@ -198,15 +207,18 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
                  msha_col_1 << " - #{msha_not_applicable_reason}"
                else
                  msha_col_1 << " - Reason: #{@not_provided_text}"
+                 write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "MaineHousing Site Visit - Not Applicable Reason", @not_provided_text)
                end
              else
                msha_col_1 << " - Reason: #{@not_provided_text}"
+               write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "MaineHousing Site Visit - Not Applicable Reason", @not_provided_text)
              end
          end
          #end 7.11.2012
        end #yes - site visit
      else
        msha_col_1 = "#{@not_provided_text}"
+       write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "MaineHousing Site Visit", @not_provided_text)
      end
      @data_msha = [[ msha_col_1, msha_col_2, msha_col_3]]    
 
@@ -225,11 +237,13 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
            carf_col_2 = inspection_date_carf
          else
            carf_col_2 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "CARF Site Visit - Date of Last Inspection", @not_provided_text)
          end
          if !pass_fail_carf.nil?
            carf_col_3 = pass_fail_carf
          else
            carf_col_3 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "CARF Site Visit - Pass or Fail", @not_provided_text)
          end
        else
          #begin 7.11.2012
@@ -239,15 +253,18 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
                  carf_col_1 << " - #{carf_not_applicable_reason}"
                else
                  carf_col_1 << " - Reason: #{@not_provided_text}"
+                 write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "CARF Site Visit - Not Applicable Reason", @not_provided_text)
                end
              else
                carf_col_1 << " - Reason: #{@not_provided_text}"
+               write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "CARF Site Visit - Not Applicable Reason", @not_provided_text)
              end
          end
          #end 7.11.2012
        end #yes - site visit
      else
        carf_col_1 = "#{@not_provided_text}"
+       write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "CARF Site Visit", @not_provided_text)
      end
      @data_carf = [[ carf_col_1, carf_col_2, carf_col_3]]
 
@@ -266,11 +283,13 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
            hud_col_2 = inspection_date_hud
          else
            hud_col_2 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HUD Site Visit - Date of Last Inspection", @not_provided_text)
          end
          if !pass_fail_hud.nil?
            hud_col_3 = pass_fail_hud
          else
            hud_col_3 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HUD Site Visit - Pass or Fail", @not_provided_text)
          end
        else
          #begin 7.11.2012
@@ -280,15 +299,18 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
                  hud_col_1 << " - #{hud_not_applicable_reason}"
                else
                  hud_col_1 << " - Reason: #{@not_provided_text}"
+                 write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HUD Site Visit - Not Applicable Reason", @not_provided_text)
                end
              else
                hud_col_1 << " - Reason: #{@not_provided_text}"
+               write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HUD Site Visit - Not Applicable Reason", @not_provided_text)
              end
          end
          #end 7.11.2012
        end #yes - site visit
      else
        hud_col_1 = "#{@not_provided_text}"
+       write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HUD Site Visit", @not_provided_text)
      end
      @data_hud = [[ hud_col_1, hud_col_2, hud_col_3]]
 
@@ -307,18 +329,13 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
            hqs_col_2 = inspection_date_hqs
          else
            hqs_col_2 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HQS Site Visit - Date of Last Inspection", @not_provided_text)
          end
          if !pass_fail_hqs.nil?
            hqs_col_3 = pass_fail_hqs
-           if pass_fail_hqs == "Not Applicable"
-             if !hqs_not_applicable_reason.nil?
-               hqs_col_4 = hqs_not_applicable_reason
-             else
-               hqs_col_4 = "#{@not_provided_text}"
-             end
-           end
          else
            hqs_col_3 = "#{@not_provided_text}"
+           write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HQS Site Visit - Pass or Fail", @not_provided_text)
          end
        else
          #begin 7.11.2012
@@ -328,15 +345,18 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
                  hqs_col_1 << " - #{hqs_not_applicable_reason}"
                else
                  hqs_col_1 << " - Reason: #{@not_provided_text}"
+                 write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HQS Site Visit - Not Applicable Reason", @not_provided_text)
                end
              else
                hqs_col_1 << " - Reason: #{@not_provided_text}"
+               write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HQS Site Visit - Not Applicable Reason", @not_provided_text)
              end
          end
          #end 7.11.2012
        end #yes - site visit
      else
        hqs_col_1 = "#{@not_provided_text}"
+       write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "HQS Site Visit", @not_provided_text)
      end
      @data_hqs = [[ hqs_col_1, hqs_col_2, hqs_col_3 + " " + hqs_col_4]]
 
@@ -357,11 +377,13 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
              other1_col_2 = inspection_date_other1
            else
              other1_col_2 = "#{@not_provided_text}"
+             write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "#{@name_other1} Site Visit - Date of Last Inspection", @not_provided_text)
            end
            if !pass_fail_other1.nil?
              other1_col_3 = pass_fail_other1
            else
              other1_col_3 = "#{@not_provided_text}"
+             write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "#{@name_other1} Site Visit - Pass or Fail", @not_provided_text)
            end
          end #yes - site visit
        end
@@ -385,11 +407,13 @@ puts "data_dhhs ============ #{@data_dhhs.to_json}"
              other2_col_2 = inspection_date_other2
            else
              other2_col_2 = "#{@not_provided_text}"
+             write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "#{@name_other2} Site Visit - Date of Last Inspection", @not_provided_text)
            end
            if !pass_fail_other2.nil?
              other2_col_3 = pass_fail_other2
            else
              other2_col_3 = "#{@not_provided_text}"
+             write_audit(@user_id, @mcoc_renewal_id, survey_section_physical_plant, "#{@name_other2} Site Visit - Pass or Fail", @not_provided_text)
            end
          end #yes - site visit
        end
