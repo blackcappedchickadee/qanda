@@ -2,7 +2,12 @@ class QuestionnairePdf < Prawn::Document
   
   def initialize(mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
     
+      #cleanup any audit (missing data) information before we produce the PDF
+      McocRenewalsDataQualityAudit.destroy_all(:mcoc_renewal_id => mcoc_renewal_id)
+
       not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
+
+      @write_audit = write_audit(mcoc_renewal_id, 1, "Fire Marshall Site Visit", "Not Provided" )
 
       @grantee_name = grantee_name
       @project_name = project_name
@@ -72,6 +77,8 @@ class QuestionnairePdf < Prawn::Document
             fire_marshall_col_2 = inspection_date_fire_marshall
           else
             fire_marshall_col_2 = "#{not_provided_text}"
+           # write_audit (mcoc_renewal_id, survey_section_physical_plant, "Fire Marshall Site Visit", "Not Provided" 
+            
           end
           if !pass_fail_fire_marshall.nil?
             fire_marshall_col_3 = pass_fail_fire_marshall
@@ -988,8 +995,24 @@ class QuestionnairePdf < Prawn::Document
 
   end #initialize
   
+  def get_checklist_data
+    # this will allow us to produce a checklist that can be displayed interactively, immediately
+    # after submission of the questionnaire. This will ensure data quality (at least from the aspect
+    # of providing required fields/files).
+    
+    
+    
+  end
+  
   
   private
+  
+  def write_audit(mcoc_renewal_id, section_id, audit_key, audit_value) 
+      saved = false
+      @audit_record = McocRenewalsDataQualityAudit.create(:mcoc_renewal_id => mcoc_renewal_id, :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value)
+      saved &= @audit_record.save
+  end
+  
 
   def get_response_with_only_one_value(data_export_identifier, response_set_id, survey_section_id)
     tmp_question = Question.find_by_data_export_identifier_and_survey_section_id(data_export_identifier, survey_section_id)
