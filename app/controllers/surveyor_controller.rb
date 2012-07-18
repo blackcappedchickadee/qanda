@@ -237,16 +237,33 @@ module SurveyorControllerCustomMethods
 
   end
   
+  def obtain_audit_records_for_section
+    audit_status
+    
+    @tmp_response_set_code = params[:response_set_code]
+    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+    @tmp_response_set_id = @tmp_response_set.id
+    @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
+    @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+    
+    @audit_records = McocRenewalsDataQualityAudit.find_by_mcoc_renewal_id(@tmp_mcoc_renewal_id)
+    
+    
+  end
+  
   
   # Paths
   def section_id_from(p)
+    puts "================ section_id_from #{p} ---- #{:keys}"
     
     p.respond_to?(:keys) ? p.keys.first : p
+    
   end
 
   def anchor_from(p)
+    #puts "================ anchor_from #{p} ---- #{:keys}"
+    #p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
     
-    p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
   end
   def surveyor_index
     # most of the above actions redirect to this method
@@ -299,16 +316,16 @@ module SurveyorControllerCustomMethods
         @agency_info_export_identifier = 'agency_information'
         #only do this if we are in the relevant (agency information) section...
         @current_survey_section = params[:section]
-        puts "current survey section --->#{@current_survey_section}<----"
+        #puts "current survey section --->#{@current_survey_section}<----"
         @survey_section_agency_info = SurveySection.find_by_survey_id_and_data_export_identifier(@tmp_survey_id, @agency_info_export_identifier)
         if @survey_section_agency_info 
           #only enter into the core logic if we're dealing with the relevant survey section
           
-          puts "ready for testing..."
+          #puts "ready for testing..."
           
           if (@current_survey_section.to_s == @survey_section_agency_info.id.to_s) || (@current_survey_section.nil?)
             @tmp_survey_section_agency_info_id = @survey_section_agency_info.id
-            puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
+            #puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
             @question_data_export_identifier = 'data_agency_info'
             @question = Question.find_by_survey_section_id_and_data_export_identifier(@tmp_survey_section_agency_info_id, @question_data_export_identifier)
             if @question
@@ -317,15 +334,15 @@ module SurveyorControllerCustomMethods
               @answer_data_export_identifier = 'program_name'
               @answer = Answer.find_by_question_id_and_data_export_identifier(@tmp_question_id, @answer_data_export_identifier)
               @tmp_answer_id = @answer.id
-              puts "@tmp_answer_id = #{@tmp_answer_id}"
+              #puts "@tmp_answer_id = #{@tmp_answer_id}"
               
               @response_for_program_name = Response.find_by_question_id_and_answer_id_and_response_set_id(@tmp_question_id, @tmp_answer_id, @tmp_response_set_id)
               if @response_for_program_name
                 puts "response found for program name, do we have a text value?"
                 if @response_for_program_name.string_value != nil
-                  puts "... found existing value #{@response_for_program_name.string_value} for program name"
+                  #puts "... found existing value #{@response_for_program_name.string_value} for program name"
                 else
-                  puts "program name is not nil but there was a nil string_value "
+                  #puts "program name is not nil but there was a nil string_value "
                 end
               else
                 @tmp_project_name = session[:project_name]
