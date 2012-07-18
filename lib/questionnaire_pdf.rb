@@ -2,7 +2,6 @@ class QuestionnairePdf < Prawn::Document
   
   include Questionnaire::Data
   
-
   def initialize(user_id, mcoc_renewal_id, response_set_code, grantee_name, project_name, doc_name)
       
       @user_id = user_id
@@ -38,7 +37,6 @@ class QuestionnairePdf < Prawn::Document
       generate_physical_plant_section_values
       generate_final_section_values
 
-      
       pgnum_string = "Page <page> of <total> -- #{@grantee_name} - #{@project_name}" 
 
       options = { :at => [bounds.left + 0, 0],
@@ -368,7 +366,7 @@ class QuestionnairePdf < Prawn::Document
       end
       font "Helvetica"  # back to normal
       move_down 10
-      if var_employed_at_program_at_exit.to_f < 85 && @less_than_20_please_explain.nil?
+      if var_employed_at_program_at_exit.to_f < 20 && @less_than_20_please_explain.nil?
         text "If less than 20%, please explain:"
         move_down 5
         font "Times-Roman"

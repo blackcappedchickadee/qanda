@@ -108,6 +108,8 @@ Qanda::Application.routes.draw do
     match "/surveys/mini_survey", :to => "mcoc_mini_survey#handle_mini_survey_pref", :as => "handle_mini_survey_pref"
     
     match "/surveys/end_message", :to => "surveyor#end_message", :as => "end_message", :via => :get
+    
+    match "/surveys/:survey_code/:response_set_code/audit_status", :to => "surveyor#audit_status", :as => "audit_status", :via => :get
 
 
   end

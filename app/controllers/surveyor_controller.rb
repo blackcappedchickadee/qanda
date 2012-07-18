@@ -114,7 +114,38 @@ module SurveyorControllerCustomMethods
     
     
   end
-  #custom Action
+  
+  
+  def audit_status
+    @section = params[:section]
+    
+    puts "in surveyor_status............"
+    
+    @tmp_response_set_code = params[:response_set_code]
+    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+    @tmp_response_set_id = @tmp_response_set.id
+    @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
+    @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+    @tmp_user_id = session[:user_id]
+
+    @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
+    @tmp_grantee_name = @mcoc_renewal.grantee_name
+    @tmp_project_name = @mcoc_renewal.project_name
+    
+    
+    @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @section)
+    
+    if @section.to_i == 0
+      puts "will show all..."
+    else
+      puts "will show for just one section"
+    end
+    
+    
+  end
+  
+  
+  #custom Action to list the current surveys
   def list_current
       #get the list of instanced (via response_sets) surveys for the current user
       #the precondition (very important) is that these have been instanced/seeded prior
@@ -209,10 +240,12 @@ module SurveyorControllerCustomMethods
   
   # Paths
   def section_id_from(p)
+    
     p.respond_to?(:keys) ? p.keys.first : p
   end
 
   def anchor_from(p)
+    
     p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
   end
   def surveyor_index
