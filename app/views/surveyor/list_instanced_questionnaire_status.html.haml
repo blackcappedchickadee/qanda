@@ -29,7 +29,7 @@
                   - if report.survey_access_code == "notinstanced"
                     #{report.project_name} (not yet instanced)
                   - else
-                    = link_to report.project_name, edit_my_survey_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code) 
+                    = link_to report.project_name, edit_my_survey_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code, :section => "1") 
                 %div.project_name_links
                   - if report.survey_access_code != "notinstanced"
                     = link_to '(View PDF)', show_questionnaire_path(:survey_code => report.survey_access_code, :response_set_code => report.response_access_code, format: "pdf")

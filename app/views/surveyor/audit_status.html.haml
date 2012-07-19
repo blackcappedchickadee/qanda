@@ -1,2 +1,26 @@
 #surveyor
   %br
+  <b>Missing Required Information!</b>
+  %br
+  %br
+  The <b>#{@audit_section_name}</b> Section of the Questionnaire is missing the following required information:
+  %br
+  #audit_list
+    %ul
+      - unless @audit_records.empty?
+        %br
+        - @audit_records.each do |audit|
+          %li
+            #{audit.audit_key}
+            %br
+    %br
+    %br
+    It is strongly recommended that you provide the missing information as soon as you can. 
+    %br
+    %br
+    = link_to @return_url_verbose, edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => params[:section], :first_visit => "1")
+    %br
+    %br
+    Otherwise, you can click here to continue to the next Section of the Questionnaire. Please remember that if you do not 
+    provide all of the required information, your Questionnaire will be considered incomplete.
+  

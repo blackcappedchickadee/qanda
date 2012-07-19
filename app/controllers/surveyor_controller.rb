@@ -4,6 +4,8 @@ module SurveyorControllerCustomMethods
     # base.send :before_filter, :require_user   # AuthLogic
     # base.send :before_filter, :login_required  # Restful Authentication
     # base.send :layout, 'surveyor_custom'
+    base.send :before_filter, :obtain_audit_records_for_section, :only => :edit
+    base.send :after_filter, :set_previous_section_id, :only => :edit
   end
 
   # Actions
@@ -35,6 +37,7 @@ module SurveyorControllerCustomMethods
       
       prepopulate_program_name
       
+      session[:quest_section] = params[:section]
       
     end
   end
@@ -117,31 +120,19 @@ module SurveyorControllerCustomMethods
   
   
   def audit_status
-    @section = params[:section]
-    
-    puts "in surveyor_status............"
-    
-    @tmp_response_set_code = params[:response_set_code]
-    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
-    @tmp_response_set_id = @tmp_response_set.id
-    @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
-    @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
-    @tmp_user_id = session[:user_id]
 
-    @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
-    @tmp_grantee_name = @mcoc_renewal.grantee_name
-    @tmp_project_name = @mcoc_renewal.project_name
+    puts "in surveyor audit_status............"
+    @audit_records = McocRenewalsDataQualityAudit.find_all_by_mcoc_renewal_id(params[:renewal_id])
+    @audit_section = SurveySection.find_by_id_and_survey_id(params[:section], params[:survey_id])
+    @audit_section_name = @audit_section.title
     
+    @tmp_survey_access_code = session[:survey_code] 
+    @tmp_response_set_code = session[:response_set_code] 
     
-    @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, @section)
-    
-    if @section.to_i == 0
-      puts "will show all..."
-    else
-      puts "will show for just one section"
-    end
-    
-    
+    @return_url_verbose = "Click here to return to the #{@audit_section_name} Section to correct."
+ 
+    #@audit_records
+
   end
   
   
@@ -183,6 +174,7 @@ module SurveyorControllerCustomMethods
   
   #custom action for showing a Report of Unfinished Instanced Surveys
   def list_instanced_questionnaire_status
+      session[:quest_section] = 0
       @report_list = []
       @mcoc_renewals = McocRenewal.find(:all, :order => 'grantee_name ASC, project_name ASC')
 
@@ -237,34 +229,34 @@ module SurveyorControllerCustomMethods
 
   end
   
-  def obtain_audit_records_for_section
-    audit_status
-    
-    @tmp_response_set_code = params[:response_set_code]
-    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
-    @tmp_response_set_id = @tmp_response_set.id
-    @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
-    @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
-    
-    @audit_records = McocRenewalsDataQualityAudit.find_by_mcoc_renewal_id(@tmp_mcoc_renewal_id)
-    
-    
-  end
-  
-  
   # Paths
   def section_id_from(p)
-    puts "================ section_id_from #{p} ---- #{:keys}"
-    
+    puts "================ now in section_id_from #{p} ---- #{:keys}"
     p.respond_to?(:keys) ? p.keys.first : p
-    
   end
 
   def anchor_from(p)
-    #puts "================ anchor_from #{p} ---- #{:keys}"
-    #p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
-    
+    @quest_section_previous = session[:quest_section]
+    session[:display_audit_details_for_section] = nil
+    puts "------------ leaving #{@quest_section_previous} ----------------"
+    #now we check to see if the section we're about to leave hasa required fields that have not been provided...
+    @tmp_response_set_code = session[:response_set_code]
+    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+    @tmp_survey = Survey.find(@tmp_response_set.survey_id)
+    #only do this with the Monitoring Questionnaire
+    #if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
+      #puts "will now call obtain_audit_records_for_section ------ "
+      #obtain_audit_records_for_section
+      #if !@audit_records.nil?
+      #  puts "----- $$$$$$$$$$$$$$$$$$$$$$$$$$$ audit records found!!!!!!"
+      #  #session[:display_audit_details_for_section] = "Yes"
+      #  #display_audit_status
+      #end
+    #else
+      p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
+    #end
   end
+  
   def surveyor_index
     # most of the above actions redirect to this method
     super # available_surveys_path
@@ -281,6 +273,7 @@ module SurveyorControllerCustomMethods
     case @tmp_survey.access_code 
       when "2012-monitoring-and-evaluation"
         put_completed_survey_pdf_to_doclib
+        session[:quest_section]
         perform_mini_survey
       when "2012-monitoring-and-evaluation-questionnaire-mini-survey"
         puts "in mini survey logic..."
@@ -302,6 +295,70 @@ module SurveyorControllerCustomMethods
   
   private
   
+    def set_previous_section_id
+      session[:previous_section_id] = params[:section]
+      puts "in ----------------------------------------- set_previous_section_id - with #{session[:section]}" 
+      
+    end
+  
+  
+    def obtain_audit_records_for_section
+      puts "obtain_audit_records_for_section: is being called --- YayYyyyyyyyyy!!"
+      @first_visit = "0"
+      @first_visit = params[:first_visit]
+      
+      @tmp_response_set_code = params[:response_set_code]
+      @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
+      @tmp_survey_id = @tmp_response_set.survey_id
+      @tmp_survey = Survey.find(@tmp_survey_id)
+
+      #only do this with the Monitoring Questionnaire related items
+      puts "----------- #{@tmp_survey.access_code}"
+      if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
+        
+          if @first_visit == "1"
+            puts "obtain_audit_records_for_section: first visit......."
+            session[:previous_section_id] = params[:section]
+          else
+           
+            puts "obtain_audit_records_for_section: -- previous section analysis begins -- #{session[:previous_section_id]}"
+            session[:quest_section] = session[:previous_section_id]
+            prev_section_id = session[:quest_section]
+    
+            #below won't work -- out of sync -- this is the current -- we need the "prior" one...
+            #@section_id = params[:section] #the section we're leaving?
+            #puts "obtain_audit_records_for_section:   section_id = #{@section_id}..."
+
+            @tmp_response_set_id = @tmp_response_set.id
+            @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
+            @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+            @tmp_user_id = session[:user_id]
+
+            @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
+            @tmp_grantee_name = @mcoc_renewal.grantee_name
+            @tmp_project_name = @mcoc_renewal.project_name
+
+            @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, prev_section_id)
+    
+            @audit_records = McocRenewalsDataQualityAudit.find_by_mcoc_renewal_id(@tmp_mcoc_renewal_id)
+            session[:quest_section] = params[:section]
+    
+            if !@audit_records.nil? 
+                session[:survey_code] = params[:survey_code]
+                session[:response_set_code] = params[:response_set_code]
+                
+                puts "obtain_audit_records_for_section: audit records were found !!!!!"
+                redirect_to audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
+            end
+              
+           
+           
+         end
+      end
+      #
+   
+    end
+    
   
     def prepopulate_program_name
       puts "In prepopulate_program_name... start"
@@ -410,6 +467,13 @@ module SurveyorControllerCustomMethods
       #since it runs on a separate thread.
       delayed_job = CreateAndSendPdfJob.new
       delayed_job.create_and_put_pdf_for_mini_satisf_survey(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name, @tmp_user_id)
+      
+    end
+    
+    def display_audit_status
+      puts "......QQQQQQQ  ---------------- in display_audit_status..............."
+      #audit_status_path
+      #return redirect_to :action => 'audit_status'
       
     end
     

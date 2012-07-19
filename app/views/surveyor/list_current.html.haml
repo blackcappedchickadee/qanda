@@ -27,7 +27,7 @@
                       = survey.grantee_name
                       
                 %div.project_name
-                  = link_to survey.project_name, edit_my_survey_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code), :target => "_blank" 
+                  = link_to survey.project_name, edit_my_survey_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code, :section => "1", :first_visit => "1"), :target => "_blank" 
                 %div.project_name_links
                   = link_to '(View PDF)', show_questionnaire_path(:survey_code => survey.survey_access_code, :response_set_code => survey.response_access_code, format: "pdf")
                   - if survey.completed_flag == "No"
