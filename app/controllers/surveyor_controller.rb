@@ -14,7 +14,6 @@ module SurveyorControllerCustomMethods
     @title = "Available Questionnaires"
   end
   def create
-    puts "survey code = #{params[:survey_code]}"
     super
   end
   def show
@@ -34,7 +33,7 @@ module SurveyorControllerCustomMethods
       session[:project_name] = @mcoc_renewal.project_name
       session[:grantee_name] = @mcoc_renewal.grantee_name
       session[:response_set_code] = @response_set_code
-      
+      session[:originating_from_finish] = false
       prepopulate_program_name
       
       session[:quest_section] = params[:section]
@@ -121,18 +120,19 @@ module SurveyorControllerCustomMethods
   
   def audit_status
 
-    puts "in surveyor audit_status............"
     @audit_records = McocRenewalsDataQualityAudit.find_all_by_mcoc_renewal_id(params[:renewal_id])
     @audit_section = SurveySection.find_by_id_and_survey_id(params[:section], params[:survey_id])
     @audit_section_name = @audit_section.title
     
     @tmp_survey_access_code = session[:survey_code] 
     @tmp_response_set_code = session[:response_set_code] 
-    
     @tmp_requested_next_section = session[:requested_next_section]
     
+    @tmp_originating_from_finish = session[:originating_from_finish]
+    @tmp_alternate_finish_path = session[:alternate_finish_path]
+    
     @return_url_verbose = "Click here to return to the #{@audit_section_name} Section to correct."
-
+  
   end
   
   
@@ -144,12 +144,9 @@ module SurveyorControllerCustomMethods
       @list_of_instanced_surveys = []
       @user_renewals_instanced_surveys = McocRenewal.joins(:mcoc_user_renewals).where(:mcoc_user_renewals => {:user_id => current_user.id}).order('grantee_name ASC, project_name ASC')
       @user_renewals_instanced_surveys.each do |user_renewals|
-        puts "testing #{user_renewals.id}"
         @mcoc_renewals = McocUserRenewal.find_by_mcoc_renewal_id(user_renewals.id)
-        
         @completed_date = ""
         @completed_flag = ""
-        
         @response_set_for_user = ResponseSet.find_by_id(@mcoc_renewals.response_set_id)
         @survey = Survey.find_by_id(@response_set_for_user.survey_id)
         
@@ -184,13 +181,11 @@ module SurveyorControllerCustomMethods
         @grantee_name = renewals.grantee_name
         @project_name = renewals.project_name
         if @tmp_user_renewals.first.nil?
-          puts "nil user renewals found for #{renewals.id}"
           @response_set_access_code = "notinstanced"
           @completed_flag = "No"
           @completed_date = ""
           @survey_access_code = "notinstanced"
         else
-          puts "user renewals WERE found for #{renewals.id}"
           @response_set = ResponseSet.where(:id => @tmp_user_renewals.first.response_set_id)
           @response_set_access_code = @response_set.first.access_code
           @survey = Survey.find_by_id(@response_set.first.survey_id)
@@ -203,7 +198,6 @@ module SurveyorControllerCustomMethods
             @completed_flag = "Yes"
           end
           @survey_access_code = @survey.access_code
-          puts "completed date - #{@completed_date}, completed_flag - #{@completed_flag}"
         end
         
         #populate the model regardless of whether or not we found details 
@@ -254,11 +248,15 @@ module SurveyorControllerCustomMethods
     #only do this with the Monitoring Questionnaire related items
     case @tmp_survey.access_code 
       when "2012-monitoring-and-evaluation"
-        put_completed_survey_pdf_to_doclib
-        session[:quest_section]
-        perform_mini_survey
+        #we need to potentially interrupt with any missing information on the last section as well...
+        session[:originating_from_finish] = true
+        session[:alternate_finish_path] = ""
+        obtain_audit_records_for_section # this may invoke a redirect to the audit page...
+        ## these are now elsewhere in the page "workflow..."
+        #put_completed_survey_pdf_to_doclib
+        #session[:quest_section]
+        #perform_mini_survey
       when "2012-monitoring-and-evaluation-questionnaire-mini-survey"
-        puts "in mini survey logic..."
         put_completed_mini_satisf_survey_pdf_to_doclib
         end_message
     else
@@ -279,6 +277,7 @@ module SurveyorControllerCustomMethods
   
   
     def obtain_audit_records_for_section
+ 
       @first_visit = "0"
       @first_visit = params[:first_visit]
       
@@ -290,7 +289,7 @@ module SurveyorControllerCustomMethods
 
       #only do this with the Monitoring Questionnaire related items
       if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
-        
+
           if @first_visit == "1"
             session[:previous_section_id] = params[:section]
           else
@@ -306,12 +305,54 @@ module SurveyorControllerCustomMethods
             @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, prev_section_id)
             @audit_records = McocRenewalsDataQualityAudit.find_by_mcoc_renewal_id(@tmp_mcoc_renewal_id)
             session[:quest_section] = params[:section]
-            
+           
             if !@audit_records.nil? 
                 session[:survey_code] = params[:survey_code]
                 session[:response_set_code] = params[:response_set_code]
                 session[:requested_next_section] = @tmp_requested_next_section
-                redirect_to audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
+              
+                if session[:originating_from_finish] == true
+  
+                  #we first need to see if we need to display the mini survey afterward -- so although 
+                  #we're going to display the audit (missing) information first, we need to know if we need to display the "alternate/otherwise"
+                  #link to the mini survey/end survey page...
+                  @tmp_user_id = session[:user_id]
+                  @mcoc_mini_survey = McocMiniSurvey.find_by_user_id(@tmp_user_id)
+                  if !@mcoc_mini_survey.nil?
+                    #we won't ask if dont_ask = 1 (true)
+                    if !@mcoc_mini_survey.dont_ask 
+                      #redirect to mini_survey lead-in
+                      session[:mcoc_mini_survey] = @mcoc_mini_survey
+                      #mini_survey_ask_path
+                      session[:alternate_finish_path] = "mini_survey_ask"
+                    else
+                      end_message #list_surveys_path
+                      session[:alternate_finish_path] = "end_message"
+                    end
+                  else
+  
+                    #we'll insert the "base" values to the mcoc_mini_survey table -- then we'll redirect to ask if they are
+                    #interested in taking a mini-survey
+                    @mcoc_mini_survey = McocMiniSurvey.create(:user_id => @tmp_user_id)
+                    #redirect to mini_survey lead-in
+                    session[:mcoc_mini_survey] = @mcoc_mini_survey
+                    #mini_survey_ask_path
+                    session[:alternate_finish_path] = "mini_survey_ask"
+                  end
+                  #this redirect path will also have enhanced session information so we can render the correct "alternate/otherwise" link...
+  
+                  audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
+                else
+                  redirect_to audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
+                end
+            else
+                # if we're at the end of the monitoring questionnaire "workflow" (clicked on "complete"), and have no audit/missing
+                # info to display: // otherwise, we're not at the end of the questionnaire workflow so we will let things continue normally...
+                if session[:originating_from_finish] == true
+                  put_completed_survey_pdf_to_doclib
+                  session[:quest_section]
+                  perform_mini_survey
+                end
             end
             
          end
@@ -334,7 +375,7 @@ module SurveyorControllerCustomMethods
           #only enter into the core logic if we're dealing with the relevant survey section
           if (@current_survey_section.to_s == @survey_section_agency_info.id.to_s) || (@current_survey_section.nil?)
             @tmp_survey_section_agency_info_id = @survey_section_agency_info.id
-            #puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
+      
             @question_data_export_identifier = 'data_agency_info'
             @question = Question.find_by_survey_section_id_and_data_export_identifier(@tmp_survey_section_agency_info_id, @question_data_export_identifier)
             if @question
@@ -342,7 +383,7 @@ module SurveyorControllerCustomMethods
               @answer_data_export_identifier = 'program_name'
               @answer = Answer.find_by_question_id_and_data_export_identifier(@tmp_question_id, @answer_data_export_identifier)
               @tmp_answer_id = @answer.id
-              #puts "@tmp_answer_id = #{@tmp_answer_id}"
+       
               @response_for_program_name = Response.find_by_question_id_and_answer_id_and_response_set_id(@tmp_question_id, @tmp_answer_id, @tmp_response_set_id)
               if @response_for_program_name
                 if @response_for_program_name.string_value != nil

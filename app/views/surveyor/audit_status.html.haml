@@ -14,7 +14,13 @@
       = link_to @return_url_verbose, edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => params[:section], :first_visit => "1")
     %div#audit_list_alternate_action
       Otherwise, you can ignore the information above and continue by clicking 
-      = link_to "here.", edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => @tmp_requested_next_section, :first_visit => "1")
+      - if @tmp_originating_from_finish == false
+        = link_to "here.", edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => @tmp_requested_next_section, :first_visit => "1")
+      - else
+        - if @tmp_alternate_finish_path == "end_message"
+          = link_to "here.", end_message_path 
+        - if @tmp_alternate_finish_path == "mini_survey_ask"
+          = link_to "here.", mini_survey_ask_path 
     #audit_closure_message
       Please remember that if you do not provide all of the required information by the submittal due date, your Questionnaire will be considered incomplete.
   
