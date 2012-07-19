@@ -132,8 +132,6 @@ module SurveyorControllerCustomMethods
     @tmp_requested_next_section = session[:requested_next_section]
     
     @return_url_verbose = "Click here to return to the #{@audit_section_name} Section to correct."
- 
-    #@audit_records
 
   end
   
@@ -233,32 +231,12 @@ module SurveyorControllerCustomMethods
   
   # Paths
   def section_id_from(p)
-    puts "================ now in section_id_from #{p} ---- #{:keys}"
-    
     session[:requested_next_section] = params[:section]
     p.respond_to?(:keys) ? p.keys.first : p
   end
 
   def anchor_from(p)
-    @quest_section_previous = session[:quest_section]
-    session[:display_audit_details_for_section] = nil
-    puts "------------ leaving #{@quest_section_previous} ----------------"
-    #now we check to see if the section we're about to leave hasa required fields that have not been provided...
-    @tmp_response_set_code = session[:response_set_code]
-    @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
-    @tmp_survey = Survey.find(@tmp_response_set.survey_id)
-    #only do this with the Monitoring Questionnaire
-    #if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
-      #puts "will now call obtain_audit_records_for_section ------ "
-      #obtain_audit_records_for_section
-      #if !@audit_records.nil?
-      #  puts "----- $$$$$$$$$$$$$$$$$$$$$$$$$$$ audit records found!!!!!!"
-      #  #session[:display_audit_details_for_section] = "Yes"
-      #  #display_audit_status
-      #end
-    #else
-      p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
-    #end
+    p.respond_to?(:keys) && p[p.keys.first].respond_to?(:keys) ? p[p.keys.first].keys.first : nil
   end
   
   def surveyor_index
@@ -282,13 +260,9 @@ module SurveyorControllerCustomMethods
       when "2012-monitoring-and-evaluation-questionnaire-mini-survey"
         puts "in mini survey logic..."
         put_completed_mini_satisf_survey_pdf_to_doclib
-        
-        #list_surveys_path
         end_message
-        
     else
       end_message
-      #list_surveys_path #returns to the list of instanced, available surveys for the given user.
     end
     
   end
@@ -301,13 +275,10 @@ module SurveyorControllerCustomMethods
   
     def set_previous_section_id
       session[:previous_section_id] = params[:section]
-      puts "in ----------------------------------------- set_previous_section_id - with #{session[:section]}" 
-      
     end
   
   
     def obtain_audit_records_for_section
-      puts "obtain_audit_records_for_section: is being called --- YayYyyyyyyyyy!!"
       @first_visit = "0"
       @first_visit = params[:first_visit]
       
@@ -315,77 +286,52 @@ module SurveyorControllerCustomMethods
       @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
       @tmp_survey_id = @tmp_response_set.survey_id
       @tmp_survey = Survey.find(@tmp_survey_id)
-      
       @tmp_requested_next_section = params[:section]
 
       #only do this with the Monitoring Questionnaire related items
-      puts "----------- #{@tmp_survey.access_code}"
       if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
         
           if @first_visit == "1"
-            puts "obtain_audit_records_for_section: first visit......."
             session[:previous_section_id] = params[:section]
           else
-           
-            puts "obtain_audit_records_for_section: -- previous section analysis begins -- #{session[:previous_section_id]}"
             session[:quest_section] = session[:previous_section_id]
             prev_section_id = session[:quest_section]
-    
-            #below won't work -- out of sync -- this is the current -- we need the "prior" one...
-            #@section_id = params[:section] #the section we're leaving?
-            #puts "obtain_audit_records_for_section:   section_id = #{@section_id}..."
-
             @tmp_response_set_id = @tmp_response_set.id
             @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
             @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
             @tmp_user_id = session[:user_id]
-
             @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
             @tmp_grantee_name = @mcoc_renewal.grantee_name
             @tmp_project_name = @mcoc_renewal.project_name
-
             @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, prev_section_id)
-    
             @audit_records = McocRenewalsDataQualityAudit.find_by_mcoc_renewal_id(@tmp_mcoc_renewal_id)
             session[:quest_section] = params[:section]
-    
+            
             if !@audit_records.nil? 
                 session[:survey_code] = params[:survey_code]
                 session[:response_set_code] = params[:response_set_code]
                 session[:requested_next_section] = @tmp_requested_next_section
-                puts "obtain_audit_records_for_section: audit records were found !!!!!"
                 redirect_to audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
             end
-              
-           
-           
+            
          end
       end
-      #
-   
     end
     
   
     def prepopulate_program_name
-      puts "In prepopulate_program_name... start"
       @tmp_response_set_code = session[:response_set_code]
-      puts "@tmp_response_set_code = #{@tmp_response_set_code}..."
       @response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
       if @response_set
         @survey = @response_set.survey
         @tmp_survey_id = @survey.id
         @tmp_response_set_id = @response_set.id
-        puts "@tmp_survey_id = #{@tmp_survey_id}"
         @agency_info_export_identifier = 'agency_information'
         #only do this if we are in the relevant (agency information) section...
         @current_survey_section = params[:section]
-        #puts "current survey section --->#{@current_survey_section}<----"
         @survey_section_agency_info = SurveySection.find_by_survey_id_and_data_export_identifier(@tmp_survey_id, @agency_info_export_identifier)
         if @survey_section_agency_info 
           #only enter into the core logic if we're dealing with the relevant survey section
-          
-          #puts "ready for testing..."
-          
           if (@current_survey_section.to_s == @survey_section_agency_info.id.to_s) || (@current_survey_section.nil?)
             @tmp_survey_section_agency_info_id = @survey_section_agency_info.id
             #puts "@tmp_survey_section_agency_info_id = #{@tmp_survey_section_agency_info_id}"
@@ -393,15 +339,12 @@ module SurveyorControllerCustomMethods
             @question = Question.find_by_survey_section_id_and_data_export_identifier(@tmp_survey_section_agency_info_id, @question_data_export_identifier)
             if @question
               @tmp_question_id = @question.id
-              puts "@tmp_question_id = #{@tmp_question_id}"
               @answer_data_export_identifier = 'program_name'
               @answer = Answer.find_by_question_id_and_data_export_identifier(@tmp_question_id, @answer_data_export_identifier)
               @tmp_answer_id = @answer.id
               #puts "@tmp_answer_id = #{@tmp_answer_id}"
-              
               @response_for_program_name = Response.find_by_question_id_and_answer_id_and_response_set_id(@tmp_question_id, @tmp_answer_id, @tmp_response_set_id)
               if @response_for_program_name
-                puts "response found for program name, do we have a text value?"
                 if @response_for_program_name.string_value != nil
                   #puts "... found existing value #{@response_for_program_name.string_value} for program name"
                 else
@@ -412,7 +355,6 @@ module SurveyorControllerCustomMethods
                 # @finished_survey = FinishedSurvey.create({:url => full_doclib_url, :grantee_name => grantee_name, :project_name => project_name})
                 @response_for_program_name = Response.create({:response_set_id => @tmp_response_set_id, :question_id => @tmp_question_id, 
                           :answer_id => @tmp_answer_id, :string_value => @tmp_project_name})
-                
               end
             end
           end
@@ -473,13 +415,6 @@ module SurveyorControllerCustomMethods
       #since it runs on a separate thread.
       delayed_job = CreateAndSendPdfJob.new
       delayed_job.create_and_put_pdf_for_mini_satisf_survey(@tmp_response_set_code, @tmp_mcoc_renewal_id, @tmp_grantee_name, @tmp_project_name, @tmp_user_id)
-      
-    end
-    
-    def display_audit_status
-      puts "......QQQQQQQ  ---------------- in display_audit_status..............."
-      #audit_status_path
-      #return redirect_to :action => 'audit_status'
       
     end
     
