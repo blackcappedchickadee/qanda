@@ -549,7 +549,7 @@ module Questionnaire
       if @attachment_info_apr.nil?
         write_audit(@user_id, @mcoc_renewal_id, section_id, "APR Report", @not_provided_text)
       else
-        if attachment_info_apr == "text"
+        if @attachment_info_apr == "text"
           write_audit(@user_id, @mcoc_renewal_id, section_id, "APR Report", @not_provided_text)
         end
       end
