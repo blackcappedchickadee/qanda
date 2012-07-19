@@ -326,8 +326,8 @@ module SurveyorControllerCustomMethods
                       #mini_survey_ask_path
                       session[:alternate_finish_path] = "mini_survey_ask"
                     else
-                      end_message #list_surveys_path
                       session[:alternate_finish_path] = "end_message"
+                      end_message #list_surveys_path
                     end
                   else
   
@@ -339,8 +339,9 @@ module SurveyorControllerCustomMethods
                     #mini_survey_ask_path
                     session[:alternate_finish_path] = "mini_survey_ask"
                   end
+  puts "right before put_completed_survey_pdf_to_doclib -- and before audit_status_path call..."                
+                  put_completed_survey_pdf_to_doclib
                   #this redirect path will also have enhanced session information so we can render the correct "alternate/otherwise" link...
-  
                   audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
                 else
                   redirect_to audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
@@ -412,16 +413,21 @@ module SurveyorControllerCustomMethods
       @tmp_project_name = session[:project_name]
       @tmp_user_id = session[:user_id]
       
+puts "in put_completed_survey_pdf_to_doclib 1. -- with tmp_response_set_code =  #{@tmp_response_set_code}"
+      
       @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
       @tmp_response_set_id = @tmp_response_set.id
+puts "in put_completed_survey_pdf_to_doclib 2.   #{@tmp_response_set_id}"
       @mcoc_user_renewal = McocUserRenewal.find_by_response_set_id(@tmp_response_set_id)
       @tmp_mcoc_renewal_id = @mcoc_user_renewal.mcoc_renewal_id
+puts "in put_completed_survey_pdf_to_doclib 3. #{@tmp_mcoc_renewal_id}"
       
       session[:mcoc_renewal_id] = @tmp_mcoc_renewal_id
 
       @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
       @tmp_grantee_name = @mcoc_renewal.grantee_name
       @tmp_project_name = @mcoc_renewal.project_name
+puts "in put_completed_survey_pdf_to_doclib 4.   #{@tmp_grantee_name}, #{@tmp_project_name}"
 
       #the automatic (no user intervention) creation of the completed questionnaire pdf and 
       #transmission of the pdf to the external DocLib (via the add WS operation) is being
