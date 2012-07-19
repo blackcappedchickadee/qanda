@@ -526,11 +526,15 @@ module Questionnaire
       var_project_work_with_families_youth = ""
       if @project_work_with_families_youth.nil?
         write_audit(@user_id, @mcoc_renewal_id, section_id, "Does your project work with Families or Youth?", @not_provided_text)
+      else
+        var_project_work_with_families_youth = @project_work_with_families_youth
       end
       if var_project_work_with_families_youth == "Yes"
-
+        var_and_form_process_document_this = ""
         if @and_form_process_document_this.nil?
           write_audit(@user_id, @mcoc_renewal_id, section_id, "Do you have a policy in place, staff assigned to inform clients of their rights under the McKinney-Vento Homeless Education Assistance Act, and a form or process to document this?", @not_provided_text)
+        else
+          var_and_form_process_document_this = @and_form_process_document_this
         end
         if var_and_form_process_document_this == "No or Not Applicable"
           if @applicable_prior_question_please_explain.nil?

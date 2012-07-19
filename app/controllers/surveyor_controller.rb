@@ -129,6 +129,8 @@ module SurveyorControllerCustomMethods
     @tmp_survey_access_code = session[:survey_code] 
     @tmp_response_set_code = session[:response_set_code] 
     
+    @tmp_requested_next_section = session[:requested_next_section]
+    
     @return_url_verbose = "Click here to return to the #{@audit_section_name} Section to correct."
  
     #@audit_records
@@ -232,6 +234,8 @@ module SurveyorControllerCustomMethods
   # Paths
   def section_id_from(p)
     puts "================ now in section_id_from #{p} ---- #{:keys}"
+    
+    session[:requested_next_section] = params[:section]
     p.respond_to?(:keys) ? p.keys.first : p
   end
 
@@ -311,6 +315,8 @@ module SurveyorControllerCustomMethods
       @tmp_response_set = ResponseSet.find_by_access_code(@tmp_response_set_code)
       @tmp_survey_id = @tmp_response_set.survey_id
       @tmp_survey = Survey.find(@tmp_survey_id)
+      
+      @tmp_requested_next_section = params[:section]
 
       #only do this with the Monitoring Questionnaire related items
       puts "----------- #{@tmp_survey.access_code}"
@@ -346,7 +352,7 @@ module SurveyorControllerCustomMethods
             if !@audit_records.nil? 
                 session[:survey_code] = params[:survey_code]
                 session[:response_set_code] = params[:response_set_code]
-                
+                session[:requested_next_section] = @tmp_requested_next_section
                 puts "obtain_audit_records_for_section: audit records were found !!!!!"
                 redirect_to audit_status_path(:section => prev_section_id, :survey_id => @tmp_survey_id, :renewal_id => @tmp_mcoc_renewal_id)
             end
