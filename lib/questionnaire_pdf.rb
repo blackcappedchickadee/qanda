@@ -318,7 +318,7 @@ class QuestionnairePdf < Prawn::Document
         text "APR Report:"
         text "#{@not_provided_text}", :inline_format => true
       else
-        if attachment_info_apr == "text"
+        if @attachment_info_apr == "text"
           text "APR Report:"
           text "#{@not_provided_text}", :inline_format => true
         else
