@@ -322,7 +322,7 @@ class QuestionnairePdf < Prawn::Document
           text "APR Report:"
           text "#{@not_provided_text}", :inline_format => true
         else
-          text "APR Report uploaded: #{attachment_info_apr}"
+          text "APR Report uploaded: #{@attachment_info_apr}"
         end
       end
       font "Helvetica"  # back to normal
