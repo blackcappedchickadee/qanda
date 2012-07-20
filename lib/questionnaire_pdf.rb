@@ -536,7 +536,7 @@ class QuestionnairePdf < Prawn::Document
       if !@attachment_info_other.nil?
         move_down 10
         if @attachment_info_other.length > 0
-          text "Relevant and Supporting Documentation uploaded:\n #{attachment_info_other}", :inline_format => true
+          text "Relevant and Supporting Documentation uploaded:\n #{@attachment_info_other}", :inline_format => true
         else
           text "Relevant and Supporting Documentation: Not Applicable (no attachments uploaded)"
         end
