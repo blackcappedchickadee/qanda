@@ -8,7 +8,7 @@ namespace :qanda do
     survey_access_code = "2012-monitoring-and-evaluation"
     puts "Instancing survey #{survey_access_code}..."
   
-    ext_user_id = 18771 #user id 9
+    ext_user_id = 10404 #user id 9
     user_renewals = [20] #ohi row in mcoc_renewals table
    
     survey = Survey.find_by_access_code(survey_access_code)
