@@ -451,7 +451,6 @@ module Questionnaire
    end
    
    def audit_agency_information_section(section_id)
-
       if @agency_name.nil?
         write_audit(@user_id, @mcoc_renewal_id, section_id, "Agency Name", @not_provided_text)
       end
@@ -652,10 +651,17 @@ module Questionnaire
     
     
   private
+  
+    def obtain_section_name(section_id) 
+      @tmp_section_name = SurveySection.find(section_id)
+      return @tmp_section_name.title
+    end
     
     def write_audit(user_id, mcoc_renewal_id, section_id, audit_key, audit_value) 
         saved = false
-        @audit_record = McocRenewalsDataQualityAudit.create(:user_id => user_id, :mcoc_renewal_id => mcoc_renewal_id, :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value)
+        @section_name = obtain_section_name(section_id)
+        @audit_record = McocRenewalsDataQualityAudit.create(:user_id => user_id, :mcoc_renewal_id => mcoc_renewal_id, 
+            :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value, :section_name => @section_name)
         saved &= @audit_record.save
     end
     

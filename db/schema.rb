@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120717204056) do
+ActiveRecord::Schema.define(:version => 20120726172912) do
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"
@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.integer  "display_length"
     t.string   "custom_class"
     t.string   "custom_renderer"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "default_value"
     t.string   "api_id"
     t.string   "display_type"
@@ -56,8 +56,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.integer  "question_id"
     t.integer  "question_group_id"
     t.string   "rule"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "dependency_conditions", :force => true do |t|
@@ -73,8 +73,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.text     "text_value"
     t.string   "string_value"
     t.string   "response_other"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "finished_survey_email_lists", :force => true do |t|
@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "audit_value"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "section_name"
   end
 
   create_table "mcoc_renewals_supporting_assets", :force => true do |t|
@@ -216,8 +217,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "display_type"
     t.string   "custom_class"
     t.string   "custom_renderer"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "api_id"
   end
 
@@ -238,8 +239,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.integer  "display_width"
     t.string   "custom_class"
     t.string   "custom_renderer"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "correct_answer_id"
     t.string   "api_id"
   end
@@ -250,8 +251,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "access_code"
     t.datetime "started_at"
     t.datetime "completed_at"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "api_id"
   end
 
@@ -269,8 +270,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "string_value"
     t.string   "response_other"
     t.string   "response_group"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "survey_section_id"
     t.string   "api_id"
   end
@@ -287,8 +288,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "common_identifier"
     t.integer  "display_order"
     t.string   "custom_class"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "surveys", :force => true do |t|
@@ -303,8 +304,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.datetime "inactive_at"
     t.string   "css_url"
     t.string   "custom_class"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "display_order"
     t.string   "api_id"
   end
@@ -323,8 +324,8 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "name"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
@@ -344,16 +345,16 @@ ActiveRecord::Schema.define(:version => 20120717204056) do
     t.string   "string_value"
     t.string   "response_other"
     t.string   "regexp"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "validations", :force => true do |t|
     t.integer  "answer_id"
     t.string   "rule"
     t.string   "message"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

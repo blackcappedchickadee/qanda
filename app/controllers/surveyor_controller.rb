@@ -286,10 +286,14 @@ module SurveyorControllerCustomMethods
       @tmp_survey_id = @tmp_response_set.survey_id
       @tmp_survey = Survey.find(@tmp_survey_id)
       @tmp_requested_next_section = params[:section]
+      
+      @tmp_originating_from_finish = session[:originating_from_finish]
 
       #only do this with the Monitoring Questionnaire related items
       if @tmp_survey.access_code == "2012-monitoring-and-evaluation"
-
+        #and only if we're originating from the last section, where we have requested to "finish" the
+        #questionniare:
+        if @tmp_originating_from_finish == true
           if @first_visit == "1"
             session[:previous_section_id] = params[:section]
           else
@@ -302,7 +306,10 @@ module SurveyorControllerCustomMethods
             @mcoc_renewal = McocRenewal.find(@tmp_mcoc_renewal_id)
             @tmp_grantee_name = @mcoc_renewal.grantee_name
             @tmp_project_name = @mcoc_renewal.project_name
-            @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, prev_section_id)
+            
+            @quest_audit = QuestionnaireStatus.new(@tmp_user_id, @tmp_mcoc_renewal_id, @tmp_response_set_code, @tmp_grantee_name, @tmp_project_name, 0)
+            #attempting joins so we can return the decoded name value for the section_id, since we're now
+            #displaying the audit in full at the end for all sections...
             @audit_records = McocRenewalsDataQualityAudit.find_by_mcoc_renewal_id(@tmp_mcoc_renewal_id)
             session[:quest_section] = params[:section]
            
@@ -311,7 +318,7 @@ module SurveyorControllerCustomMethods
                 session[:response_set_code] = params[:response_set_code]
                 session[:requested_next_section] = @tmp_requested_next_section
               
-                if session[:originating_from_finish] == true
+                if @tmp_originating_from_finish == true
   
                   #we first need to see if we need to display the mini survey afterward -- so although 
                   #we're going to display the audit (missing) information first, we need to know if we need to display the "alternate/otherwise"
@@ -358,6 +365,7 @@ module SurveyorControllerCustomMethods
             
          end
       end
+     end
     end
     
   
