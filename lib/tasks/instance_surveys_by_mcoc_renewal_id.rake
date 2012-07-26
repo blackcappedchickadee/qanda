@@ -25,7 +25,7 @@ namespace :qanda do
       response_set = ResponseSet.create(:survey => survey, :user_id => 1 )
       puts "Instanced new response set. Access code is #{response_set.access_code}"
       
-      user_renewals.first.update_attribute(:response_set_id, response_set.id)
+      user_renewals.update_attribute(:response_set_id, response_set.id)
       
       puts "updated  mcoc_user_renewals id #{user_renewals.first.id} with response_set_id = #{response_set.id}"
     
