@@ -2,23 +2,34 @@
   %br
   #audit_list_head
     Missing Required Information!
-  The <b>#{@audit_section_name}</b> Section of the Questionnaire is missing the following required information:
+  #audit_list_subpara
+    - @alternate_text_here = "here to continue."
+    The Questionnaire is missing the following required information. Click on a section name to correct, or click 
+    - if @tmp_alternate_finish_path == "end_message"
+      = link_to @alternate_text_here, end_message_path
+    - if @tmp_alternate_finish_path == "mini_survey_ask"
+      = link_to @alternate_text_here, mini_survey_ask_path
+    Please remember that if you do not provide all of the required information, your Questionnaire will be considered incomplete.
   #audit_list
     %ul
       - unless @audit_records.empty?
-        %br
         - @first_time = true
         - @audit_records.each do |audit|
           - if @first_time
             - @working_section_name = audit.section_name
             - @first_time = false
-            %div.grantee_name 
-            = @working_section_name
+            %div.section_name 
+              = link_to "Section: #{@working_section_name}", edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => audit.section_id)
           - else
             - if @working_section_name == audit.section_name
             - else
               %div.section_name 
-                = audit.section_name
-              %div.section_key_info
-                #{audit.audit_key}
+                = link_to "Section: #{audit.section_name}", edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => audit.section_id)
+                - @working_section_name = audit.section_name
+            %div.section_key_info
+              %ul
+                %li
+                  #{audit.audit_key}
+        #audit_closure_message
+
          
