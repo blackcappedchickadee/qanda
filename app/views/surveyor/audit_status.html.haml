@@ -1,10 +1,10 @@
 #surveyor
   %br
   #audit_list_head
-    Missing Required Information!
+    Questionnaire Submission Summary
   #audit_list_subpara
     - @alternate_text_here = "here to continue."
-    The Questionnaire is missing the following required information. Click on a section name to correct, or click 
+    Missing information is displayed in red. Click on a section name to correct, or click 
     - if @tmp_alternate_finish_path == "end_message"
       = link_to @alternate_text_here, end_message_path
     - if @tmp_alternate_finish_path == "mini_survey_ask"
@@ -26,10 +26,15 @@
               %div.section_name 
                 = link_to "Section: #{audit.section_name}", edit_my_survey_path(:survey_code => @tmp_survey_access_code, :response_set_code => @tmp_response_set_code, :section => audit.section_id)
                 - @working_section_name = audit.section_name
-            %div.section_key_info
-              %ul
-                %li
-                  #{audit.audit_key}
+          %div.section_key_info
+            %ul
+            - @work_audit_key = audit.audit_key
+            - if @work_audit_key == "Complete."
+              %li.complete
+                = @work_audit_key
+            - else
+              %li
+                = @work_audit_key
         #audit_closure_message
 
          

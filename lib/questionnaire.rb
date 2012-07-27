@@ -25,7 +25,6 @@ module Questionnaire
       @not_provided_text = "<b><color rgb='ff0000'>Not Provided</color></b>"
       
     end
-    
 
   def get_agency_information_section_values
      #page 1 values 
@@ -38,6 +37,8 @@ module Questionnaire
      @e_mail_address = get_agency_information_response("e_mail_address", @response_set_id, survey_section_agency_information) 
      
      audit_agency_information_section(survey_section_agency_information.id)
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_agency_information.id)
+     
    end
 
    def get_program_information_section_values
@@ -49,6 +50,8 @@ module Questionnaire
      @program_renewal_budget_pct = get_response_with_only_one_value("program_renewal_budget_pct", @response_set_id, survey_section_program_information)
      
      audit_program_information_section(survey_section_program_information.id)
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_program_information.id)
+     
    end
 
    def get_hmis_information_section_values
@@ -59,7 +62,8 @@ module Questionnaire
      @letter_grade_ude = get_response_with_only_one_value("letter_grade_ude", @response_set_id, survey_section_hmis_information)
      @letter_grade_dkr = get_response_with_only_one_value("letter_grade_dkr", @response_set_id, survey_section_hmis_information)
      
-     audit_hmis_information_section(survey_section_hmis_information.id)
+     audit_hmis_information_section(survey_section_hmis_information.id) 
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_hmis_information.id)
      
    end
 
@@ -71,6 +75,7 @@ module Questionnaire
      @applicable_prior_question_please_explain = get_response_with_only_one_value("applicable_prior_question_please_explain", @response_set_id, survey_section_families_youth) 
    
      audit_families_youth_section(survey_section_families_youth.id)
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_families_youth.id)
    end
 
    def get_hud_section_values
@@ -89,6 +94,7 @@ module Questionnaire
      @if_below_77_please_explain = get_response_with_only_one_value("if_below_77_please_explain", @response_set_id, survey_section_hud_continuum_goals)  
      
      audit_hud_section(survey_section_hud_continuum_goals.id)  
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_hud_continuum_goals.id)
    end
 
    def get_physical_plant_section_values
@@ -431,6 +437,9 @@ module Questionnaire
      @data_other2 = [[ other2_col_1, other2_col_2, other2_col_3]]
      @phys_plant_narrative = get_response_with_only_one_value("phys_plant_narrative", @response_set_id, survey_section_physical_plant)
      @attachment_info_other = get_attachment_other(@mcoc_renewal_id)
+     
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_physical_plant.id)
+     
    end
 
    def final_section_values
@@ -448,6 +457,8 @@ module Questionnaire
      @elect_sig_name = get_response_with_only_one_value("elect_sig_name", @response_set_id, survey_section_finish)
      
      audit_final_section(survey_section_finish.id)
+     audit_complete_section(@user_id, @mcoc_renewal_id, survey_section_finish.id)
+     
    end
    
    def audit_agency_information_section(section_id)
@@ -663,6 +674,22 @@ module Questionnaire
         @audit_record = McocRenewalsDataQualityAudit.create(:user_id => user_id, :mcoc_renewal_id => mcoc_renewal_id, 
             :section_id => section_id, :audit_key => audit_key, :audit_value => audit_value, :section_name => @section_name)
         saved &= @audit_record.save
+    end
+    
+    def audit_complete_section(user_id, mcoc_renewal_id, section_id)
+      # client request - 2012.07.27 - If the given section does not have any missing/required information to display, 
+      # client wants the section to still render in a view - but with the wording of "Complete."
+      @audit_records_for_section = McocRenewalsDataQualityAudit.find_all_by_mcoc_renewal_id_and_section_id(mcoc_renewal_id, section_id)
+      if !@audit_records_for_section.nil?
+         if @audit_records_for_section.size == 0
+           saved = false
+           @section_name = obtain_section_name(section_id)
+           complete_value = "Complete."
+           @audit_record_complete = McocRenewalsDataQualityAudit.create(:user_id => user_id, :mcoc_renewal_id => mcoc_renewal_id, 
+               :section_id => section_id, :audit_key => complete_value, :audit_value => complete_value, :section_name => @section_name)
+           saved &= @audit_record_complete.save
+          end
+      end
     end
     
     def audit_destroy_all
