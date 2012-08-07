@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   before_filter :_set_current_session # Set a filter that is invoked on every request
+  before_filter :normal_cookies_for_ie_in_iframes!
   
   def after_sign_in_path_for(resource)
     stored_location_for(resource) ||
@@ -36,6 +37,7 @@ class ApplicationController < ActionController::Base
     ActiveRecord::Base.send(:define_method, "session", proc {accessor.session})
   end
   
+
   
   
 end

@@ -1,6 +1,7 @@
 class MySessionsController < Devise::SessionsController
 
   protect_from_forgery :except => :autosignin
+  
   #TODO: will also want to establish a firewall rule and perform IP checking
 
 #your session logic here

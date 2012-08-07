@@ -78,5 +78,5 @@ gem 'daemons'
 #(as opposed to using webkit based PDF renderers such as pdfkit)
 gem 'prawn'
 
-
+gem 'ie_iframe_cookies'
 
